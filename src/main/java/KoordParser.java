@@ -27,11 +27,12 @@ public class KoordParser extends Parser {
 	public static final int
 		RULE_lexemes = 0, RULE_top = 1, RULE_program = 2, RULE_defs = 3, RULE_funcdef = 4, 
 		RULE_param = 5, RULE_event = 6, RULE_statementblock = 7, RULE_stmt = 8, 
-		RULE_assign = 9, RULE_expr = 10, RULE_bexpr = 11, RULE_relop = 12;
+		RULE_assign = 9, RULE_expr = 10, RULE_bexpr = 11, RULE_aexpr = 12, RULE_number = 13, 
+		RULE_relop = 14;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"lexemes", "top", "program", "defs", "funcdef", "param", "event", "statementblock", 
-			"stmt", "assign", "expr", "bexpr", "relop"
+			"stmt", "assign", "expr", "bexpr", "aexpr", "number", "relop"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -190,7 +191,7 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(26);
+			setState(30);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AGENT) | (1L << MODULE) | (1L << DEF) | (1L << TYPE) | (1L << FUN) | (1L << ACTUATORS) | (1L << SENSORS) | (1L << ALLWRITE) | (1L << ALLREAD) | (1L << LOCAL) | (1L << LIST) | (1L << MAP) | (1L << QUEUE) | (1L << INIT) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS) | (1L << IF) | (1L << ELSE) | (1L << ATOMIC) | (1L << PRE) | (1L << EFF) | (1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << COLON) | (1L << COMMA) | (1L << SEMICOLON) | (1L << LPAR) | (1L << RPAR) | (1L << LBRACE) | (1L << RBRACE) | (1L << LCURLY) | (1L << RCURLY) | (1L << LANGLE) | (1L << RANGLE) | (1L << AND) | (1L << OR) | (1L << NOT) | (1L << LID) | (1L << CID) | (1L << INUM) | (1L << FNUM) | (1L << PLUS) | (1L << MINUS) | (1L << TIMES) | (1L << BY) | (1L << EQ) | (1L << GEQ) | (1L << LEQ) | (1L << NEQ) | (1L << ASGN) | (1L << NEWLINE) | (1L << SKIP_) | (1L << INDENT) | (1L << DEDENT))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -241,17 +242,17 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29); 
+			setState(33); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(28);
+				setState(32);
 				lexemes();
 				}
 				}
-				setState(31); 
+				setState(35); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AGENT) | (1L << MODULE) | (1L << DEF) | (1L << TYPE) | (1L << FUN) | (1L << ACTUATORS) | (1L << SENSORS) | (1L << ALLWRITE) | (1L << ALLREAD) | (1L << LOCAL) | (1L << LIST) | (1L << MAP) | (1L << QUEUE) | (1L << INIT) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS) | (1L << IF) | (1L << ELSE) | (1L << ATOMIC) | (1L << PRE) | (1L << EFF) | (1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << COLON) | (1L << COMMA) | (1L << SEMICOLON) | (1L << LPAR) | (1L << RPAR) | (1L << LBRACE) | (1L << RBRACE) | (1L << LCURLY) | (1L << RCURLY) | (1L << LANGLE) | (1L << RANGLE) | (1L << AND) | (1L << OR) | (1L << NOT) | (1L << LID) | (1L << CID) | (1L << INUM) | (1L << FNUM) | (1L << PLUS) | (1L << MINUS) | (1L << TIMES) | (1L << BY) | (1L << EQ) | (1L << GEQ) | (1L << LEQ) | (1L << NEQ) | (1L << ASGN) | (1L << NEWLINE) | (1L << SKIP_) | (1L << INDENT) | (1L << DEDENT))) != 0) );
@@ -296,17 +297,17 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(34); 
+			setState(38); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(33);
+				setState(37);
 				event();
 				}
 				}
-				setState(36); 
+				setState(40); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==LID );
@@ -351,17 +352,17 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(41);
+			setState(45);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==DEF) {
 				{
 				{
-				setState(38);
+				setState(42);
 				funcdef();
 				}
 				}
-				setState(43);
+				setState(47);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -418,46 +419,46 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(44);
+			setState(48);
 			match(DEF);
-			setState(45);
+			setState(49);
 			match(FUN);
-			setState(46);
+			setState(50);
 			match(LID);
-			setState(47);
+			setState(51);
 			match(LPAR);
-			setState(49); 
+			setState(53); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(48);
+				setState(52);
 				param();
 				}
 				}
-				setState(51); 
+				setState(55); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==TYPE );
-			setState(53);
+			setState(57);
 			match(RPAR);
-			setState(54);
+			setState(58);
 			match(COLON);
-			setState(56); 
+			setState(60); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(55);
+				setState(59);
 				stmt();
 				}
 				}
-				setState(58); 
+				setState(62); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==LID );
+			} while ( _la==ATOMIC || _la==LID );
 			}
 		}
 		catch (RecognitionException re) {
@@ -494,9 +495,9 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(60);
+			setState(64);
 			match(TYPE);
-			setState(61);
+			setState(65);
 			match(LID);
 			}
 		}
@@ -553,35 +554,35 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(63);
-			match(LID);
-			setState(64);
-			match(COLON);
-			setState(65);
-			match(NEWLINE);
-			setState(66);
-			match(INDENT);
 			setState(67);
-			match(PRE);
+			match(LID);
 			setState(68);
 			match(COLON);
 			setState(69);
-			match(LPAR);
+			match(NEWLINE);
 			setState(70);
-			expr();
+			match(INDENT);
 			setState(71);
-			match(RPAR);
+			match(PRE);
 			setState(72);
-			match(NEWLINE);
-			setState(73);
-			match(EFF);
-			setState(74);
 			match(COLON);
+			setState(73);
+			match(LPAR);
+			setState(74);
+			expr();
 			setState(75);
-			match(NEWLINE);
+			match(RPAR);
 			setState(76);
-			statementblock();
+			match(NEWLINE);
 			setState(77);
+			match(EFF);
+			setState(78);
+			match(COLON);
+			setState(79);
+			match(NEWLINE);
+			setState(80);
+			statementblock();
+			setState(81);
 			match(DEDENT);
 			}
 		}
@@ -626,23 +627,23 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(79);
+			setState(83);
 			match(INDENT);
-			setState(81); 
+			setState(85); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(80);
+				setState(84);
 				stmt();
 				}
 				}
-				setState(83); 
+				setState(87); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==LID );
-			setState(85);
+			} while ( _la==ATOMIC || _la==LID );
+			setState(89);
 			match(DEDENT);
 			}
 		}
@@ -662,6 +663,11 @@ public class KoordParser extends Parser {
 			return getRuleContext(AssignContext.class,0);
 		}
 		public TerminalNode NEWLINE() { return getToken(KoordParser.NEWLINE, 0); }
+		public TerminalNode ATOMIC() { return getToken(KoordParser.ATOMIC, 0); }
+		public TerminalNode COLON() { return getToken(KoordParser.COLON, 0); }
+		public StatementblockContext statementblock() {
+			return getRuleContext(StatementblockContext.class,0);
+		}
 		public StmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -680,12 +686,33 @@ public class KoordParser extends Parser {
 		StmtContext _localctx = new StmtContext(_ctx, getState());
 		enterRule(_localctx, 16, RULE_stmt);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(87);
-			assign();
-			setState(88);
-			match(NEWLINE);
+			setState(98);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case LID:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(91);
+				assign();
+				setState(92);
+				match(NEWLINE);
+				}
+				break;
+			case ATOMIC:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(94);
+				match(ATOMIC);
+				setState(95);
+				match(COLON);
+				setState(96);
+				match(NEWLINE);
+				setState(97);
+				statementblock();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -725,11 +752,11 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(90);
+			setState(100);
 			match(LID);
-			setState(91);
+			setState(101);
 			match(ASGN);
-			setState(92);
+			setState(102);
 			expr();
 			}
 		}
@@ -745,6 +772,9 @@ public class KoordParser extends Parser {
 	}
 
 	public static class ExprContext extends ParserRuleContext {
+		public AexprContext aexpr() {
+			return getRuleContext(AexprContext.class,0);
+		}
 		public BexprContext bexpr() {
 			return getRuleContext(BexprContext.class,0);
 		}
@@ -766,10 +796,23 @@ public class KoordParser extends Parser {
 		ExprContext _localctx = new ExprContext(_ctx, getState());
 		enterRule(_localctx, 20, RULE_expr);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(94);
-			bexpr(0);
+			setState(106);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(104);
+				aexpr(0);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(105);
+				bexpr(0);
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -784,16 +827,29 @@ public class KoordParser extends Parser {
 	}
 
 	public static class BexprContext extends ParserRuleContext {
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode NOT() { return getToken(KoordParser.NOT, 0); }
 		public List<BexprContext> bexpr() {
 			return getRuleContexts(BexprContext.class);
 		}
 		public BexprContext bexpr(int i) {
 			return getRuleContext(BexprContext.class,i);
 		}
+		public TerminalNode LPAR() { return getToken(KoordParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(KoordParser.RPAR, 0); }
+		public List<AexprContext> aexpr() {
+			return getRuleContexts(AexprContext.class);
+		}
+		public AexprContext aexpr(int i) {
+			return getRuleContext(AexprContext.class,i);
+		}
 		public RelopContext relop() {
 			return getRuleContext(RelopContext.class,0);
 		}
+		public TerminalNode FALSE() { return getToken(KoordParser.FALSE, 0); }
+		public TerminalNode TRUE() { return getToken(KoordParser.TRUE, 0); }
+		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode AND() { return getToken(KoordParser.AND, 0); }
+		public TerminalNode OR() { return getToken(KoordParser.OR, 0); }
 		public BexprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -823,34 +879,98 @@ public class KoordParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			{
-			setState(97);
-			match(LID);
+			setState(122);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
+			case 1:
+				{
+				setState(109);
+				match(NOT);
+				setState(110);
+				bexpr(8);
+				}
+				break;
+			case 2:
+				{
+				setState(111);
+				match(LPAR);
+				setState(112);
+				bexpr(0);
+				setState(113);
+				match(RPAR);
+				}
+				break;
+			case 3:
+				{
+				setState(115);
+				aexpr(0);
+				setState(116);
+				relop();
+				setState(117);
+				aexpr(0);
+				}
+				break;
+			case 4:
+				{
+				setState(119);
+				match(FALSE);
+				}
+				break;
+			case 5:
+				{
+				setState(120);
+				match(TRUE);
+				}
+				break;
+			case 6:
+				{
+				setState(121);
+				match(LID);
+				}
+				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(105);
+			setState(132);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					{
-					_localctx = new BexprContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_bexpr);
-					setState(99);
-					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-					setState(100);
-					relop();
-					setState(101);
-					bexpr(3);
+					setState(130);
+					_errHandler.sync(this);
+					switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
+					case 1:
+						{
+						_localctx = new BexprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_bexpr);
+						setState(124);
+						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
+						setState(125);
+						match(AND);
+						setState(126);
+						bexpr(6);
+						}
+						break;
+					case 2:
+						{
+						_localctx = new BexprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_bexpr);
+						setState(127);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(128);
+						match(OR);
+						setState(129);
+						bexpr(5);
+						}
+						break;
 					}
 					} 
 				}
-				setState(107);
+				setState(134);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
 			}
 			}
 		}
@@ -865,8 +985,210 @@ public class KoordParser extends Parser {
 		return _localctx;
 	}
 
+	public static class AexprContext extends ParserRuleContext {
+		public TerminalNode LPAR() { return getToken(KoordParser.LPAR, 0); }
+		public List<AexprContext> aexpr() {
+			return getRuleContexts(AexprContext.class);
+		}
+		public AexprContext aexpr(int i) {
+			return getRuleContext(AexprContext.class,i);
+		}
+		public TerminalNode RPAR() { return getToken(KoordParser.RPAR, 0); }
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode TIMES() { return getToken(KoordParser.TIMES, 0); }
+		public TerminalNode BY() { return getToken(KoordParser.BY, 0); }
+		public TerminalNode PLUS() { return getToken(KoordParser.PLUS, 0); }
+		public TerminalNode MINUS() { return getToken(KoordParser.MINUS, 0); }
+		public AexprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_aexpr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof KoordListener ) ((KoordListener)listener).enterAexpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof KoordListener ) ((KoordListener)listener).exitAexpr(this);
+		}
+	}
+
+	public final AexprContext aexpr() throws RecognitionException {
+		return aexpr(0);
+	}
+
+	private AexprContext aexpr(int _p) throws RecognitionException {
+		ParserRuleContext _parentctx = _ctx;
+		int _parentState = getState();
+		AexprContext _localctx = new AexprContext(_ctx, _parentState);
+		AexprContext _prevctx = _localctx;
+		int _startState = 24;
+		enterRecursionRule(_localctx, 24, RULE_aexpr, _p);
+		int _la;
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(142);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case LPAR:
+				{
+				setState(136);
+				match(LPAR);
+				setState(137);
+				aexpr(0);
+				setState(138);
+				match(RPAR);
+				}
+				break;
+			case PID:
+			case INUM:
+			case FNUM:
+				{
+				setState(140);
+				number();
+				}
+				break;
+			case LID:
+				{
+				setState(141);
+				match(LID);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			_ctx.stop = _input.LT(-1);
+			setState(152);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					if ( _parseListeners!=null ) triggerExitRuleEvent();
+					_prevctx = _localctx;
+					{
+					setState(150);
+					_errHandler.sync(this);
+					switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
+					case 1:
+						{
+						_localctx = new AexprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_aexpr);
+						setState(144);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(145);
+						_la = _input.LA(1);
+						if ( !(_la==TIMES || _la==BY) ) {
+						_errHandler.recoverInline(this);
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(146);
+						aexpr(5);
+						}
+						break;
+					case 2:
+						{
+						_localctx = new AexprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_aexpr);
+						setState(147);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(148);
+						_la = _input.LA(1);
+						if ( !(_la==PLUS || _la==MINUS) ) {
+						_errHandler.recoverInline(this);
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(149);
+						aexpr(4);
+						}
+						break;
+					}
+					} 
+				}
+				setState(154);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			unrollRecursionContexts(_parentctx);
+		}
+		return _localctx;
+	}
+
+	public static class NumberContext extends ParserRuleContext {
+		public TerminalNode FNUM() { return getToken(KoordParser.FNUM, 0); }
+		public TerminalNode INUM() { return getToken(KoordParser.INUM, 0); }
+		public TerminalNode PID() { return getToken(KoordParser.PID, 0); }
+		public NumberContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_number; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof KoordListener ) ((KoordListener)listener).enterNumber(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof KoordListener ) ((KoordListener)listener).exitNumber(this);
+		}
+	}
+
+	public final NumberContext number() throws RecognitionException {
+		NumberContext _localctx = new NumberContext(_ctx, getState());
+		enterRule(_localctx, 26, RULE_number);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(155);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PID) | (1L << INUM) | (1L << FNUM))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static class RelopContext extends ParserRuleContext {
+		public TerminalNode LANGLE() { return getToken(KoordParser.LANGLE, 0); }
+		public TerminalNode RANGLE() { return getToken(KoordParser.RANGLE, 0); }
+		public TerminalNode GEQ() { return getToken(KoordParser.GEQ, 0); }
+		public TerminalNode LEQ() { return getToken(KoordParser.LEQ, 0); }
 		public TerminalNode EQ() { return getToken(KoordParser.EQ, 0); }
+		public TerminalNode NEQ() { return getToken(KoordParser.NEQ, 0); }
 		public RelopContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -883,12 +1205,21 @@ public class KoordParser extends Parser {
 
 	public final RelopContext relop() throws RecognitionException {
 		RelopContext _localctx = new RelopContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_relop);
+		enterRule(_localctx, 28, RULE_relop);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(108);
-			match(EQ);
+			setState(157);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LANGLE) | (1L << RANGLE) | (1L << EQ) | (1L << GEQ) | (1L << LEQ) | (1L << NEQ))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -906,44 +1237,75 @@ public class KoordParser extends Parser {
 		switch (ruleIndex) {
 		case 11:
 			return bexpr_sempred((BexprContext)_localctx, predIndex);
+		case 12:
+			return aexpr_sempred((AexprContext)_localctx, predIndex);
 		}
 		return true;
 	}
 	private boolean bexpr_sempred(BexprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 2);
+			return precpred(_ctx, 5);
+		case 1:
+			return precpred(_ctx, 4);
+		}
+		return true;
+	}
+	private boolean aexpr_sempred(AexprContext _localctx, int predIndex) {
+		switch (predIndex) {
+		case 2:
+			return precpred(_ctx, 4);
+		case 3:
+			return precpred(_ctx, 3);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3=q\4\2\t\2\4\3\t\3"+
-		"\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f"+
-		"\t\f\4\r\t\r\4\16\t\16\3\2\3\2\3\3\6\3 \n\3\r\3\16\3!\3\4\6\4%\n\4\r\4"+
-		"\16\4&\3\5\7\5*\n\5\f\5\16\5-\13\5\3\6\3\6\3\6\3\6\3\6\6\6\64\n\6\r\6"+
-		"\16\6\65\3\6\3\6\3\6\6\6;\n\6\r\6\16\6<\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3"+
-		"\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\6\tT\n\t\r\t\16"+
-		"\tU\3\t\3\t\3\n\3\n\3\n\3\13\3\13\3\13\3\13\3\f\3\f\3\r\3\r\3\r\3\r\3"+
-		"\r\3\r\3\r\7\rj\n\r\f\r\16\rm\13\r\3\16\3\16\3\16\2\3\30\17\2\4\6\b\n"+
-		"\f\16\20\22\24\26\30\32\2\3\4\2\3\7\t=\2j\2\34\3\2\2\2\4\37\3\2\2\2\6"+
-		"$\3\2\2\2\b+\3\2\2\2\n.\3\2\2\2\f>\3\2\2\2\16A\3\2\2\2\20Q\3\2\2\2\22"+
-		"Y\3\2\2\2\24\\\3\2\2\2\26`\3\2\2\2\30b\3\2\2\2\32n\3\2\2\2\34\35\t\2\2"+
-		"\2\35\3\3\2\2\2\36 \5\2\2\2\37\36\3\2\2\2 !\3\2\2\2!\37\3\2\2\2!\"\3\2"+
-		"\2\2\"\5\3\2\2\2#%\5\16\b\2$#\3\2\2\2%&\3\2\2\2&$\3\2\2\2&\'\3\2\2\2\'"+
-		"\7\3\2\2\2(*\5\n\6\2)(\3\2\2\2*-\3\2\2\2+)\3\2\2\2+,\3\2\2\2,\t\3\2\2"+
-		"\2-+\3\2\2\2./\7\5\2\2/\60\7\7\2\2\60\61\7-\2\2\61\63\7\"\2\2\62\64\5"+
-		"\f\7\2\63\62\3\2\2\2\64\65\3\2\2\2\65\63\3\2\2\2\65\66\3\2\2\2\66\67\3"+
-		"\2\2\2\678\7#\2\28:\7\37\2\29;\5\22\n\2:9\3\2\2\2;<\3\2\2\2<:\3\2\2\2"+
-		"<=\3\2\2\2=\13\3\2\2\2>?\7\6\2\2?@\7-\2\2@\r\3\2\2\2AB\7-\2\2BC\7\37\2"+
-		"\2CD\7:\2\2DE\7<\2\2EF\7\31\2\2FG\7\37\2\2GH\7\"\2\2HI\5\26\f\2IJ\7#\2"+
-		"\2JK\7:\2\2KL\7\32\2\2LM\7\37\2\2MN\7:\2\2NO\5\20\t\2OP\7=\2\2P\17\3\2"+
-		"\2\2QS\7<\2\2RT\5\22\n\2SR\3\2\2\2TU\3\2\2\2US\3\2\2\2UV\3\2\2\2VW\3\2"+
-		"\2\2WX\7=\2\2X\21\3\2\2\2YZ\5\24\13\2Z[\7:\2\2[\23\3\2\2\2\\]\7-\2\2]"+
-		"^\79\2\2^_\5\26\f\2_\25\3\2\2\2`a\5\30\r\2a\27\3\2\2\2bc\b\r\1\2cd\7-"+
-		"\2\2dk\3\2\2\2ef\f\4\2\2fg\5\32\16\2gh\5\30\r\5hj\3\2\2\2ie\3\2\2\2jm"+
-		"\3\2\2\2ki\3\2\2\2kl\3\2\2\2l\31\3\2\2\2mk\3\2\2\2no\7\65\2\2o\33\3\2"+
-		"\2\2\t!&+\65<Uk";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3=\u00a2\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
+		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\3\3\6\3$\n\3"+
+		"\r\3\16\3%\3\4\6\4)\n\4\r\4\16\4*\3\5\7\5.\n\5\f\5\16\5\61\13\5\3\6\3"+
+		"\6\3\6\3\6\3\6\6\68\n\6\r\6\16\69\3\6\3\6\3\6\6\6?\n\6\r\6\16\6@\3\7\3"+
+		"\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b"+
+		"\3\t\3\t\6\tX\n\t\r\t\16\tY\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\ne\n"+
+		"\n\3\13\3\13\3\13\3\13\3\f\3\f\5\fm\n\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3"+
+		"\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r}\n\r\3\r\3\r\3\r\3\r\3\r\3\r\7\r\u0085"+
+		"\n\r\f\r\16\r\u0088\13\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u0091"+
+		"\n\16\3\16\3\16\3\16\3\16\3\16\3\16\7\16\u0099\n\16\f\16\16\16\u009c\13"+
+		"\16\3\17\3\17\3\20\3\20\3\20\2\4\30\32\21\2\4\6\b\n\f\16\20\22\24\26\30"+
+		"\32\34\36\2\7\4\2\3\7\t=\3\2\63\64\3\2\61\62\4\2\35\35/\60\4\2()\658\2"+
+		"\u00a5\2 \3\2\2\2\4#\3\2\2\2\6(\3\2\2\2\b/\3\2\2\2\n\62\3\2\2\2\fB\3\2"+
+		"\2\2\16E\3\2\2\2\20U\3\2\2\2\22d\3\2\2\2\24f\3\2\2\2\26l\3\2\2\2\30|\3"+
+		"\2\2\2\32\u0090\3\2\2\2\34\u009d\3\2\2\2\36\u009f\3\2\2\2 !\t\2\2\2!\3"+
+		"\3\2\2\2\"$\5\2\2\2#\"\3\2\2\2$%\3\2\2\2%#\3\2\2\2%&\3\2\2\2&\5\3\2\2"+
+		"\2\')\5\16\b\2(\'\3\2\2\2)*\3\2\2\2*(\3\2\2\2*+\3\2\2\2+\7\3\2\2\2,.\5"+
+		"\n\6\2-,\3\2\2\2.\61\3\2\2\2/-\3\2\2\2/\60\3\2\2\2\60\t\3\2\2\2\61/\3"+
+		"\2\2\2\62\63\7\5\2\2\63\64\7\7\2\2\64\65\7-\2\2\65\67\7\"\2\2\668\5\f"+
+		"\7\2\67\66\3\2\2\289\3\2\2\29\67\3\2\2\29:\3\2\2\2:;\3\2\2\2;<\7#\2\2"+
+		"<>\7\37\2\2=?\5\22\n\2>=\3\2\2\2?@\3\2\2\2@>\3\2\2\2@A\3\2\2\2A\13\3\2"+
+		"\2\2BC\7\6\2\2CD\7-\2\2D\r\3\2\2\2EF\7-\2\2FG\7\37\2\2GH\7:\2\2HI\7<\2"+
+		"\2IJ\7\31\2\2JK\7\37\2\2KL\7\"\2\2LM\5\26\f\2MN\7#\2\2NO\7:\2\2OP\7\32"+
+		"\2\2PQ\7\37\2\2QR\7:\2\2RS\5\20\t\2ST\7=\2\2T\17\3\2\2\2UW\7<\2\2VX\5"+
+		"\22\n\2WV\3\2\2\2XY\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z[\3\2\2\2[\\\7=\2\2\\"+
+		"\21\3\2\2\2]^\5\24\13\2^_\7:\2\2_e\3\2\2\2`a\7\30\2\2ab\7\37\2\2bc\7:"+
+		"\2\2ce\5\20\t\2d]\3\2\2\2d`\3\2\2\2e\23\3\2\2\2fg\7-\2\2gh\79\2\2hi\5"+
+		"\26\f\2i\25\3\2\2\2jm\5\32\16\2km\5\30\r\2lj\3\2\2\2lk\3\2\2\2m\27\3\2"+
+		"\2\2no\b\r\1\2op\7,\2\2p}\5\30\r\nqr\7\"\2\2rs\5\30\r\2st\7#\2\2t}\3\2"+
+		"\2\2uv\5\32\16\2vw\5\36\20\2wx\5\32\16\2x}\3\2\2\2y}\7\34\2\2z}\7\33\2"+
+		"\2{}\7-\2\2|n\3\2\2\2|q\3\2\2\2|u\3\2\2\2|y\3\2\2\2|z\3\2\2\2|{\3\2\2"+
+		"\2}\u0086\3\2\2\2~\177\f\7\2\2\177\u0080\7*\2\2\u0080\u0085\5\30\r\b\u0081"+
+		"\u0082\f\6\2\2\u0082\u0083\7+\2\2\u0083\u0085\5\30\r\7\u0084~\3\2\2\2"+
+		"\u0084\u0081\3\2\2\2\u0085\u0088\3\2\2\2\u0086\u0084\3\2\2\2\u0086\u0087"+
+		"\3\2\2\2\u0087\31\3\2\2\2\u0088\u0086\3\2\2\2\u0089\u008a\b\16\1\2\u008a"+
+		"\u008b\7\"\2\2\u008b\u008c\5\32\16\2\u008c\u008d\7#\2\2\u008d\u0091\3"+
+		"\2\2\2\u008e\u0091\5\34\17\2\u008f\u0091\7-\2\2\u0090\u0089\3\2\2\2\u0090"+
+		"\u008e\3\2\2\2\u0090\u008f\3\2\2\2\u0091\u009a\3\2\2\2\u0092\u0093\f\6"+
+		"\2\2\u0093\u0094\t\3\2\2\u0094\u0099\5\32\16\7\u0095\u0096\f\5\2\2\u0096"+
+		"\u0097\t\4\2\2\u0097\u0099\5\32\16\6\u0098\u0092\3\2\2\2\u0098\u0095\3"+
+		"\2\2\2\u0099\u009c\3\2\2\2\u009a\u0098\3\2\2\2\u009a\u009b\3\2\2\2\u009b"+
+		"\33\3\2\2\2\u009c\u009a\3\2\2\2\u009d\u009e\t\5\2\2\u009e\35\3\2\2\2\u009f"+
+		"\u00a0\t\6\2\2\u00a0\37\3\2\2\2\20%*/9@Ydl|\u0084\u0086\u0090\u0098\u009a";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

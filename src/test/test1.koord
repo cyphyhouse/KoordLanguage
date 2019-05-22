@@ -1,0 +1,11 @@
+adding:
+  pre:(!added)
+  eff :
+    atomic: 
+      sum = sum + (pid * 2)  
+      numadded = numadded + 1
+      added = true 
+finalsum:
+  pre:(numadded == numBots)
+  eff :
+    finalsum = sum

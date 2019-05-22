@@ -127,6 +127,26 @@ public interface KoordListener extends ParseTreeListener {
 	 */
 	void exitBexpr(KoordParser.BexprContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link KoordParser#aexpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAexpr(KoordParser.AexprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#aexpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAexpr(KoordParser.AexprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KoordParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(KoordParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(KoordParser.NumberContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link KoordParser#relop}.
 	 * @param ctx the parse tree
 	 */

@@ -154,11 +154,32 @@ param : TYPE LID;
 event : LID COLON NEWLINE INDENT PRE COLON LPAR expr RPAR NEWLINE EFF COLON NEWLINE statementblock DEDENT;
 statementblock : INDENT stmt+ DEDENT;
 
-stmt : assign NEWLINE; //add later
+stmt : assign NEWLINE
+     | ATOMIC COLON NEWLINE statementblock; //add later
 
 assign : LID ASGN expr;
-expr : bexpr; //more
+expr : aexpr | bexpr; //more
 
-bexpr : bexpr relop bexpr | LID ; //more
-relop : EQ; //more
+bexpr : 
+      NOT bexpr
+      | LPAR bexpr RPAR
+      | aexpr relop aexpr
+      | bexpr AND bexpr
+      | bexpr OR bexpr
+      | FALSE
+      | TRUE
+      | LID;
+      
+
+
+
+aexpr :
+      LPAR aexpr RPAR
+      | aexpr (TIMES | BY)  aexpr
+      | aexpr (PLUS | MINUS) aexpr
+      | number
+      | LID;
+
+number : FNUM | INUM | PID;
+relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
