@@ -1,4 +1,7 @@
 // Generated from Koord.g4 by ANTLR 4.7.2
+
+  import java.util.*;             
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -105,8 +108,9 @@ public class KoordLexer extends Lexer {
 	 //this must be put on the top, and not after the grammar rules
 	                
 	  private int prevNumSpaces = 0;             
-	  public static final int INDENT_SIZE = 2;
-	  private java.util.Queue<Token> tokens = new java.util.LinkedList<>();
+	  private Queue<Token> tokens = new LinkedList<>();
+	  private Deque<Integer> spaces = new LinkedList<>();
+
 	  @Override
 	  public void emit(Token t) {
 	    super.setToken(t);
@@ -166,24 +170,23 @@ public class KoordLexer extends Lexer {
 		switch (actionIndex) {
 		case 0:
 
-			      int numSpaces = (int) getText().chars().filter(x -> x == ' ').count() / INDENT_SIZE;
+			      Integer numSpaces = (int) getText().chars().filter(x -> x == ' ').count();
 			      System.out.println("numspaces is " + numSpaces);
 			      System.out.println("prevnumspaces is " + prevNumSpaces);
 			      if (_input.LA(1) != '\n')            {
 			        emit(commonToken(NEWLINE, "newline"));
 
-			        if (numSpaces > prevNumSpaces) {
-			          for (int i = 0; i < numSpaces - prevNumSpaces; i++) {
+			        if (spaces.isEmpty() || numSpaces > spaces.peek()) {
 			            emit(commonToken(KoordParser.INDENT, "indent"));
+			            spaces.push(numSpaces);
 			            System.out.println("indent emitted");
-			          }
-			        } else if (prevNumSpaces > numSpaces ) {
-			          for (int i = 0; i < prevNumSpaces - numSpaces; i++) {
+			        } else if (spaces.peek() > numSpaces ) {
+			          while (!spaces.isEmpty() && spaces.peek() > numSpaces) {
+
 			            emit(commonToken(KoordParser.DEDENT, "dedent"));
-			            System.out.println("dedent emitted");
+			            spaces.pop();
 			          }
 			        } 
-			        prevNumSpaces = numSpaces;
 			      } else {
 			        skip();
 			      }
