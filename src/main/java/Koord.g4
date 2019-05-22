@@ -55,7 +55,7 @@ QUEUE:'queue';
 INIT:'init';
 INT:'int';
 FLOAT:'float';
-BOOL:'bool';
+BOOL:'boolean'; //bool or boolean?
 
 POS:'pos';
 IF:'if';
@@ -145,7 +145,7 @@ PLUS| MINUS| TIMES| BY| EQ| GEQ| LEQ| NEQ| ASGN | NEWLINE | SKIP_ | INDENT | DED
 top : lexemes+;
 
 
-program : /* defs  module+  decblock  init? */ event+;
+program : /* defs  module+  */ decblock*  /* init? */ event+;
 defs : funcdef* /* adtdef* */;
 funcdef : DEF FUN LID LPAR param+ RPAR COLON stmt+;
 //adtdef : DEF ADT LID COLON decl+;
@@ -182,4 +182,11 @@ aexpr :
 
 number : FNUM | INUM | PID;
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
+
+decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
+
+decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ LID (ASGN expr)? NEWLINE;
+
+
+
 

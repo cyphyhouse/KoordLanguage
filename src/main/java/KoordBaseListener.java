@@ -190,6 +190,30 @@ public class KoordBaseListener implements KoordListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelop(KoordParser.RelopContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDecblock(KoordParser.DecblockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDecblock(KoordParser.DecblockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDecl(KoordParser.DeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDecl(KoordParser.DeclContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
