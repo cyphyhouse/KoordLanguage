@@ -23,7 +23,10 @@ tokens { INDENT, DEDENT }
   private CommonToken commonToken(int type, String text) {
     int stop = this.getCharIndex() - 1;
     int start = text.isEmpty() ? stop : stop - text.length() + 1;
-    return new CommonToken(this._tokenFactorySourcePair, type, DEFAULT_TOKEN_CHANNEL, start, stop);
+    CommonToken t = new CommonToken(this._tokenFactorySourcePair, type, DEFAULT_TOKEN_CHANNEL, start, stop);
+    t.setText(text);
+    return t;
+
   }
   @Override
   public Token nextToken() {
@@ -112,16 +115,16 @@ NEWLINE
       System.out.println("numspaces is " + numSpaces);
       System.out.println("prevnumspaces is " + prevNumSpaces);
       if (_input.LA(1) != '\n')            {
-        emit(commonToken(NEWLINE, "newline"));
+        emit(commonToken(NEWLINE, "<newline>"));
 
         if (spaces.isEmpty() || numSpaces > spaces.peek()) {
-            emit(commonToken(KoordParser.INDENT, "indent"));
+            emit(commonToken(KoordParser.INDENT, "<indent>"));
             spaces.push(numSpaces);
             System.out.println("indent emitted");
         } else if (spaces.peek() > numSpaces ) {
           while (!spaces.isEmpty() && spaces.peek() > numSpaces) {
 
-            emit(commonToken(KoordParser.DEDENT, "dedent"));
+            emit(commonToken(KoordParser.DEDENT, "<dedent>"));
             spaces.pop();
           }
         } 
