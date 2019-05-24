@@ -1,4 +1,4 @@
-// Generated from Koord.g4 by ANTLR 4.7.2
+// Generated from /Users/johnwang/Desktop/koord/src/main/java/Koord.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -97,6 +97,16 @@ public interface KoordListener extends ParseTreeListener {
 	 */
 	void exitStmt(KoordParser.StmtContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link KoordParser#funccall}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunccall(KoordParser.FunccallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#funccall}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunccall(KoordParser.FunccallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link KoordParser#assign}.
 	 * @param ctx the parse tree
 	 */
@@ -176,4 +186,44 @@ public interface KoordListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDecl(KoordParser.DeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KoordParser#module}.
+	 * @param ctx the parse tree
+	 */
+	void enterModule(KoordParser.ModuleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#module}.
+	 * @param ctx the parse tree
+	 */
+	void exitModule(KoordParser.ModuleContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KoordParser#actuatordecls}.
+	 * @param ctx the parse tree
+	 */
+	void enterActuatordecls(KoordParser.ActuatordeclsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#actuatordecls}.
+	 * @param ctx the parse tree
+	 */
+	void exitActuatordecls(KoordParser.ActuatordeclsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KoordParser#sensordecls}.
+	 * @param ctx the parse tree
+	 */
+	void enterSensordecls(KoordParser.SensordeclsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#sensordecls}.
+	 * @param ctx the parse tree
+	 */
+	void exitSensordecls(KoordParser.SensordeclsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KoordParser#init}.
+	 * @param ctx the parse tree
+	 */
+	void enterInit(KoordParser.InitContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#init}.
+	 * @param ctx the parse tree
+	 */
+	void exitInit(KoordParser.InitContext ctx);
 }

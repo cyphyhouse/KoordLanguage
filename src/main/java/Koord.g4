@@ -26,14 +26,18 @@ tokens { INDENT, DEDENT }
     CommonToken t = new CommonToken(this._tokenFactorySourcePair, type, DEFAULT_TOKEN_CHANNEL, start, stop);
     t.setText(text);
     return t;
-
   }
   @Override
   public Token nextToken() {
     if (_input.LA(1) == EOF) {
-      for (int i = 0; i < prevNumSpaces; i++) {
+        if (!spaces.isEmpty()) {
+
+        emit(commonToken(KoordParser.NEWLINE, "<newline>"));
+      while (!spaces.isEmpty()) {
+        spaces.poll();
         emit(commonToken(KoordParser.DEDENT, "dedent"));
       }
+        }
     }
     Token next = super.nextToken();
     return tokens.isEmpty() ? next : tokens.poll();
@@ -42,6 +46,7 @@ tokens { INDENT, DEDENT }
 
 AGENT: 'agent';
 MODULE:'module';
+USING : 'using';
 
 DEF: 'def';
 TYPE: 'type';
@@ -65,7 +70,9 @@ INT:'int';
 FLOAT:'float';
 BOOL:'boolean'; //bool or boolean?
 
+
 POS:'pos';
+INPUTMAP : 'inputMap';
 IF:'if';
 ELSE:'else';
 ATOMIC:'atomic';
@@ -107,20 +114,18 @@ NEQ : '!=';
 ASGN : '=';
 
 
+
 NEWLINE
  :  '\n' WS?
   
    {
       Integer numSpaces = (int) getText().chars().filter(x -> x == ' ').count();
-      System.out.println("numspaces is " + numSpaces);
-      System.out.println("prevnumspaces is " + prevNumSpaces);
       if (_input.LA(1) != '\n')            {
         emit(commonToken(NEWLINE, "<newline>"));
 
         if (spaces.isEmpty() || numSpaces > spaces.peek()) {
             emit(commonToken(KoordParser.INDENT, "<indent>"));
             spaces.push(numSpaces);
-            System.out.println("indent emitted");
         } else if (spaces.peek() > numSpaces ) {
           while (!spaces.isEmpty() && spaces.peek() > numSpaces) {
 
@@ -152,17 +157,21 @@ PLUS| MINUS| TIMES| BY| EQ| GEQ| LEQ| NEQ| ASGN | NEWLINE | SKIP_ | INDENT | DED
 top : lexemes+;
 
 
-program : /* defs  module+  */ decblock*  /* init? */ event+;
+program :  defs  module*   decblock*   init?  event+ EOF;
 defs : funcdef* /* adtdef* */;
-funcdef : DEF FUN LID LPAR param+ RPAR COLON stmt+;
+funcdef : DEF FUN LID LPAR param* RPAR COLON NEWLINE statementblock;
 //adtdef : DEF ADT LID COLON decl+;
 param : TYPE LID;
 
-event : LID COLON NEWLINE INDENT PRE COLON LPAR expr RPAR NEWLINE EFF COLON NEWLINE statementblock DEDENT;
+event : LID COLON NEWLINE INDENT PRE COLON expr NEWLINE EFF COLON NEWLINE statementblock DEDENT;
 statementblock : INDENT stmt+ DEDENT;
 
 stmt : assign NEWLINE
+     | funccall NEWLINE
+     | IF expr COLON NEWLINE statementblock (ELSE COLON NEWLINE statementblock)?
      | ATOMIC COLON NEWLINE statementblock; //add later
+
+funccall : LID LPAR (expr (COMMA expr)*)? RPAR;
 
 assign : LID ASGN expr;
 expr : aexpr | bexpr; //more
@@ -184,6 +193,7 @@ aexpr :
       LPAR aexpr RPAR
       | aexpr (TIMES | BY)  aexpr
       | aexpr (PLUS | MINUS) aexpr
+      | funccall
       | number
       | LID;
 
@@ -194,6 +204,12 @@ decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
 decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ LID (ASGN expr)? NEWLINE;
 
+module : USING MODULE CID COLON NEWLINE INDENT actuatordecls sensordecls DEDENT;
 
+actuatordecls : ACTUATORS COLON NEWLINE INDENT decl+ DEDENT;
+
+sensordecls : SENSORS COLON NEWLINE INDENT decl+ DEDENT;
+
+init : INIT COLON NEWLINE statementblock;
 
 
