@@ -9,7 +9,7 @@ import java.util.BitSet;
 public class BadFileTest {
     /**
      *
-     * A simple listener that only checks if an error was emitted
+     * A simple listener that only checks if a syntax error was emitted
      */
     class SyntaxChecker implements ANTLRErrorListener {
         public boolean isValid = true;
