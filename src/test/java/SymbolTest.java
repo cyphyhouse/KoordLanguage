@@ -17,7 +17,7 @@ public class SymbolTest {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-        List<String> expected = Arrays.asList(new String[] {"added", "finalsum", "numBots", "numadded", "sum" });
+        List<String> expected = Arrays.asList(new String[] {"added", "finalsum", "numadded", "sum" });
 
 
         assert(expected.equals(actual) );

@@ -83,7 +83,8 @@ TRUE:'true';
 FALSE:'false';
 
 PID:'pid';
-NUMAGENTS:'numAgents';
+NUMAGENTS:'numBots'; //num agents or numbots?
+
 
 COLON : ':';
 COMMA : ',';
@@ -195,6 +196,7 @@ aexpr :
       | aexpr (PLUS | MINUS) aexpr
       | funccall
       | number
+      | NUMAGENTS
       | LID;
 
 number : FNUM | INUM | PID;
