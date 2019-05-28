@@ -16,7 +16,7 @@ tokens { INDENT, DEDENT }
   @Override
   public void emit(Token t) {
     super.setToken(t);
-    System.out.println("added token" + t.toString());
+    //System.out.println("added token" + t.toString());
     tokens.offer(t);
   }
 
@@ -105,8 +105,8 @@ fragment LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
 fragment CID : [A-Z][a-zA-Z0-9]*;
 MODULENAME : CID;
 VARNAME : LID | (CID '.' LID);
-INUM : [-]?[0-9]+;
-FNUM : [-]?[0-9]+([.][0-9]+)?;
+INUM : [0-9]+;
+FNUM : [0-9]+([.][0-9]+)?;
 PLUS : '+';
 MINUS : '-';
 TIMES : '*';
@@ -197,6 +197,7 @@ bexpr :
 
 aexpr :
       LPAR aexpr RPAR
+      | MINUS aexpr
       | aexpr (TIMES | BY)  aexpr
       | aexpr (PLUS | MINUS) aexpr
       | funccall
