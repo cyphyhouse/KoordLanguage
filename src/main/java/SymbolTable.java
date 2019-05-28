@@ -17,12 +17,12 @@ public class SymbolTable {
         walker.walk(new KoordBaseListener() {
             @Override
             public void enterDecl(KoordParser.DeclContext ctx) {
-                vars.add(ctx.LID().getText());
+                vars.add(ctx.VARNAME().getText());
             }
 
             @Override
             public void enterBexpr(KoordParser.BexprContext ctx) {
-                TerminalNode variable = ctx.LID();
+                TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
 
                     if (!vars.contains(variable.getText())) {
@@ -33,7 +33,7 @@ public class SymbolTable {
 
             @Override
             public void enterAexpr(KoordParser.AexprContext ctx) {
-                TerminalNode variable = ctx.LID();
+                TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
                     if (!vars.contains(variable.getText())) {
                         unresolvedSymbols.add(variable.getText());
@@ -43,7 +43,7 @@ public class SymbolTable {
 
             @Override
             public void enterAssign(KoordParser.AssignContext ctx) {
-                TerminalNode variable = ctx.LID();
+                TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
                     if (!vars.contains(variable.getText())) {
                         unresolvedSymbols.add(variable.getText());

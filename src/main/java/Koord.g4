@@ -100,7 +100,8 @@ RANGLE : '>';
 AND : '&&';
 OR : '||';
 NOT : '!';
-LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
+fragment LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
+VARNAME : LID | (LID '.' LID);
 CID : [A-Z][a-zA-Z0-9]*;
 INUM : [-]?[0-9]+;
 FNUM : [-]?[0-9]+([.][0-9]+)?;
@@ -151,7 +152,7 @@ fragment WS : [ \t]+ ; //should be parsed ?
 lexemes : AGENT|MODULE| DEF |TYPE |FUN | ACTUATORS|SENSORS|
 ALLWRITE|ALLREAD|LOCAL| LIST|MAP|QUEUE| INIT|INT|FLOAT|BOOL| POS|IF|ELSE|ATOMIC|
 PRE|EFF|TRUE|FALSE| PID|NUMAGENTS | COLON| COMMA| SEMICOLON| LPAR| RPAR| LBRACE|
-RBRACE| LCURLY| RCURLY| LANGLE| RANGLE| AND| OR| NOT| LID| CID| INUM| FNUM|
+RBRACE| LCURLY| RCURLY| LANGLE| RANGLE| AND| OR| NOT| VARNAME| CID| INUM| FNUM|
 PLUS| MINUS| TIMES| BY| EQ| GEQ| LEQ| NEQ| ASGN | NEWLINE | SKIP_ | INDENT | DEDENT;
 
 
@@ -160,11 +161,11 @@ top : lexemes+;
 
 program :  defs  module*   decblock*   init?  event+ EOF;
 defs : funcdef* /* adtdef* */;
-funcdef : DEF FUN LID LPAR param* RPAR COLON NEWLINE statementblock;
-//adtdef : DEF ADT LID COLON decl+;
-param : TYPE LID;
+funcdef : DEF FUN VARNAME LPAR param* RPAR COLON NEWLINE statementblock;
+//adtdef : DEF ADT VARNAME COLON decl+;
+param : TYPE VARNAME;
 
-event : LID COLON NEWLINE INDENT PRE COLON expr NEWLINE EFF COLON NEWLINE statementblock DEDENT;
+event : VARNAME COLON NEWLINE INDENT PRE COLON expr NEWLINE EFF COLON NEWLINE statementblock DEDENT;
 statementblock : INDENT stmt+ DEDENT;
 
 stmt : assign NEWLINE
@@ -172,9 +173,9 @@ stmt : assign NEWLINE
      | IF expr COLON NEWLINE statementblock (ELSE COLON NEWLINE statementblock)?
      | ATOMIC COLON NEWLINE statementblock; //add later
 
-funccall : LID LPAR (expr (COMMA expr)*)? RPAR;
+funccall : VARNAME LPAR (expr (COMMA expr)*)? RPAR;
 
-assign : LID ASGN expr;
+assign : VARNAME ASGN expr;
 expr : aexpr | bexpr; //more
 
 bexpr : 
@@ -185,7 +186,7 @@ bexpr :
       | bexpr OR bexpr
       | FALSE
       | TRUE
-      | LID;
+      | VARNAME;
       
 
 
@@ -197,14 +198,14 @@ aexpr :
       | funccall
       | number
       | NUMAGENTS
-      | LID;
+      | VARNAME;
 
 number : FNUM | INUM | PID;
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
 decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ LID (ASGN expr)? NEWLINE;
+decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ VARNAME (ASGN expr)? NEWLINE;
 
 module : USING MODULE CID COLON NEWLINE INDENT actuatordecls sensordecls DEDENT;
 

@@ -21,7 +21,7 @@ public class KoordParser extends Parser {
 		INIT=16, INT=17, FLOAT=18, BOOL=19, POS=20, INPUTMAP=21, IF=22, ELSE=23, 
 		ATOMIC=24, PRE=25, EFF=26, TRUE=27, FALSE=28, PID=29, NUMAGENTS=30, COLON=31, 
 		COMMA=32, SEMICOLON=33, LPAR=34, RPAR=35, LBRACE=36, RBRACE=37, LCURLY=38, 
-		RCURLY=39, LANGLE=40, RANGLE=41, AND=42, OR=43, NOT=44, LID=45, CID=46, 
+		RCURLY=39, LANGLE=40, RANGLE=41, AND=42, OR=43, NOT=44, VARNAME=45, CID=46, 
 		INUM=47, FNUM=48, PLUS=49, MINUS=50, TIMES=51, BY=52, EQ=53, GEQ=54, LEQ=55, 
 		NEQ=56, ASGN=57, NEWLINE=58, SKIP_=59, INDENT=60, DEDENT=61;
 	public static final int
@@ -60,9 +60,9 @@ public class KoordParser extends Parser {
 			"INT", "FLOAT", "BOOL", "POS", "INPUTMAP", "IF", "ELSE", "ATOMIC", "PRE", 
 			"EFF", "TRUE", "FALSE", "PID", "NUMAGENTS", "COLON", "COMMA", "SEMICOLON", 
 			"LPAR", "RPAR", "LBRACE", "RBRACE", "LCURLY", "RCURLY", "LANGLE", "RANGLE", 
-			"AND", "OR", "NOT", "LID", "CID", "INUM", "FNUM", "PLUS", "MINUS", "TIMES", 
-			"BY", "EQ", "GEQ", "LEQ", "NEQ", "ASGN", "NEWLINE", "SKIP_", "INDENT", 
-			"DEDENT"
+			"AND", "OR", "NOT", "VARNAME", "CID", "INUM", "FNUM", "PLUS", "MINUS", 
+			"TIMES", "BY", "EQ", "GEQ", "LEQ", "NEQ", "ASGN", "NEWLINE", "SKIP_", 
+			"INDENT", "DEDENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -158,7 +158,7 @@ public class KoordParser extends Parser {
 		public TerminalNode AND() { return getToken(KoordParser.AND, 0); }
 		public TerminalNode OR() { return getToken(KoordParser.OR, 0); }
 		public TerminalNode NOT() { return getToken(KoordParser.NOT, 0); }
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public TerminalNode CID() { return getToken(KoordParser.CID, 0); }
 		public TerminalNode INUM() { return getToken(KoordParser.INUM, 0); }
 		public TerminalNode FNUM() { return getToken(KoordParser.FNUM, 0); }
@@ -198,7 +198,7 @@ public class KoordParser extends Parser {
 			{
 			setState(44);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AGENT) | (1L << MODULE) | (1L << DEF) | (1L << TYPE) | (1L << FUN) | (1L << ACTUATORS) | (1L << SENSORS) | (1L << ALLWRITE) | (1L << ALLREAD) | (1L << LOCAL) | (1L << LIST) | (1L << MAP) | (1L << QUEUE) | (1L << INIT) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS) | (1L << IF) | (1L << ELSE) | (1L << ATOMIC) | (1L << PRE) | (1L << EFF) | (1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << COLON) | (1L << COMMA) | (1L << SEMICOLON) | (1L << LPAR) | (1L << RPAR) | (1L << LBRACE) | (1L << RBRACE) | (1L << LCURLY) | (1L << RCURLY) | (1L << LANGLE) | (1L << RANGLE) | (1L << AND) | (1L << OR) | (1L << NOT) | (1L << LID) | (1L << CID) | (1L << INUM) | (1L << FNUM) | (1L << PLUS) | (1L << MINUS) | (1L << TIMES) | (1L << BY) | (1L << EQ) | (1L << GEQ) | (1L << LEQ) | (1L << NEQ) | (1L << ASGN) | (1L << NEWLINE) | (1L << SKIP_) | (1L << INDENT) | (1L << DEDENT))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AGENT) | (1L << MODULE) | (1L << DEF) | (1L << TYPE) | (1L << FUN) | (1L << ACTUATORS) | (1L << SENSORS) | (1L << ALLWRITE) | (1L << ALLREAD) | (1L << LOCAL) | (1L << LIST) | (1L << MAP) | (1L << QUEUE) | (1L << INIT) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS) | (1L << IF) | (1L << ELSE) | (1L << ATOMIC) | (1L << PRE) | (1L << EFF) | (1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << COLON) | (1L << COMMA) | (1L << SEMICOLON) | (1L << LPAR) | (1L << RPAR) | (1L << LBRACE) | (1L << RBRACE) | (1L << LCURLY) | (1L << RCURLY) | (1L << LANGLE) | (1L << RANGLE) | (1L << AND) | (1L << OR) | (1L << NOT) | (1L << VARNAME) | (1L << CID) | (1L << INUM) | (1L << FNUM) | (1L << PLUS) | (1L << MINUS) | (1L << TIMES) | (1L << BY) | (1L << EQ) | (1L << GEQ) | (1L << LEQ) | (1L << NEQ) | (1L << ASGN) | (1L << NEWLINE) | (1L << SKIP_) | (1L << INDENT) | (1L << DEDENT))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -260,7 +260,7 @@ public class KoordParser extends Parser {
 				setState(49); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AGENT) | (1L << MODULE) | (1L << DEF) | (1L << TYPE) | (1L << FUN) | (1L << ACTUATORS) | (1L << SENSORS) | (1L << ALLWRITE) | (1L << ALLREAD) | (1L << LOCAL) | (1L << LIST) | (1L << MAP) | (1L << QUEUE) | (1L << INIT) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS) | (1L << IF) | (1L << ELSE) | (1L << ATOMIC) | (1L << PRE) | (1L << EFF) | (1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << COLON) | (1L << COMMA) | (1L << SEMICOLON) | (1L << LPAR) | (1L << RPAR) | (1L << LBRACE) | (1L << RBRACE) | (1L << LCURLY) | (1L << RCURLY) | (1L << LANGLE) | (1L << RANGLE) | (1L << AND) | (1L << OR) | (1L << NOT) | (1L << LID) | (1L << CID) | (1L << INUM) | (1L << FNUM) | (1L << PLUS) | (1L << MINUS) | (1L << TIMES) | (1L << BY) | (1L << EQ) | (1L << GEQ) | (1L << LEQ) | (1L << NEQ) | (1L << ASGN) | (1L << NEWLINE) | (1L << SKIP_) | (1L << INDENT) | (1L << DEDENT))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AGENT) | (1L << MODULE) | (1L << DEF) | (1L << TYPE) | (1L << FUN) | (1L << ACTUATORS) | (1L << SENSORS) | (1L << ALLWRITE) | (1L << ALLREAD) | (1L << LOCAL) | (1L << LIST) | (1L << MAP) | (1L << QUEUE) | (1L << INIT) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS) | (1L << IF) | (1L << ELSE) | (1L << ATOMIC) | (1L << PRE) | (1L << EFF) | (1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << COLON) | (1L << COMMA) | (1L << SEMICOLON) | (1L << LPAR) | (1L << RPAR) | (1L << LBRACE) | (1L << RBRACE) | (1L << LCURLY) | (1L << RCURLY) | (1L << LANGLE) | (1L << RANGLE) | (1L << AND) | (1L << OR) | (1L << NOT) | (1L << VARNAME) | (1L << CID) | (1L << INUM) | (1L << FNUM) | (1L << PLUS) | (1L << MINUS) | (1L << TIMES) | (1L << BY) | (1L << EQ) | (1L << GEQ) | (1L << LEQ) | (1L << NEQ) | (1L << ASGN) | (1L << NEWLINE) | (1L << SKIP_) | (1L << INDENT) | (1L << DEDENT))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -374,7 +374,7 @@ public class KoordParser extends Parser {
 				setState(70); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==LID );
+			} while ( _la==VARNAME );
 			setState(72);
 			match(EOF);
 			}
@@ -448,7 +448,7 @@ public class KoordParser extends Parser {
 	public static class FuncdefContext extends ParserRuleContext {
 		public TerminalNode DEF() { return getToken(KoordParser.DEF, 0); }
 		public TerminalNode FUN() { return getToken(KoordParser.FUN, 0); }
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public TerminalNode LPAR() { return getToken(KoordParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(KoordParser.RPAR, 0); }
 		public TerminalNode COLON() { return getToken(KoordParser.COLON, 0); }
@@ -488,7 +488,7 @@ public class KoordParser extends Parser {
 			setState(81);
 			match(FUN);
 			setState(82);
-			match(LID);
+			match(VARNAME);
 			setState(83);
 			match(LPAR);
 			setState(87);
@@ -528,7 +528,7 @@ public class KoordParser extends Parser {
 
 	public static class ParamContext extends ParserRuleContext {
 		public TerminalNode TYPE() { return getToken(KoordParser.TYPE, 0); }
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public ParamContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -552,7 +552,7 @@ public class KoordParser extends Parser {
 			setState(95);
 			match(TYPE);
 			setState(96);
-			match(LID);
+			match(VARNAME);
 			}
 		}
 		catch (RecognitionException re) {
@@ -567,7 +567,7 @@ public class KoordParser extends Parser {
 	}
 
 	public static class EventContext extends ParserRuleContext {
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public List<TerminalNode> COLON() { return getTokens(KoordParser.COLON); }
 		public TerminalNode COLON(int i) {
 			return getToken(KoordParser.COLON, i);
@@ -607,7 +607,7 @@ public class KoordParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(98);
-			match(LID);
+			match(VARNAME);
 			setState(99);
 			match(COLON);
 			setState(100);
@@ -690,7 +690,7 @@ public class KoordParser extends Parser {
 				setState(116); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << ATOMIC) | (1L << LID))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << ATOMIC) | (1L << VARNAME))) != 0) );
 			setState(118);
 			match(DEDENT);
 			}
@@ -831,7 +831,7 @@ public class KoordParser extends Parser {
 	}
 
 	public static class FunccallContext extends ParserRuleContext {
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public TerminalNode LPAR() { return getToken(KoordParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(KoordParser.RPAR, 0); }
 		public List<ExprContext> expr() {
@@ -866,13 +866,13 @@ public class KoordParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(143);
-			match(LID);
+			match(VARNAME);
 			setState(144);
 			match(LPAR);
 			setState(153);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << LPAR) | (1L << NOT) | (1L << LID) | (1L << INUM) | (1L << FNUM))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TRUE) | (1L << FALSE) | (1L << PID) | (1L << NUMAGENTS) | (1L << LPAR) | (1L << NOT) | (1L << VARNAME) | (1L << INUM) | (1L << FNUM))) != 0)) {
 				{
 				setState(145);
 				expr();
@@ -911,7 +911,7 @@ public class KoordParser extends Parser {
 	}
 
 	public static class AssignContext extends ParserRuleContext {
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public TerminalNode ASGN() { return getToken(KoordParser.ASGN, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
@@ -937,7 +937,7 @@ public class KoordParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(157);
-			match(LID);
+			match(VARNAME);
 			setState(158);
 			match(ASGN);
 			setState(159);
@@ -1031,7 +1031,7 @@ public class KoordParser extends Parser {
 		}
 		public TerminalNode FALSE() { return getToken(KoordParser.FALSE, 0); }
 		public TerminalNode TRUE() { return getToken(KoordParser.TRUE, 0); }
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public TerminalNode AND() { return getToken(KoordParser.AND, 0); }
 		public TerminalNode OR() { return getToken(KoordParser.OR, 0); }
 		public BexprContext(ParserRuleContext parent, int invokingState) {
@@ -1109,7 +1109,7 @@ public class KoordParser extends Parser {
 			case 6:
 				{
 				setState(178);
-				match(LID);
+				match(VARNAME);
 				}
 				break;
 			}
@@ -1185,7 +1185,7 @@ public class KoordParser extends Parser {
 			return getRuleContext(NumberContext.class,0);
 		}
 		public TerminalNode NUMAGENTS() { return getToken(KoordParser.NUMAGENTS, 0); }
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public TerminalNode TIMES() { return getToken(KoordParser.TIMES, 0); }
 		public TerminalNode BY() { return getToken(KoordParser.BY, 0); }
 		public TerminalNode PLUS() { return getToken(KoordParser.PLUS, 0); }
@@ -1254,7 +1254,7 @@ public class KoordParser extends Parser {
 			case 5:
 				{
 				setState(200);
-				match(LID);
+				match(VARNAME);
 				}
 				break;
 			}
@@ -1510,7 +1510,7 @@ public class KoordParser extends Parser {
 	}
 
 	public static class DeclContext extends ParserRuleContext {
-		public TerminalNode LID() { return getToken(KoordParser.LID, 0); }
+		public TerminalNode VARNAME() { return getToken(KoordParser.VARNAME, 0); }
 		public TerminalNode NEWLINE() { return getToken(KoordParser.NEWLINE, 0); }
 		public TerminalNode INT() { return getToken(KoordParser.INT, 0); }
 		public TerminalNode BOOL() { return getToken(KoordParser.BOOL, 0); }
@@ -1553,7 +1553,7 @@ public class KoordParser extends Parser {
 				consume();
 			}
 			setState(230);
-			match(LID);
+			match(VARNAME);
 			setState(233);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
