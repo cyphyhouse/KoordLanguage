@@ -1,0 +1,17 @@
+using module Motion:
+  sensors:
+    pos position
+  actuators:
+    pos target
+
+allread:
+  pos x
+
+init:
+   x[pid] = Motion.position
+
+update:
+   pre:(true)
+   eff:
+      if (pid != 0 or pid != numBots):
+        Motion.target = midpoint(x[pid+1],x[pid - 1])

@@ -135,6 +135,18 @@ public class KoordBaseListener implements KoordListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArglist(KoordParser.ArglistContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArglist(KoordParser.ArglistContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAssign(KoordParser.AssignContext ctx) { }
 	/**
 	 * {@inheritDoc}

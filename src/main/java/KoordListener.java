@@ -107,6 +107,16 @@ public interface KoordListener extends ParseTreeListener {
 	 */
 	void exitFunccall(KoordParser.FunccallContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link KoordParser#arglist}.
+	 * @param ctx the parse tree
+	 */
+	void enterArglist(KoordParser.ArglistContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#arglist}.
+	 * @param ctx the parse tree
+	 */
+	void exitArglist(KoordParser.ArglistContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link KoordParser#assign}.
 	 * @param ctx the parse tree
 	 */

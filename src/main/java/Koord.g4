@@ -97,12 +97,14 @@ LCURLY : '{';
 RCURLY : '}';
 LANGLE : '<';
 RANGLE : '>';
-AND : '&&';
-OR : '||';
+AND : '&&' | 'and';
+OR : '||' | 'or';
 NOT : '!';
 fragment LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
-VARNAME : LID | (LID '.' LID);
-CID : [A-Z][a-zA-Z0-9]*;
+
+fragment CID : [A-Z][a-zA-Z0-9]*;
+MODULENAME : CID;
+VARNAME : LID | (CID '.' LID);
 INUM : [-]?[0-9]+;
 FNUM : [-]?[0-9]+([.][0-9]+)?;
 PLUS : '+';
@@ -173,9 +175,11 @@ stmt : assign NEWLINE
      | IF expr COLON NEWLINE statementblock (ELSE COLON NEWLINE statementblock)?
      | ATOMIC COLON NEWLINE statementblock; //add later
 
-funccall : VARNAME LPAR (expr (COMMA expr)*)? RPAR;
+funccall : VARNAME LPAR (arglist)? RPAR;
 
-assign : VARNAME ASGN expr;
+arglist : expr (COMMA expr)*;
+
+assign : VARNAME (LBRACE aexpr RBRACE)? ASGN expr; //assume these can't be nested
 expr : aexpr | bexpr; //more
 
 bexpr : 
@@ -197,8 +201,11 @@ aexpr :
       | aexpr (PLUS | MINUS) aexpr
       | funccall
       | number
+      | VARNAME LBRACE aexpr RBRACE
       | NUMAGENTS
       | VARNAME;
+
+
 
 number : FNUM | INUM | PID;
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
@@ -207,7 +214,7 @@ decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
 decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ VARNAME (ASGN expr)? NEWLINE;
 
-module : USING MODULE CID COLON NEWLINE INDENT actuatordecls sensordecls DEDENT;
+module : USING MODULE MODULENAME COLON NEWLINE INDENT (actuatordecls | sensordecls)+ DEDENT;
 
 actuatordecls : ACTUATORS COLON NEWLINE INDENT decl+ DEDENT;
 

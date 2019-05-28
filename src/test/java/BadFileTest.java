@@ -76,4 +76,10 @@ public class BadFileTest {
         SyntaxChecker checker = new SyntaxChecker();
         assert(checker.testFile("src/test/resources/test3.koord"));
     }
+
+    @Test
+    public void lineform_mod() throws IOException{
+        SyntaxChecker checker = new SyntaxChecker();
+        assert(checker.testFile("src/test/resources/lineform_mod.koord"));
+    }
 }
