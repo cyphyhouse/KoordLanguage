@@ -35,11 +35,11 @@ public class ParseFileTest {
     @Test
     public void lineform_mod() throws IOException{
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/lineform_mod.koord"));
+        assert(checker.testFile("src/test/resources/lineform.koord"));
     }
     @Test
     public void shapeform_mod() throws IOException{
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/shapeform_mod.koord"));
+        assert(checker.testFile("src/test/resources/shapeform.koord"));
     }
 }

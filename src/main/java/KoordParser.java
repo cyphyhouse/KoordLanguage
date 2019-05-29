@@ -1666,23 +1666,16 @@ public class KoordParser extends Parser {
 
 	public static class ModuleContext extends ParserRuleContext {
 		public TerminalNode USING() { return getToken(KoordParser.USING, 0); }
-		public TerminalNode MODULE() { return getToken(KoordParser.MODULE, 0); }
 		public TerminalNode MODULENAME() { return getToken(KoordParser.MODULENAME, 0); }
 		public TerminalNode COLON() { return getToken(KoordParser.COLON, 0); }
 		public TerminalNode NEWLINE() { return getToken(KoordParser.NEWLINE, 0); }
 		public TerminalNode INDENT() { return getToken(KoordParser.INDENT, 0); }
 		public TerminalNode DEDENT() { return getToken(KoordParser.DEDENT, 0); }
-		public List<ActuatordeclsContext> actuatordecls() {
-			return getRuleContexts(ActuatordeclsContext.class);
+		public ActuatordeclsContext actuatordecls() {
+			return getRuleContext(ActuatordeclsContext.class,0);
 		}
-		public ActuatordeclsContext actuatordecls(int i) {
-			return getRuleContext(ActuatordeclsContext.class,i);
-		}
-		public List<SensordeclsContext> sensordecls() {
-			return getRuleContexts(SensordeclsContext.class);
-		}
-		public SensordeclsContext sensordecls(int i) {
-			return getRuleContext(SensordeclsContext.class,i);
+		public SensordeclsContext sensordecls() {
+			return getRuleContext(SensordeclsContext.class,0);
 		}
 		public ModuleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1701,51 +1694,42 @@ public class KoordParser extends Parser {
 	public final ModuleContext module() throws RecognitionException {
 		ModuleContext _localctx = new ModuleContext(_ctx, getState());
 		enterRule(_localctx, 38, RULE_module);
-		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(253);
 			match(USING);
 			setState(254);
-			match(MODULE);
-			setState(255);
 			match(MODULENAME);
-			setState(256);
+			setState(255);
 			match(COLON);
-			setState(257);
+			setState(256);
 			match(NEWLINE);
-			setState(258);
+			setState(257);
 			match(INDENT);
-			setState(261); 
+			setState(264);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
+			switch (_input.LA(1)) {
+			case ACTUATORS:
+				{
+				setState(258);
+				actuatordecls();
+				setState(259);
+				sensordecls();
+				}
+				break;
+			case SENSORS:
 				{
 				setState(261);
-				_errHandler.sync(this);
-				switch (_input.LA(1)) {
-				case ACTUATORS:
-					{
-					setState(259);
-					actuatordecls();
-					}
-					break;
-				case SENSORS:
-					{
-					setState(260);
-					sensordecls();
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				sensordecls();
+				setState(262);
+				actuatordecls();
 				}
-				}
-				setState(263); 
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-			} while ( _la==ACTUATORS || _la==SENSORS );
-			setState(265);
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			setState(266);
 			match(DEDENT);
 			}
 		}
@@ -1793,29 +1777,29 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(267);
-			match(ACTUATORS);
 			setState(268);
-			match(COLON);
+			match(ACTUATORS);
 			setState(269);
-			match(NEWLINE);
+			match(COLON);
 			setState(270);
+			match(NEWLINE);
+			setState(271);
 			match(INDENT);
-			setState(272); 
+			setState(273); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(271);
+				setState(272);
 				decl();
 				}
 				}
-				setState(274); 
+				setState(275); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << QUEUE) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS))) != 0) );
-			setState(276);
+			setState(277);
 			match(DEDENT);
 			}
 		}
@@ -1863,29 +1847,29 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(278);
-			match(SENSORS);
 			setState(279);
-			match(COLON);
+			match(SENSORS);
 			setState(280);
-			match(NEWLINE);
+			match(COLON);
 			setState(281);
+			match(NEWLINE);
+			setState(282);
 			match(INDENT);
-			setState(283); 
+			setState(284); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(282);
+				setState(283);
 				decl();
 				}
 				}
-				setState(285); 
+				setState(286); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << QUEUE) | (1L << INT) | (1L << FLOAT) | (1L << BOOL) | (1L << POS))) != 0) );
-			setState(287);
+			setState(288);
 			match(DEDENT);
 			}
 		}
@@ -1927,13 +1911,13 @@ public class KoordParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(289);
-			match(INIT);
 			setState(290);
-			match(COLON);
+			match(INIT);
 			setState(291);
-			match(NEWLINE);
+			match(COLON);
 			setState(292);
+			match(NEWLINE);
+			setState(293);
 			statementblock();
 			}
 		}
@@ -1977,7 +1961,7 @@ public class KoordParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3@\u0129\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3@\u012a\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\3\2\3\2\3"+
@@ -1996,17 +1980,17 @@ public class KoordParser extends Parser {
 		"\3\20\3\20\3\20\3\20\3\20\7\20\u00e4\n\20\f\20\16\20\u00e7\13\20\3\21"+
 		"\3\21\3\22\3\22\3\23\3\23\3\23\3\23\3\23\6\23\u00f2\n\23\r\23\16\23\u00f3"+
 		"\3\23\3\23\3\24\3\24\3\24\3\24\5\24\u00fc\n\24\3\24\3\24\3\25\3\25\3\25"+
-		"\3\25\3\25\3\25\3\25\3\25\6\25\u0108\n\25\r\25\16\25\u0109\3\25\3\25\3"+
-		"\26\3\26\3\26\3\26\3\26\6\26\u0113\n\26\r\26\16\26\u0114\3\26\3\26\3\27"+
-		"\3\27\3\27\3\27\3\27\6\27\u011e\n\27\r\27\16\27\u011f\3\27\3\27\3\30\3"+
-		"\30\3\30\3\30\3\30\3\30\2\4\34\36\31\2\4\6\b\n\f\16\20\22\24\26\30\32"+
-		"\34\36 \"$&(*,.\2\t\7\2\3\4\6\b\n\26\30.\60@\3\2\65\66\3\2\63\64\4\2\37"+
-		"\37\61\62\4\2*+\67:\3\2\f\16\4\2\21\21\23\26\2\u0136\2\60\3\2\2\2\4\63"+
-		"\3\2\2\2\6\67\3\2\2\2\bQ\3\2\2\2\nT\3\2\2\2\fc\3\2\2\2\16f\3\2\2\2\20"+
-		"t\3\2\2\2\22\u0091\3\2\2\2\24\u0093\3\2\2\2\26\u009a\3\2\2\2\30\u00a2"+
-		"\3\2\2\2\32\u00ae\3\2\2\2\34\u00be\3\2\2\2\36\u00db\3\2\2\2 \u00e8\3\2"+
-		"\2\2\"\u00ea\3\2\2\2$\u00ec\3\2\2\2&\u00f7\3\2\2\2(\u00ff\3\2\2\2*\u010d"+
-		"\3\2\2\2,\u0118\3\2\2\2.\u0123\3\2\2\2\60\61\t\2\2\2\61\3\3\2\2\2\62\64"+
+		"\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25\5\25\u010b\n\25\3\25\3\25\3\26"+
+		"\3\26\3\26\3\26\3\26\6\26\u0114\n\26\r\26\16\26\u0115\3\26\3\26\3\27\3"+
+		"\27\3\27\3\27\3\27\6\27\u011f\n\27\r\27\16\27\u0120\3\27\3\27\3\30\3\30"+
+		"\3\30\3\30\3\30\3\30\2\4\34\36\31\2\4\6\b\n\f\16\20\22\24\26\30\32\34"+
+		"\36 \"$&(*,.\2\t\7\2\3\4\6\b\n\26\30.\60@\3\2\65\66\3\2\63\64\4\2\37\37"+
+		"\61\62\4\2*+\67:\3\2\f\16\4\2\21\21\23\26\2\u0136\2\60\3\2\2\2\4\63\3"+
+		"\2\2\2\6\67\3\2\2\2\bQ\3\2\2\2\nT\3\2\2\2\fc\3\2\2\2\16f\3\2\2\2\20t\3"+
+		"\2\2\2\22\u0091\3\2\2\2\24\u0093\3\2\2\2\26\u009a\3\2\2\2\30\u00a2\3\2"+
+		"\2\2\32\u00ae\3\2\2\2\34\u00be\3\2\2\2\36\u00db\3\2\2\2 \u00e8\3\2\2\2"+
+		"\"\u00ea\3\2\2\2$\u00ec\3\2\2\2&\u00f7\3\2\2\2(\u00ff\3\2\2\2*\u010e\3"+
+		"\2\2\2,\u0119\3\2\2\2.\u0124\3\2\2\2\60\61\t\2\2\2\61\3\3\2\2\2\62\64"+
 		"\5\2\2\2\63\62\3\2\2\2\64\65\3\2\2\2\65\63\3\2\2\2\65\66\3\2\2\2\66\5"+
 		"\3\2\2\2\67;\5\b\5\28:\5(\25\298\3\2\2\2:=\3\2\2\2;9\3\2\2\2;<\3\2\2\2"+
 		"<A\3\2\2\2=;\3\2\2\2>@\5$\23\2?>\3\2\2\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2"+
@@ -2063,20 +2047,20 @@ public class KoordParser extends Parser {
 		"\2\2\u00f6%\3\2\2\2\u00f7\u00f8\t\b\2\2\u00f8\u00fb\7\60\2\2\u00f9\u00fa"+
 		"\7;\2\2\u00fa\u00fc\5\32\16\2\u00fb\u00f9\3\2\2\2\u00fb\u00fc\3\2\2\2"+
 		"\u00fc\u00fd\3\2\2\2\u00fd\u00fe\7<\2\2\u00fe\'\3\2\2\2\u00ff\u0100\7"+
-		"\5\2\2\u0100\u0101\7\4\2\2\u0101\u0102\7/\2\2\u0102\u0103\7!\2\2\u0103"+
-		"\u0104\7<\2\2\u0104\u0107\7>\2\2\u0105\u0108\5*\26\2\u0106\u0108\5,\27"+
-		"\2\u0107\u0105\3\2\2\2\u0107\u0106\3\2\2\2\u0108\u0109\3\2\2\2\u0109\u0107"+
-		"\3\2\2\2\u0109\u010a\3\2\2\2\u010a\u010b\3\2\2\2\u010b\u010c\7?\2\2\u010c"+
-		")\3\2\2\2\u010d\u010e\7\n\2\2\u010e\u010f\7!\2\2\u010f\u0110\7<\2\2\u0110"+
-		"\u0112\7>\2\2\u0111\u0113\5&\24\2\u0112\u0111\3\2\2\2\u0113\u0114\3\2"+
-		"\2\2\u0114\u0112\3\2\2\2\u0114\u0115\3\2\2\2\u0115\u0116\3\2\2\2\u0116"+
-		"\u0117\7?\2\2\u0117+\3\2\2\2\u0118\u0119\7\13\2\2\u0119\u011a\7!\2\2\u011a"+
-		"\u011b\7<\2\2\u011b\u011d\7>\2\2\u011c\u011e\5&\24\2\u011d\u011c\3\2\2"+
-		"\2\u011e\u011f\3\2\2\2\u011f\u011d\3\2\2\2\u011f\u0120\3\2\2\2\u0120\u0121"+
-		"\3\2\2\2\u0121\u0122\7?\2\2\u0122-\3\2\2\2\u0123\u0124\7\22\2\2\u0124"+
-		"\u0125\7!\2\2\u0125\u0126\7<\2\2\u0126\u0127\5\20\t\2\u0127/\3\2\2\2\34"+
-		"\65;AEJQ[x\u008b\u0091\u0096\u009f\u00a7\u00ae\u00be\u00c6\u00c8\u00db"+
-		"\u00e3\u00e5\u00f3\u00fb\u0107\u0109\u0114\u011f";
+		"\5\2\2\u0100\u0101\7/\2\2\u0101\u0102\7!\2\2\u0102\u0103\7<\2\2\u0103"+
+		"\u010a\7>\2\2\u0104\u0105\5*\26\2\u0105\u0106\5,\27\2\u0106\u010b\3\2"+
+		"\2\2\u0107\u0108\5,\27\2\u0108\u0109\5*\26\2\u0109\u010b\3\2\2\2\u010a"+
+		"\u0104\3\2\2\2\u010a\u0107\3\2\2\2\u010b\u010c\3\2\2\2\u010c\u010d\7?"+
+		"\2\2\u010d)\3\2\2\2\u010e\u010f\7\n\2\2\u010f\u0110\7!\2\2\u0110\u0111"+
+		"\7<\2\2\u0111\u0113\7>\2\2\u0112\u0114\5&\24\2\u0113\u0112\3\2\2\2\u0114"+
+		"\u0115\3\2\2\2\u0115\u0113\3\2\2\2\u0115\u0116\3\2\2\2\u0116\u0117\3\2"+
+		"\2\2\u0117\u0118\7?\2\2\u0118+\3\2\2\2\u0119\u011a\7\13\2\2\u011a\u011b"+
+		"\7!\2\2\u011b\u011c\7<\2\2\u011c\u011e\7>\2\2\u011d\u011f\5&\24\2\u011e"+
+		"\u011d\3\2\2\2\u011f\u0120\3\2\2\2\u0120\u011e\3\2\2\2\u0120\u0121\3\2"+
+		"\2\2\u0121\u0122\3\2\2\2\u0122\u0123\7?\2\2\u0123-\3\2\2\2\u0124\u0125"+
+		"\7\22\2\2\u0125\u0126\7!\2\2\u0126\u0127\7<\2\2\u0127\u0128\5\20\t\2\u0128"+
+		"/\3\2\2\2\33\65;AEJQ[x\u008b\u0091\u0096\u009f\u00a7\u00ae\u00be\u00c6"+
+		"\u00c8\u00db\u00e3\u00e5\u00f3\u00fb\u010a\u0115\u0120";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

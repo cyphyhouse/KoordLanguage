@@ -215,7 +215,7 @@ decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
 decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ VARNAME (ASGN expr)? NEWLINE;
 
-module : USING MODULE MODULENAME COLON NEWLINE INDENT (actuatordecls | sensordecls)+ DEDENT;
+module : USING MODULENAME COLON NEWLINE INDENT (actuatordecls sensordecls | sensordecls actuatordecls) DEDENT;
 
 actuatordecls : ACTUATORS COLON NEWLINE INDENT decl+ DEDENT;
 
