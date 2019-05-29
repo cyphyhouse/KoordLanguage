@@ -1,6 +1,7 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.util.BitSet;
@@ -17,6 +18,11 @@ public class Utils {
         CommonTokenStream tokenStream = new CommonTokenStream(lex);
         KoordParser parser = new KoordParser(tokenStream);
         return parser;
+    }
+
+    public static ParseTree treeFromFile(String filename) {
+        var parser = parserFromFile(filename);
+        return parser.program();
     }
 
     public static KoordParser parserFromString(String s) {

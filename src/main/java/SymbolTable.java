@@ -22,7 +22,7 @@ public class SymbolTable {
 
         @Override
         public String toString() {
-            return name + type.toString() + scope.toString();
+            return String.format("{name: %s, type: %s, scope: %s}", name, type.toString(), scope.toString());
         }
     }
 

@@ -48,6 +48,12 @@ public class SymbolTest {
     }
 
     @Test
+    public void printTest() {
+        ParseTree p = Utils.treeFromFile("src/test/resources/scopes.koord");
+        var map = new SymbolTable(p);
+        System.out.println(map.getTable().toString());
+    }
+    @Test
     public void sharedLocalUsage() {
         KoordParser p = Utils.parserFromFile("src/test/resources/badscope.koord");
         ParseTree tree = p.program();
