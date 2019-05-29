@@ -60,4 +60,15 @@ public class SymbolTest {
 
     }
 
+    @Test
+    public void assignToSharedLocal() {
+        KoordParser p = Utils.parserFromFile("src/test/resources/badassign.koord");
+        ParseTree tree = p.program();
+        var table = new SymbolTable(tree);
+        var badLocals = table.getLocalWithId();
+        var badShared = table.getSharedRequiresId();
+
+        assert(badLocals.contains("e"));
+        assert(badShared.contains("c"));
+    }
 }

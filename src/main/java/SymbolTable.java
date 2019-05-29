@@ -124,8 +124,19 @@ public class SymbolTable {
             public void enterAssign(KoordParser.AssignContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
-                    if (vars.get(variable.getText()) == null) {
+                    var entry = vars.get(variable.getText());
+                    if (entry == null) {
                         unresolvedSymbols.add(variable.getText());
+                        return;
+                    }
+                    if (ctx.LBRACE() == null) {
+                        if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
+                            sharedRequiresId.add(entry.name);
+                        }
+                    } else {
+                        if (entry.scope == Scope.Local) {
+                            localWithId.add(entry.name);
+                        }
                     }
                 }
             }
