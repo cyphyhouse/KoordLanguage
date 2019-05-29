@@ -9,17 +9,6 @@ public class SymbolTable {
     //right now it doesn't do any type checking, just cheks to make sure it was declared
     private Map<String, SymbolTableEntry> vars = new HashMap<>();
 
-    enum Scope {
-        Local,
-        AllRead,
-        AllWrite
-    }
-
-    enum Type {
-        Int,
-        Float,
-        Bool
-    }
     class SymbolTableEntry {
         public Scope scope;
         public Type type;
@@ -38,6 +27,22 @@ public class SymbolTable {
     }
 
     private List<String> unresolvedSymbols = new ArrayList<>();
+
+    public List<String> getMultipleDeclaration() {
+        return multipleDeclaration;
+    }
+
+    public List<String> getSharedRequiresId() {
+        return sharedRequiresId;
+    }
+
+    public List<String> getLocalWithId() {
+        return localWithId;
+    }
+
+    private List<String> multipleDeclaration = new ArrayList<>();
+    private List<String> sharedRequiresId = new ArrayList<>();
+    private List<String> localWithId = new ArrayList<>();
 
     public SymbolTable(ParseTree tree) {
 
@@ -72,6 +77,10 @@ public class SymbolTable {
                 }
 
                 String name = ctx.VARNAME().getText();
+                if (vars.get(name) != null) {
+                    multipleDeclaration.add(name);
+                    return;
+                }
 
                 var entry = new SymbolTableEntry(currentScope, t, name);
                 vars.put(name, entry);
@@ -82,8 +91,10 @@ public class SymbolTable {
                 TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
 
-                    if (vars.get(variable.getText()) == null) {
+                    var entry = vars.get(variable.getText());
+                    if (entry == null) {
                         unresolvedSymbols.add(variable.getText());
+                        return;
                     }
                 }
             }
@@ -92,8 +103,19 @@ public class SymbolTable {
             public void enterAexpr(KoordParser.AexprContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
-                    if (vars.get(variable.getText()) == null) {
+                    var entry = vars.get(variable.getText());
+                    if (entry == null) {
                         unresolvedSymbols.add(variable.getText());
+                        return;
+                    }
+                    if (ctx.LBRACE() == null) {
+                        if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
+                            sharedRequiresId.add(entry.name);
+                        }
+                    } else {
+                        if (entry.scope == Scope.Local) {
+                            localWithId.add(entry.name);
+                        }
                     }
                 }
             }

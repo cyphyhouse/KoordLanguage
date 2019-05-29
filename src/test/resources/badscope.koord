@@ -1,0 +1,18 @@
+allwrite:
+  int a
+  boolean b
+
+allread:
+  int c
+  int d
+
+local:
+  int e
+  float f
+
+dosomething:
+  pre:true
+  eff:
+    hello()
+    e = a
+    e = f[pid]

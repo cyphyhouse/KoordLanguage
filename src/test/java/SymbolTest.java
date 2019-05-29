@@ -2,7 +2,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,12 +38,26 @@ public class SymbolTest {
         ParseTree tree = p.program();
         var map = new SymbolTable(tree).getTable();
         var a = map.get("a");
-        assert(a.scope == SymbolTable.Scope.AllWrite);
-        assert(map.get("b").scope == SymbolTable.Scope.AllWrite);
-        assert(map.get("c").scope == SymbolTable.Scope.AllRead);
-        assert(map.get("d").scope == SymbolTable.Scope.AllRead);
-        assert(map.get("e").scope == SymbolTable.Scope.Local);
-        assert(map.get("f").scope == SymbolTable.Scope.Local);
+        assert(a.scope == Scope.AllWrite);
+        assert(map.get("b").scope == Scope.AllWrite);
+        assert(map.get("c").scope == Scope.AllRead);
+        assert(map.get("d").scope == Scope.AllRead);
+        assert(map.get("e").scope == Scope.Local);
+        assert(map.get("f").scope == Scope.Local);
 
     }
+
+    @Test
+    public void sharedLocalUsage() {
+        KoordParser p = Utils.parserFromFile("src/test/resources/badscope.koord");
+        ParseTree tree = p.program();
+        var table = new SymbolTable(tree);
+        var badLocals = table.getLocalWithId();
+        var badShared = table.getSharedRequiresId();
+
+        assert(badLocals.contains("f"));
+        assert(badShared.contains("a"));
+
+    }
+
 }
