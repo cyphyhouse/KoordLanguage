@@ -6,7 +6,6 @@ import java.util.*;
 
 public class SymbolTable {
 
-    //right now it doesn't do any type checking, just cheks to make sure it was declared
     private Map<String, SymbolTableEntry> vars = new HashMap<>();
 
     class SymbolTableEntry {

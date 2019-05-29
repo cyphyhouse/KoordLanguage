@@ -77,4 +77,15 @@ public class SymbolTest {
         assert(badLocals.contains("e"));
         assert(badShared.contains("c"));
     }
+
+
+    @Test
+    public void multipleDeclaration() {
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/multipledecl.koord");
+        var map = new SymbolTable(p);
+        var multipleDec = map.getMultipleDeclaration();
+        assert(multipleDec.contains("a"));
+
+    }
 }
