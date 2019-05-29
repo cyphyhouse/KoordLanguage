@@ -7,7 +7,35 @@ import java.util.*;
 public class SymbolTable {
 
     //right now it doesn't do any type checking, just cheks to make sure it was declared
-    private Set<String> vars = new HashSet<>();
+    private Map<String, SymbolTableEntry> vars = new HashMap<>();
+
+    enum Scope {
+        Local,
+        AllRead,
+        AllWrite
+    }
+
+    enum Type {
+        Int,
+        Float,
+        Bool
+    }
+    class SymbolTableEntry {
+        public Scope scope;
+        public Type type;
+        public String name;
+
+        SymbolTableEntry(Scope s, Type t, String n) {
+            this.scope = s;
+            this.type = t;
+            this.name = n;
+        }
+
+        @Override
+        public String toString() {
+            return name + type.toString() + scope.toString();
+        }
+    }
 
     private List<String> unresolvedSymbols = new ArrayList<>();
 
@@ -15,9 +43,38 @@ public class SymbolTable {
 
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new KoordBaseListener() {
+            private Scope currentScope;
+
+            @Override
+            public void enterDecblock(KoordParser.DecblockContext ctx) {
+                if (ctx.ALLREAD() != null) {
+                    currentScope = Scope.AllRead;
+                } else if (ctx.ALLWRITE() != null) {
+                    currentScope = Scope.AllWrite;
+                } else if (ctx.LOCAL() != null) {
+                    currentScope = Scope.Local;
+                } else {
+                    System.err.println("Unknown scope");
+                }
+            }
             @Override
             public void enterDecl(KoordParser.DeclContext ctx) {
-                vars.add(ctx.VARNAME().getText());
+                Type t = null;
+
+                if (ctx.FLOAT() != null) {
+                    t = Type.Float;
+                } else if (ctx.INT() != null) {
+                    t = Type.Int;
+                } else if (ctx.BOOL() != null) {
+                    t = Type.Bool;
+                } else {
+                    System.err.println("Unable to determine type");
+                }
+
+                String name = ctx.VARNAME().getText();
+
+                var entry = new SymbolTableEntry(currentScope, t, name);
+                vars.put(name, entry);
             }
 
             @Override
@@ -25,7 +82,7 @@ public class SymbolTable {
                 TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
 
-                    if (!vars.contains(variable.getText())) {
+                    if (vars.get(variable.getText()) == null) {
                         unresolvedSymbols.add(variable.getText());
                     }
                 }
@@ -35,7 +92,7 @@ public class SymbolTable {
             public void enterAexpr(KoordParser.AexprContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
-                    if (!vars.contains(variable.getText())) {
+                    if (vars.get(variable.getText()) == null) {
                         unresolvedSymbols.add(variable.getText());
                     }
                 }
@@ -45,7 +102,7 @@ public class SymbolTable {
             public void enterAssign(KoordParser.AssignContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
                 if (variable != null) {
-                    if (!vars.contains(variable.getText())) {
+                    if (vars.get(variable.getText()) == null) {
                         unresolvedSymbols.add(variable.getText());
                     }
                 }
@@ -53,11 +110,23 @@ public class SymbolTable {
         }, tree);
     }
 
-    public Set<String> getVars() {
-        return vars;
+    public Set<String> getAllVars() {
+        return vars.keySet();
     }
 
     public List<String> getUnresolvedSymbols() {
         return unresolvedSymbols;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (SymbolTableEntry entry : vars.values()) {
+            sb.append(entry.toString());
+        }
+        return sb.toString();
+    }
+
+    public Map<String, SymbolTableEntry> getTable() {
+        return vars;
     }
 }

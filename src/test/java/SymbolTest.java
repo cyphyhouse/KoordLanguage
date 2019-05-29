@@ -32,4 +32,19 @@ public class SymbolTest {
         assert(actual.isEmpty());
 
     }
+
+    @Test
+    public void correctScope() {
+        KoordParser p = Utils.parserFromFile("src/test/resources/scopes.koord");
+        ParseTree tree = p.program();
+        var map = new SymbolTable(tree).getTable();
+        var a = map.get("a");
+        assert(a.scope == SymbolTable.Scope.AllWrite);
+        assert(map.get("b").scope == SymbolTable.Scope.AllWrite);
+        assert(map.get("c").scope == SymbolTable.Scope.AllRead);
+        assert(map.get("d").scope == SymbolTable.Scope.AllRead);
+        assert(map.get("e").scope == SymbolTable.Scope.Local);
+        assert(map.get("f").scope == SymbolTable.Scope.Local);
+
+    }
 }
