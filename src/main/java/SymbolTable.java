@@ -4,18 +4,32 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.*;
 
+/**
+ * Contains information such as scope and type for variables, and reports scope/type errors.
+ */
 public class SymbolTable {
 
     private Map<String, SymbolTableEntry> vars = new HashMap<>();
 
+    /**
+     * Type mismatches, such as assigning a boolean to an int
+     * @return list of variables that are bad
+     */
     public List<String> getTypeMismatch() {
         return typeMismatch;
     }
 
+    /**
+     * Sensors are read only and cannot be assigned to.
+     * @return list of variables that are bad
+     */
     public List<String> getAssignToSensor() {
         return assignToSensor;
     }
 
+    /**
+     * The information associated with each variable.
+     */
     class SymbolTableEntry {
         public Scope scope;
         public Type type;
@@ -35,14 +49,26 @@ public class SymbolTable {
 
     private List<String> unresolvedSymbols = new ArrayList<>();
 
+    /**
+     * When a variable is declared multiple times
+     * @return list of bad vars
+     */
     public List<String> getMultipleDeclaration() {
         return multipleDeclaration;
     }
 
+    /**
+     * When a shared variable is used as a local variable
+     * @return list of bad vars
+     */
     public List<String> getSharedRequiresId() {
         return sharedRequiresId;
     }
 
+    /**
+     * When a local variable is treated like a shared variable
+     * @return list of bad vars
+     */
     public List<String> getLocalWithId() {
         return localWithId;
     }
@@ -53,6 +79,10 @@ public class SymbolTable {
     private List<String> typeMismatch = new ArrayList<>();
     private List<String> assignToSensor = new ArrayList<>();
 
+    /**
+     * Performs a tree walk on construction
+     * @param tree the tree to walk on
+     */
     public SymbolTable(ParseTree tree) {
 
         ParseTreeWalker walker = new ParseTreeWalker();
@@ -213,6 +243,10 @@ public class SymbolTable {
         return vars.keySet();
     }
 
+    /**
+     * Variables that have not been declared
+     * @return bad vars
+     */
     public List<String> getUnresolvedSymbols() {
         return unresolvedSymbols;
     }
@@ -225,10 +259,19 @@ public class SymbolTable {
         return sb.toString();
     }
 
+    /**
+     * The table that maps var names to symbol info
+     * @return the table
+     */
     public Map<String, SymbolTableEntry> getTable() {
+
         return vars;
     }
 
+    /**
+     * Checks if there are any errors with type and scope
+     * @return whether it is valid
+     */
     public boolean isValid() {
         return multipleDeclaration.isEmpty()
                 && sharedRequiresId.isEmpty()
