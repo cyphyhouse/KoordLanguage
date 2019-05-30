@@ -1,0 +1,21 @@
+using HVAC:
+  sensors:
+    float temp
+  actuators:
+    int switch
+
+init :
+  HVAC.switch = 1
+  HVAC.temp = 40.0
+
+
+update:
+  pre: (true)
+  eff :
+      if (HVAC.temp > 70):
+         if (HVAC.temp < 75):
+           HVAC.switch = -1
+         else:
+           HVAC.switch = -2
+      else:
+        HVAC.switch = 1

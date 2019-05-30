@@ -228,4 +228,12 @@ public class SymbolTable {
     public Map<String, SymbolTableEntry> getTable() {
         return vars;
     }
+
+    public boolean isValid() {
+        return multipleDeclaration.isEmpty()
+                && sharedRequiresId.isEmpty()
+                && localWithId.isEmpty()
+                && typeMismatch.isEmpty()
+                && assignToSensor.isEmpty();
+    }
 }
