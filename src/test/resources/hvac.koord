@@ -6,7 +6,6 @@ using HVAC:
 
 init :
   HVAC.switch = 1
-  HVAC.temp = 40.0
 
 
 update:

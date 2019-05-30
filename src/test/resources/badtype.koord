@@ -15,8 +15,10 @@ allread:
 local:
   pos apple
   boolean banana
+  int cat
 
 dosomething:
   pre:true
   eff:
     apple = banana
+    cat = 1 + banana

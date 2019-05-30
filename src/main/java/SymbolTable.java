@@ -89,6 +89,7 @@ public class SymbolTable {
         walker.walk(new KoordBaseListener() {
             private Scope currentScope;
             private String moduleName;
+            private Deque<Type> types = new LinkedList<>();
 
             @Override
             public void enterModule(KoordParser.ModuleContext ctx) {
