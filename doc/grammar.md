@@ -22,6 +22,7 @@ The definitions blocks consists of function declarations.
 
 The modules sections declares sensors and actuators that are to be used. 
 Variables can either be an actuator or a sensor, must be declared in the respective block.
+Module names must begin with a capital letter.
 For instance, using the module Motion:
 
 ```
@@ -64,6 +65,7 @@ local:
 # Events
 
 Events consist of a label, a pre condition, and an effect. A precondition must be a boolean value.
+The precondution must be on the same line as the `pre:` label.
 
 ```
 dosomething:
@@ -72,3 +74,26 @@ dosomething:
     hello()
 ```
 
+# Types
+
+ - pos
+ - boolean
+ - int
+ - float
+
+# Variable usage
+
+Local variables may be written to and read from like in other languages.  Shared variables (allwrite/allread) must always have an associated robot id with them.
+
+For instance if `x` is a shared variable, then x is assigned as, 
+
+```
+x[pid] = 12
+```
+
+if `x` is local, then
+
+```
+x = 12
+```
+is sufficient.
