@@ -42,13 +42,34 @@ public class SymbolTable {
     private List<String> multipleDeclaration = new ArrayList<>();
     private List<String> sharedRequiresId = new ArrayList<>();
     private List<String> localWithId = new ArrayList<>();
+    private List<String> typeMismatch = new ArrayList<>();
 
     public SymbolTable(ParseTree tree) {
 
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new KoordBaseListener() {
             private Scope currentScope;
+            private String moduleName;
 
+            @Override
+            public void enterModule(KoordParser.ModuleContext ctx) {
+                moduleName = ctx.MODULENAME().getText();
+            }
+
+            @Override
+            public void exitModule(KoordParser.ModuleContext ctx) {
+                moduleName = null;
+            }
+
+            @Override
+            public void enterActuatordecls(KoordParser.ActuatordeclsContext ctx) {
+                currentScope = Scope.Actuator;
+            }
+
+            @Override
+            public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
+                currentScope = Scope.Sensor;
+            }
             @Override
             public void enterDecblock(KoordParser.DecblockContext ctx) {
                 if (ctx.ALLREAD() != null) {
@@ -71,11 +92,16 @@ public class SymbolTable {
                     t = Type.Int;
                 } else if (ctx.BOOL() != null) {
                     t = Type.Bool;
+                } else if (ctx.POS() != null) {
+                    t = Type.Pos;
                 } else {
                     System.err.println("Unable to determine type");
                 }
 
                 String name = ctx.VARNAME().getText();
+                if (moduleName != null) {
+                    name = moduleName + "." + name;
+                }
                 if (vars.get(name) != null) {
                     multipleDeclaration.add(name);
                     return;

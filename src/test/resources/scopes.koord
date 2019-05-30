@@ -1,3 +1,9 @@
+using Motion:
+  actuators:
+    int foo
+  sensors:
+    int bar
+
 allwrite:
   int a
   boolean b

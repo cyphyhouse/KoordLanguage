@@ -44,6 +44,8 @@ public class SymbolTest {
         assert(map.get("d").scope == Scope.AllRead);
         assert(map.get("e").scope == Scope.Local);
         assert(map.get("f").scope == Scope.Local);
+        assert(map.get("Motion.foo").scope == Scope.Actuator);
+        assert(map.get("Motion.bar").scope == Scope.Sensor);
 
     }
 

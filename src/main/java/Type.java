@@ -2,5 +2,7 @@ enum Type {
     Int,
     Float,
     Bool,
-    Queue
+    Queue,
+    Pos,
+
 }
