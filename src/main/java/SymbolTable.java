@@ -8,6 +8,10 @@ public class SymbolTable {
 
     private Map<String, SymbolTableEntry> vars = new HashMap<>();
 
+    public List<String> getTypeMismatch() {
+        return typeMismatch;
+    }
+
     class SymbolTableEntry {
         public Scope scope;
         public Type type;
@@ -154,6 +158,8 @@ public class SymbolTable {
                         unresolvedSymbols.add(variable.getText());
                         return;
                     }
+
+                    //check for correct usage for shared/local
                     if (ctx.LBRACE() == null) {
                         if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
                             sharedRequiresId.add(entry.name);
@@ -163,6 +169,30 @@ public class SymbolTable {
                             localWithId.add(entry.name);
                         }
                     }
+
+                    //check for type
+                    var expression = ctx.expr();
+                    if (expression.aexpr() != null) {
+                        var rhsVar = expression.aexpr().VARNAME();
+
+                        //rhs has to be an arithmetic expression if it is not a variable
+                        if (rhsVar == null && entry.type == Type.Bool) {
+                            typeMismatch.add(entry.name);
+                        } else {
+                            if (vars.get(rhsVar.getText()).type != entry.type) {
+                                typeMismatch.add(entry.name);
+                            }
+                        }
+
+                    } else if (expression.bexpr() != null) {
+                        if (entry.type != Type.Bool) {
+                            typeMismatch.add(entry.name);
+                        }
+                    } else {
+                        System.err.println("Error in parsing expressino");
+                    }
+
+
                 }
             }
         }, tree);

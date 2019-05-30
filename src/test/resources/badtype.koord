@@ -1,9 +1,8 @@
 using Motion:
-  sensors:
-     int foo
   actuators:
-     int bar
-
+    int foo
+  sensors:
+    int bar
 
 allwrite:
   int a
@@ -14,12 +13,10 @@ allread:
   int d
 
 local:
-  int e
-  float f
+  pos apple
+  boolean banana
 
 dosomething:
   pre:true
   eff:
-    e[12] = f
-    c = f
-    Motion.foo = e
+    apple = banana
