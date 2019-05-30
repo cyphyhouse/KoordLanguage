@@ -75,9 +75,11 @@ public class SymbolTest {
         var table = new SymbolTable(tree);
         var badLocals = table.getLocalWithId();
         var badShared = table.getSharedRequiresId();
+        var assignToSensor = table.getAssignToSensor();
 
         assert(badLocals.contains("e"));
         assert(badShared.contains("c"));
+        assert(assignToSensor.contains("Motion.foo"));
     }
 
 

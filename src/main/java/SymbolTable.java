@@ -12,6 +12,10 @@ public class SymbolTable {
         return typeMismatch;
     }
 
+    public List<String> getAssignToSensor() {
+        return assignToSensor;
+    }
+
     class SymbolTableEntry {
         public Scope scope;
         public Type type;
@@ -47,6 +51,7 @@ public class SymbolTable {
     private List<String> sharedRequiresId = new ArrayList<>();
     private List<String> localWithId = new ArrayList<>();
     private List<String> typeMismatch = new ArrayList<>();
+    private List<String> assignToSensor = new ArrayList<>();
 
     public SymbolTable(ParseTree tree) {
 
@@ -169,6 +174,9 @@ public class SymbolTable {
                             localWithId.add(entry.name);
                         }
                     }
+                    if (entry.scope == Scope.Sensor) {
+                        assignToSensor.add(entry.name);
+                    }
 
                     //check for type
                     var expression = ctx.expr();
@@ -176,8 +184,11 @@ public class SymbolTable {
                         var rhsVar = expression.aexpr().VARNAME();
 
                         //rhs has to be an arithmetic expression if it is not a variable
-                        if (rhsVar == null && entry.type == Type.Bool) {
-                            typeMismatch.add(entry.name);
+                        if (rhsVar == null ) {
+                            if (entry.type == Type.Bool) {
+
+                                typeMismatch.add(entry.name);
+                            }
                         } else {
                             if (vars.get(rhsVar.getText()).type != entry.type) {
                                 typeMismatch.add(entry.name);
