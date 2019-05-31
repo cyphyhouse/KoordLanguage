@@ -102,7 +102,7 @@ public class SymbolTest {
         ParseTree p = Utils.treeFromFile("src/test/resources/badtype.koord");
         var map = new SymbolTable(p);
         var types = map.getTypeMismatch();
-        assert(types.contains("cat"));
+        assert(types.contains(null));
 
     }
 }

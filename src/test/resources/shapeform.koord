@@ -5,7 +5,7 @@ using Motion:
     pos target
 
 allread:
-  pos x
+  pos x[]
 
 
 init:
@@ -14,5 +14,5 @@ init:
 update:
    pre: (true)
    eff:
-      if (pid != 0 or pid != numBots):
+      if (pid != 0 and pid != numBots):
         Motion.target = midpoint(getNeighbors(pid))

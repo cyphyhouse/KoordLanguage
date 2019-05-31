@@ -22,3 +22,4 @@ dosomething:
   eff:
     apple = banana
     cat = 1 + banana
+    banana = 1 + 2

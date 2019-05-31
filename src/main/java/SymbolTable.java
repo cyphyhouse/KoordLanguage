@@ -211,6 +211,7 @@ public class SymbolTable {
 
                     //check for type
                     var expression = ctx.expr();
+                    /*
                     if (expression.aexpr() != null) {
                         var rhsVar = expression.aexpr().VARNAME();
 
@@ -232,11 +233,57 @@ public class SymbolTable {
                         }
                     } else {
                         System.err.println("Error in parsing expressino");
+                    }*/
+
+                    if (entry.type != types.pop()) {
+                        typeMismatch.add(entry.name);
                     }
 
 
                 }
             }
+
+            @Override
+            public void exitNumber(KoordParser.NumberContext ctx) {
+                if (ctx.FNUM() != null) {
+                    types.push(Type.Float);
+                } else if (ctx.INUM() != null) {
+                    types.push(Type.Int);
+                } else if (ctx.PID() != null) {
+                    types.push(Type.Int);
+                } else {
+                    System.err.println("Unable to recognize number");
+                }
+            }
+
+            @Override
+            public void exitAexpr(KoordParser.AexprContext ctx) {
+                if (ctx.aexpr().size() == 2) {
+                    var right = types.pop();
+                    var left = types.pop();
+                    if (right != left) {
+                        typeMismatch.add(null); //because there is no associated variable
+                    }
+                    types.push(left);
+                } else if (ctx.VARNAME() != null) {
+                    var varType = vars.get(ctx.VARNAME().getText());
+                    types.push(varType.type);
+                }
+            }
+
+            @Override
+            public void exitBexpr(KoordParser.BexprContext ctx) {
+                if (ctx.VARNAME() == null) {
+                    for (var t : ctx.aexpr()) {
+                        types.poll();
+                    }
+                    for (var t : ctx.bexpr()) {
+                        types.poll();
+                    }
+                    types.push(Type.Bool);
+                }
+            }
+
         }, tree);
     }
 
