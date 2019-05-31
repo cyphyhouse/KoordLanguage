@@ -243,6 +243,18 @@ public class KoordBaseListener implements KoordListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArraydec(KoordParser.ArraydecContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArraydec(KoordParser.ArraydecContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterModule(KoordParser.ModuleContext ctx) { }
 	/**
 	 * {@inheritDoc}

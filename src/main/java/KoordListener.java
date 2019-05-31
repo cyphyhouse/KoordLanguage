@@ -197,6 +197,16 @@ public interface KoordListener extends ParseTreeListener {
 	 */
 	void exitDecl(KoordParser.DeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link KoordParser#arraydec}.
+	 * @param ctx the parse tree
+	 */
+	void enterArraydec(KoordParser.ArraydecContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KoordParser#arraydec}.
+	 * @param ctx the parse tree
+	 */
+	void exitArraydec(KoordParser.ArraydecContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link KoordParser#module}.
 	 * @param ctx the parse tree
 	 */

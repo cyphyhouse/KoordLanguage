@@ -1,3 +1,4 @@
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -15,7 +16,7 @@ public class SymbolTable {
      * Type mismatches, such as assigning a boolean to an int
      * @return list of variables that are bad
      */
-    public List<String> getTypeMismatch() {
+    public List<ParserRuleContext> getTypeMismatch() {
         return typeMismatch;
     }
 
@@ -76,40 +77,40 @@ public class SymbolTable {
     private List<String> multipleDeclaration = new ArrayList<>();
     private List<String> sharedRequiresId = new ArrayList<>();
     private List<String> localWithId = new ArrayList<>();
-    private List<String> typeMismatch = new ArrayList<>();
+    private List<ParserRuleContext> typeMismatch = new ArrayList<>();
     private List<String> assignToSensor = new ArrayList<>();
 
+
     /**
-     * Performs a tree walk on construction
-     * @param tree the tree to walk on
+     * Builds the symbol table
      */
-    public SymbolTable(ParseTree tree) {
+    private void buildTable(ParseTree tree) {
 
         ParseTreeWalker walker = new ParseTreeWalker();
+
         walker.walk(new KoordBaseListener() {
+
             private Scope currentScope;
             private String moduleName;
-            private Deque<Type> types = new LinkedList<>();
+                    @Override
+                    public void enterModule(KoordParser.ModuleContext ctx) {
+                        moduleName = ctx.MODULENAME().getText();
+                    }
 
-            @Override
-            public void enterModule(KoordParser.ModuleContext ctx) {
-                moduleName = ctx.MODULENAME().getText();
-            }
+                    @Override
+                    public void exitModule(KoordParser.ModuleContext ctx) {
+                        moduleName = null;
+                    }
 
-            @Override
-            public void exitModule(KoordParser.ModuleContext ctx) {
-                moduleName = null;
-            }
+                    @Override
+                    public void enterActuatordecls(KoordParser.ActuatordeclsContext ctx) {
+                        currentScope = Scope.Actuator;
+                    }
 
-            @Override
-            public void enterActuatordecls(KoordParser.ActuatordeclsContext ctx) {
-                currentScope = Scope.Actuator;
-            }
-
-            @Override
-            public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
-                currentScope = Scope.Sensor;
-            }
+                    @Override
+                    public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
+                        currentScope = Scope.Sensor;
+                    }
             @Override
             public void enterDecblock(KoordParser.DecblockContext ctx) {
                 if (ctx.ALLREAD() != null) {
@@ -138,6 +139,10 @@ public class SymbolTable {
                     System.err.println("Unable to determine type");
                 }
 
+                if (ctx.arraydec() != null) {
+                    t = Type.Array(t);
+                }
+
                 String name = ctx.VARNAME().getText();
                 if (moduleName != null) {
                     name = moduleName + "." + name;
@@ -151,97 +156,41 @@ public class SymbolTable {
                 vars.put(name, entry);
             }
 
+        }, tree);
+    }
+
+    /**
+     * makes sure all variables got declared
+     */
+    private void checkAllDeclared(ParseTree tree) {
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+
+        walker.walk(new KoordBaseListener() {
             @Override
             public void enterBexpr(KoordParser.BexprContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
-                if (variable != null) {
-
-                    var entry = vars.get(variable.getText());
-                    if (entry == null) {
-                        unresolvedSymbols.add(variable.getText());
-                        return;
-                    }
-                }
+                checkIfDeclared(variable);
             }
-
             @Override
             public void enterAexpr(KoordParser.AexprContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
-                if (variable != null) {
-                    var entry = vars.get(variable.getText());
-                    if (entry == null) {
-                        unresolvedSymbols.add(variable.getText());
-                        return;
-                    }
-                    if (ctx.LBRACE() == null) {
-                        if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
-                            sharedRequiresId.add(entry.name);
-                        }
-                    } else {
-                        if (entry.scope == Scope.Local) {
-                            localWithId.add(entry.name);
-                        }
-                    }
-                }
+                checkIfDeclared(variable);
             }
 
             @Override
             public void enterAssign(KoordParser.AssignContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
-                if (variable != null) {
-                    var entry = vars.get(variable.getText());
-                    if (entry == null) {
-                        unresolvedSymbols.add(variable.getText());
-                        return;
-                    }
-
-                    //check for correct usage for shared/local
-                    if (ctx.LBRACE() == null) {
-                        if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
-                            sharedRequiresId.add(entry.name);
-                        }
-                    } else {
-                        if (entry.scope == Scope.Local) {
-                            localWithId.add(entry.name);
-                        }
-                    }
-                    if (entry.scope == Scope.Sensor) {
-                        assignToSensor.add(entry.name);
-                    }
-
-                    //check for type
-                    var expression = ctx.expr();
-                    /*
-                    if (expression.aexpr() != null) {
-                        var rhsVar = expression.aexpr().VARNAME();
-
-                        //rhs has to be an arithmetic expression if it is not a variable
-                        if (rhsVar == null ) {
-                            if (entry.type == Type.Bool) {
-
-                                typeMismatch.add(entry.name);
-                            }
-                        } else {
-                            if (vars.get(rhsVar.getText()).type != entry.type) {
-                                typeMismatch.add(entry.name);
-                            }
-                        }
-
-                    } else if (expression.bexpr() != null) {
-                        if (entry.type != Type.Bool) {
-                            typeMismatch.add(entry.name);
-                        }
-                    } else {
-                        System.err.println("Error in parsing expressino");
-                    }*/
-
-                    if (entry.type != types.pop()) {
-                        typeMismatch.add(entry.name);
-                    }
-
-
-                }
+                checkIfDeclared(variable);
             }
+        }, tree);
+    }
+
+    private void checkTypes(ParseTree tree) {
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(new KoordBaseListener() {
+            private Deque<Type> types = new LinkedList<>();
 
             @Override
             public void exitNumber(KoordParser.NumberContext ctx) {
@@ -261,13 +210,20 @@ public class SymbolTable {
                 if (ctx.aexpr().size() == 2) {
                     var right = types.pop();
                     var left = types.pop();
-                    if (right != left) {
-                        typeMismatch.add(null); //because there is no associated variable
+                    if (right == null || left == null) {
+                        types.push(null);
+                        return;
+                    }
+                    if (!right.equals(left)) {
+                        typeMismatch.add(ctx); //because there is no associated variable
                     }
                     types.push(left);
                 } else if (ctx.VARNAME() != null) {
                     var varType = vars.get(ctx.VARNAME().getText());
                     types.push(varType.type);
+                } else if (ctx.funccall() != null) {
+                    //do nothing for now
+                    types.push(null);
                 }
             }
 
@@ -284,7 +240,42 @@ public class SymbolTable {
                 }
             }
 
+            @Override
+            public void exitAssign(KoordParser.AssignContext ctx) {
+                Type t = vars.get(ctx.VARNAME().getText()).type;
+                Type actual = types.poll();
+
+                if (!t.equals(actual)) {
+                    typeMismatch.add(ctx);
+                }
+            }
+
         }, tree);
+    }
+
+    private void checkIfDeclared(TerminalNode variable) {
+        if (variable != null) {
+            var entry = vars.get(variable.getText());
+            if (entry == null) {
+                unresolvedSymbols.add(variable.getText());
+                return;
+            }
+        }
+    }
+
+
+    /**
+     * Performs a tree walk on construction
+     * @param tree the tree to walk on
+     */
+    public SymbolTable(ParseTree tree) {
+        this.buildTable(tree);
+        if (this.multipleDeclaration.isEmpty()) {
+            checkAllDeclared(tree);
+            if (this.unresolvedSymbols.isEmpty()) {
+                checkTypes(tree);
+            }
+        }
     }
 
     public Set<String> getAllVars() {
