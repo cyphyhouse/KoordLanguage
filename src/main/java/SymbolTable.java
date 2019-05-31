@@ -1,7 +1,5 @@
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.*;
 
 import java.util.*;
 
@@ -188,6 +186,19 @@ public class SymbolTable {
             }
         }, tree);
     }
+    private void checkScope(ParseTree tree) {
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(new KoordBaseListener() {
+            @Override
+            public void enterAssign(KoordParser.AssignContext ctx) {
+                var entry = vars.get(ctx.VARNAME().getText());
+                if (entry.scope == Scope.Sensor) {
+                    assignToSensor.add(entry.name);
+                }
+            }
+        },tree);
+    }
 
     private void checkTypes(ParseTree tree) {
 
@@ -247,6 +258,10 @@ public class SymbolTable {
             public void exitAssign(KoordParser.AssignContext ctx) {
                 Type t = vars.get(ctx.VARNAME().getText()).type;
                 Type actual = types.poll();
+                if (actual == null) {
+                    return; //null means the type is not yet determined
+                    //eg a function
+                }
 
                 //check if indexing into array
                 if (ctx.LBRACE() != null) {
@@ -281,6 +296,7 @@ public class SymbolTable {
     }
 
 
+
     /**
      * Performs a tree walk on construction
      * @param tree the tree to walk on
@@ -291,6 +307,7 @@ public class SymbolTable {
             checkAllDeclared(tree);
             if (this.unresolvedSymbols.isEmpty()) {
                 checkTypes(tree);
+                checkScope(tree);
             }
         }
     }
