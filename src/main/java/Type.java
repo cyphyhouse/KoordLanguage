@@ -42,4 +42,8 @@ class Type {
         return this.code == ((Type) other).code && this.innerType.equals(((Type) other).innerType);
     }
 
+    public boolean isArray() {
+        return this.code == ArrayVal;
+    }
+
 }

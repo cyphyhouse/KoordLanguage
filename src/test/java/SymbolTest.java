@@ -50,15 +50,17 @@ public class SymbolTest {
     }
 
     @Test
-    public void sharedLocalUsage() {
+    public void arrayScalar() {
         KoordParser p = Utils.parserFromFile("src/test/resources/badscope.koord");
         ParseTree tree = p.program();
         var table = new SymbolTable(tree);
-        var badLocals = table.getLocalWithId();
-        var badShared = table.getSharedRequiresId();
+        var badTypes = table.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
 
-        assert(badLocals.contains("f"));
-        assert(badShared.contains("a"));
+        assert(badTypes.get(0).contains("a"));
+        assert(badTypes.get(1).contains("f"));
 
     }
 
@@ -67,12 +69,14 @@ public class SymbolTest {
         KoordParser p = Utils.parserFromFile("src/test/resources/badassign.koord");
         ParseTree tree = p.program();
         var table = new SymbolTable(tree);
-        var badLocals = table.getLocalWithId();
-        var badShared = table.getSharedRequiresId();
+        var badTypes = table.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
         var assignToSensor = table.getAssignToSensor();
 
-        assert(badLocals.contains("e"));
-        assert(badShared.contains("c"));
+        assert(badTypes.get(0).contains("e"));
+        assert(badTypes.get(1).contains("c"));
         assert(assignToSensor.contains("Motion.foo"));
     }
 
@@ -92,8 +96,11 @@ public class SymbolTest {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/badtype.koord");
         var map = new SymbolTable(p);
-        var types = map.getTypeMismatch();
-        assert(types.contains("apple"));
+        var badTypes = map.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
+        assert(badTypes.get(0).contains("apple"));
 
     }
     @Test
@@ -101,8 +108,11 @@ public class SymbolTest {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/badtype.koord");
         var map = new SymbolTable(p);
-        var types = map.getTypeMismatch();
-        assert(types.contains(null));
+        var badTypes = map.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
+        assert(badTypes.get(1).contains("banana"));
 
     }
 }
