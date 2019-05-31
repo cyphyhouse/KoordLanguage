@@ -269,6 +269,7 @@ public class SymbolTable {
                     var varType = vars.get(ctx.VARNAME().getText());
                     types.push(varType.type);
                 }
+                //if the size is 1, then the type should be the exact same
             }
 
             @Override

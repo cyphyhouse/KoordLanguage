@@ -213,7 +213,7 @@ relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
 decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ VARNAME (ASGN expr)? NEWLINE;
+decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ VARNAME (LBRACE RBRACE)? (ASGN expr)? NEWLINE;
 
 module : USING MODULENAME COLON NEWLINE INDENT (actuatordecls sensordecls | sensordecls actuatordecls) DEDENT;
 
