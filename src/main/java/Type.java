@@ -14,12 +14,16 @@ class Type {
     public static final Type Pos = new Type(PosVal);
 
 
-    private Type innerVal = null;
+    public Type getInnerType() {
+        return innerType;
+    }
+
+    private Type innerType = null;
     private final int code;
 
     public static Type Array(Type inner) {
         var ret =  new Type(ArrayVal);
-        ret.innerVal = inner;
+        ret.innerType = inner;
         return ret;
 
     }
@@ -31,11 +35,11 @@ class Type {
     @Override
     public boolean equals(Object other) {
         Type otherType = (Type) other;
-        if (innerVal == null) {
+        if (innerType == null) {
             return this.code == ((Type) otherType).code;
         }
 
-        return this.code == ((Type) other).code && this.innerVal.equals(((Type) other).innerVal);
+        return this.code == ((Type) other).code && this.innerType.equals(((Type) other).innerType);
     }
 
 }
