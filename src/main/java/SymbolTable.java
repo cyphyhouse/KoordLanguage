@@ -245,9 +245,23 @@ public class SymbolTable {
                 Type t = vars.get(ctx.VARNAME().getText()).type;
                 Type actual = types.poll();
 
-                if (!t.equals(actual)) {
-                    typeMismatch.add(ctx);
+                //check if indexing into array
+                if (ctx.LBRACE() != null) {
+                    if (t.isArray()) {
+                        //the inner type should be equal to it
+                        if (!t.getInnerType().equals(actual)) {
+                            typeMismatch.add(ctx);
+                        }
+                    } else {
+                        typeMismatch.add(ctx);
+                    }
+                } else {
+
+                    if (!t.equals(actual)) {
+                        typeMismatch.add(ctx);
+                    }
                 }
+
             }
 
         }, tree);
