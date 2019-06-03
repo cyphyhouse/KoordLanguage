@@ -26,4 +26,24 @@ public class ValidationTest {
         assert(map.isValid());
 
     }
+
+
+    @Test
+    public void log() throws IOException{
+        assert(new Utils.SyntaxChecker().testFile("src/test/resources/log.koord"));
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/log.koord");
+        var map = new SymbolTable(p);
+        assert(map.isValid());
+
+    }
+    @Test
+    public void arrayaccess() throws IOException{
+        assert(new Utils.SyntaxChecker().testFile("src/test/resources/arrayaccess.koord"));
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/arrayaccess.koord");
+        var map = new SymbolTable(p);
+        assert(map.isValid());
+
+    }
 }

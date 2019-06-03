@@ -48,4 +48,24 @@ class Type {
         return this.code == ArrayVal;
     }
 
+
+    @Override
+    public String toString() {
+        switch (this.code) {
+            case IntVal:
+                return "Int";
+            case PosVal:
+                return "Pos";
+            case BoolVal:
+                return "Bool";
+            case FloatVal:
+                return "Float";
+            case ArrayVal:
+                return "[" + this.innerType.toString() + "]";
+            case StringVal:
+                return "String";
+        }
+        return "unknown";
+    }
+
 }

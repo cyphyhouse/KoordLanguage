@@ -222,22 +222,51 @@ public class SymbolTable {
             @Override
             public void exitAexpr(KoordParser.AexprContext ctx) {
                 if (ctx.aexpr().size() == 2) {
-                    var right = types.pop();
-                    var left = types.pop();
-                    if (right == null || left == null) {
-                        types.push(null);
-                        return;
-                    }
-                    if (!right.equals(left)) {
-                        typeMismatch.add(ctx); //because there is no associated variable
-                    }
-                    types.push(left);
+
+
+                        var right = types.pop();
+                        var left = types.pop();
+                        if (right == null || left == null) {
+                            types.push(null);
+                            return;
+                        }
+                        if (ctx.PLUS() != null) {
+
+                            //string concatenation
+                            if (right.equals(Type.String) || left.equals(Type.String) ) {
+                                types.push(Type.String);
+                                return;
+                            }
+                        }
+                        if (!right.equals(left)) {
+                            typeMismatch.add(ctx); //because there is no associated variable
+                        }
+                        types.push(left);
+
                 } else if (ctx.VARNAME() != null) {
                     var varType = vars.get(ctx.VARNAME().getText());
-                    types.push(varType.type);
+                    if (ctx.LBRACE() != null) {
+                        var index = types.pop();
+                        if (!index.equals(Type.Int)) {
+                            typeMismatch.add(ctx); //because there is no associated variable
+                        }
+
+                        if (varType.type.isArray()) {
+                            types.push(varType.type.getInnerType());
+                        } else {
+                            typeMismatch.add(ctx);
+                        }
+                    } else {
+
+                        types.push(varType.type);
+                    }
+
                 } else if (ctx.funccall() != null) {
                     //do nothing for now
                     types.push(null);
+                } else if (ctx.STRING() != null) {
+                    types.push(Type.String);
+                } else if (ctx.LBRACE() != null) {
                 }
             }
 
