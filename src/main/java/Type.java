@@ -6,12 +6,14 @@ class Type {
     private static final int QueueVal = 3;
     private static final int PosVal = 4;
     private static final int ArrayVal = 5;
+    private static final int StringVal = 6;
 
     public static final Type Int = new Type(IntVal);
     public static final Type Float = new Type(FloatVal);
     public static final Type Bool = new Type(BoolVal);
     public static final Type Queue = new Type(QueueVal);
     public static final Type Pos = new Type(PosVal);
+    public static final Type String = new Type(StringVal);
 
 
     public Type getInnerType() {

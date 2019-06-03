@@ -27,4 +27,18 @@ public class ParseTest {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
         assert(checker.testExpr(a));
     }
+    @Test
+    public void stringTest() {
+        KoordParser a = Utils.parserFromString(" \" ahelo19   283@\" ");
+        Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
+        assert(checker.testExpr(a));
+    }
+
+    @Test
+    public void stringConcat() {
+        KoordParser a = Utils.parserFromString(" \" ahelo19   283@\" + 123 ");
+        Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
+        assert(checker.testExpr(a));
+    }
+
 }
