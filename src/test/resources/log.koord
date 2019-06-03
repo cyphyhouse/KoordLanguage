@@ -1,0 +1,13 @@
+using IO:
+  sensors:
+     int foo
+  actuators:
+     string log
+
+
+
+dosomething:
+  pre:true
+  eff:
+    IO.log = "hi"
+    IO.log = "hello" + IO.foo
