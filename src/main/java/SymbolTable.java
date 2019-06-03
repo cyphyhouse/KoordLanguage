@@ -235,8 +235,8 @@ public class SymbolTable {
                             //string concatenation
                             if (right.equals(Type.String) || left.equals(Type.String) ) {
                                 types.push(Type.String);
+                                return;
                             }
-                            return;
                         }
                         if (!right.equals(left)) {
                             typeMismatch.add(ctx); //because there is no associated variable
@@ -245,12 +245,28 @@ public class SymbolTable {
 
                 } else if (ctx.VARNAME() != null) {
                     var varType = vars.get(ctx.VARNAME().getText());
-                    types.push(varType.type);
+                    if (ctx.LBRACE() != null) {
+                        var index = types.pop();
+                        if (!index.equals(Type.Int)) {
+                            typeMismatch.add(ctx); //because there is no associated variable
+                        }
+
+                        if (varType.type.isArray()) {
+                            types.push(varType.type.getInnerType());
+                        } else {
+                            typeMismatch.add(ctx);
+                        }
+                    } else {
+
+                        types.push(varType.type);
+                    }
+
                 } else if (ctx.funccall() != null) {
                     //do nothing for now
                     types.push(null);
                 } else if (ctx.STRING() != null) {
                     types.push(Type.String);
+                } else if (ctx.LBRACE() != null) {
                 }
                 //if the size is 1, then the type should be the exact same
             }
