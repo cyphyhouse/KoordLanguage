@@ -44,6 +44,9 @@ tokens { INDENT, DEDENT }
   }
 }
 
+
+
+
 AGENT: 'agent';
 MODULE:'module';
 USING : 'using';
@@ -69,6 +72,7 @@ INIT:'init';
 INT:'int';
 FLOAT:'float';
 BOOL:'boolean'; //bool or boolean?
+STRINGTYPE:'string';
 
 
 POS:'pos';
@@ -117,7 +121,7 @@ LEQ : '<=';
 NEQ : '!=';
 ASGN : '=';
 
-
+STRING : '"' .*? '"';
 
 NEWLINE
  :  '\n' WS?
@@ -204,6 +208,7 @@ aexpr :
       | number
       | VARNAME LBRACE aexpr RBRACE
       | NUMAGENTS
+      | STRING
       | VARNAME;
 
 
@@ -213,7 +218,7 @@ relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
 decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
+decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
 
 arraydec : LBRACE RBRACE;
 

@@ -135,6 +135,9 @@ public class SymbolTable {
                     t = Type.Bool;
                 } else if (ctx.POS() != null) {
                     t = Type.Pos;
+                }else if (ctx.STRINGTYPE() != null) {
+                    t = Type.String;
+
                 } else {
                     System.err.println("Unable to determine type");
                 }
