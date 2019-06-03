@@ -115,4 +115,6 @@ public class SymbolTest {
         assert(badTypes.get(1).contains("banana"));
 
     }
+
+
 }

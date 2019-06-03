@@ -9,8 +9,8 @@ allwrite:
   boolean b
 
 allread:
-  int c
-  int d
+  int c[]
+  int d[]
 
 local:
   pos apple
