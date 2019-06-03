@@ -1,3 +1,6 @@
+/**
+ * Type system for Koord
+ */
 class Type {
 
     private static final int IntVal = 0;
@@ -16,6 +19,10 @@ class Type {
     public static final Type String = new Type(StringVal);
 
 
+    /**
+     * For types that have another type inside of them, such as Arrays.
+     * @return the inner type
+     */
     public Type getInnerType() {
         return innerType;
     }
@@ -23,6 +30,11 @@ class Type {
     private Type innerType = null;
     private final int code;
 
+    /**
+     * Constructs an array type from the inner type
+     * @param inner the inner type
+     * @return the type wrapped in an arry
+     */
     public static Type Array(Type inner) {
         var ret =  new Type(ArrayVal);
         ret.innerType = inner;
@@ -34,6 +46,13 @@ class Type {
         this.code = code;
     }
 
+    /**
+     * Check if one type is equal to another type.
+     * You should use this method instead of == because == will not work
+     * with arrays.
+     * @param other
+     * @return
+     */
     @Override
     public boolean equals(Object other) {
         Type otherType = (Type) other;
@@ -44,11 +63,19 @@ class Type {
         return this.code == ((Type) other).code && this.innerType.equals(((Type) other).innerType);
     }
 
+    /**
+     * Whether the type is an array
+     * @return whether teh type is an arary
+     */
     public boolean isArray() {
         return this.code == ArrayVal;
     }
 
 
+    /**
+     * Create a human readable form of the type
+     * @return string
+     */
     @Override
     public String toString() {
         switch (this.code) {

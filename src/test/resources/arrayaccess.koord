@@ -19,3 +19,4 @@ dosomething:
   eff:
     c[d] = a[d] + d + c[d]
     d = a[b[a[d]]]
+    c[c[d]] = d
