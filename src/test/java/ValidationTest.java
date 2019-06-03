@@ -3,9 +3,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class ValidationTest {
+class ValidationTest {
     @Test
-    public void lineform() throws IOException {
+    void lineform() throws IOException {
         assert(new Utils.SyntaxChecker().testFile("src/test/resources/lineform.koord"));
         ParseTree p = Utils.treeFromFile("src/test/resources/lineform.koord");
         var map = new SymbolTable(p);
@@ -13,7 +13,7 @@ public class ValidationTest {
 
     }
     @Test
-    public void shapeform() throws IOException {
+    void shapeform() throws IOException {
         assert(new Utils.SyntaxChecker().testFile("src/test/resources/shapeform.koord"));
 
         ParseTree p = Utils.treeFromFile("src/test/resources/shapeform.koord");
@@ -22,7 +22,7 @@ public class ValidationTest {
 
     }
     @Test
-    public void hvac() throws IOException{
+    void hvac() throws IOException{
         assert(new Utils.SyntaxChecker().testFile("src/test/resources/hvac.koord"));
 
         ParseTree p = Utils.treeFromFile("src/test/resources/hvac.koord");
@@ -33,7 +33,7 @@ public class ValidationTest {
 
 
     @Test
-    public void log() throws IOException{
+    void log() throws IOException{
         assert(new Utils.SyntaxChecker().testFile("src/test/resources/log.koord"));
 
         ParseTree p = Utils.treeFromFile("src/test/resources/log.koord");
@@ -42,7 +42,7 @@ public class ValidationTest {
 
     }
     @Test
-    public void arrayaccess() throws IOException{
+    void arrayaccess() throws IOException{
         assert(new Utils.SyntaxChecker().testFile("src/test/resources/arrayaccess.koord"));
 
         ParseTree p = Utils.treeFromFile("src/test/resources/arrayaccess.koord");
