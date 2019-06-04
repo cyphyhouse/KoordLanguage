@@ -1,4 +1,4 @@
-// Generated from /Users/johnwang/Desktop/koord/src/main/java/Koord.g4 by ANTLR 4.7.2
+// Generated from Koord.g4 by ANTLR 4.7.1
 
   import java.util.*;             
 
@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class KoordLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -36,46 +36,37 @@ public class KoordLexer extends Lexer {
 		"DEFAULT_MODE"
 	};
 
-	private static String[] makeRuleNames() {
-		return new String[] {
-			"AGENT", "MODULE", "USING", "DEF", "TYPE", "FUN", "ADT", "ACTUATORS", 
-			"SENSORS", "ALLWRITE", "ALLREAD", "LOCAL", "LIST", "MAP", "QUEUE", "INIT", 
-			"INT", "FLOAT", "BOOL", "STRINGTYPE", "POS", "INPUTMAP", "IF", "ELSE", 
-			"ATOMIC", "PRE", "EFF", "TRUE", "FALSE", "PID", "NUMAGENTS", "COLON", 
-			"COMMA", "SEMICOLON", "LPAR", "RPAR", "LBRACE", "RBRACE", "LCURLY", "RCURLY", 
-			"LANGLE", "RANGLE", "AND", "OR", "NOT", "LID", "CID", "MODULENAME", "VARNAME", 
-			"INUM", "FNUM", "PLUS", "MINUS", "TIMES", "BY", "EQ", "GEQ", "LEQ", "NEQ", 
-			"ASGN", "STRING", "NEWLINE", "SKIP_", "WS"
-		};
-	}
-	public static final String[] ruleNames = makeRuleNames();
+	public static final String[] ruleNames = {
+		"AGENT", "MODULE", "USING", "DEF", "TYPE", "FUN", "ADT", "ACTUATORS", 
+		"SENSORS", "ALLWRITE", "ALLREAD", "LOCAL", "LIST", "MAP", "QUEUE", "INIT", 
+		"INT", "FLOAT", "BOOL", "STRINGTYPE", "POS", "INPUTMAP", "IF", "ELSE", 
+		"ATOMIC", "PRE", "EFF", "TRUE", "FALSE", "PID", "NUMAGENTS", "COLON", 
+		"COMMA", "SEMICOLON", "LPAR", "RPAR", "LBRACE", "RBRACE", "LCURLY", "RCURLY", 
+		"LANGLE", "RANGLE", "AND", "OR", "NOT", "LID", "CID", "MODULENAME", "VARNAME", 
+		"INUM", "FNUM", "PLUS", "MINUS", "TIMES", "BY", "EQ", "GEQ", "LEQ", "NEQ", 
+		"ASGN", "STRING", "NEWLINE", "SKIP_", "WS"
+	};
 
-	private static String[] makeLiteralNames() {
-		return new String[] {
-			null, "'agent'", "'module'", "'using'", "'def'", "'type'", "'fun'", "'adt'", 
-			"'actuators'", "'sensors'", "'allwrite'", "'allread'", "'local'", "'list'", 
-			"'map'", "'queue'", "'init'", "'int'", "'float'", "'boolean'", "'string'", 
-			"'pos'", "'inputMap'", "'if'", "'else'", "'atomic'", "'pre'", "'eff'", 
-			"'true'", "'false'", "'pid'", "'numBots'", "':'", "','", "';'", "'('", 
-			"')'", "'['", "']'", "'{'", "'}'", "'<'", "'>'", null, null, "'!'", null, 
-			null, null, null, "'+'", "'-'", "'*'", "'/'", "'=='", "'>='", "'<='", 
-			"'!='", "'='"
-		};
-	}
-	private static final String[] _LITERAL_NAMES = makeLiteralNames();
-	private static String[] makeSymbolicNames() {
-		return new String[] {
-			null, "AGENT", "MODULE", "USING", "DEF", "TYPE", "FUN", "ADT", "ACTUATORS", 
-			"SENSORS", "ALLWRITE", "ALLREAD", "LOCAL", "LIST", "MAP", "QUEUE", "INIT", 
-			"INT", "FLOAT", "BOOL", "STRINGTYPE", "POS", "INPUTMAP", "IF", "ELSE", 
-			"ATOMIC", "PRE", "EFF", "TRUE", "FALSE", "PID", "NUMAGENTS", "COLON", 
-			"COMMA", "SEMICOLON", "LPAR", "RPAR", "LBRACE", "RBRACE", "LCURLY", "RCURLY", 
-			"LANGLE", "RANGLE", "AND", "OR", "NOT", "MODULENAME", "VARNAME", "INUM", 
-			"FNUM", "PLUS", "MINUS", "TIMES", "BY", "EQ", "GEQ", "LEQ", "NEQ", "ASGN", 
-			"STRING", "NEWLINE", "SKIP_"
-		};
-	}
-	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
+	private static final String[] _LITERAL_NAMES = {
+		null, "'agent'", "'module'", "'using'", "'def'", "'type'", "'fun'", "'adt'", 
+		"'actuators'", "'sensors'", "'allwrite'", "'allread'", "'local'", "'list'", 
+		"'map'", "'queue'", "'init'", "'int'", "'float'", "'boolean'", "'string'", 
+		"'pos'", "'inputMap'", "'if'", "'else'", "'atomic'", "'pre'", "'eff'", 
+		"'true'", "'false'", "'pid'", "'numBots'", "':'", "','", "';'", "'('", 
+		"')'", "'['", "']'", "'{'", "'}'", "'<'", "'>'", null, null, "'!'", null, 
+		null, null, null, "'+'", "'-'", "'*'", "'/'", "'=='", "'>='", "'<='", 
+		"'!='", "'='"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, "AGENT", "MODULE", "USING", "DEF", "TYPE", "FUN", "ADT", "ACTUATORS", 
+		"SENSORS", "ALLWRITE", "ALLREAD", "LOCAL", "LIST", "MAP", "QUEUE", "INIT", 
+		"INT", "FLOAT", "BOOL", "STRINGTYPE", "POS", "INPUTMAP", "IF", "ELSE", 
+		"ATOMIC", "PRE", "EFF", "TRUE", "FALSE", "PID", "NUMAGENTS", "COLON", 
+		"COMMA", "SEMICOLON", "LPAR", "RPAR", "LBRACE", "RBRACE", "LCURLY", "RCURLY", 
+		"LANGLE", "RANGLE", "AND", "OR", "NOT", "MODULENAME", "VARNAME", "INUM", 
+		"FNUM", "PLUS", "MINUS", "TIMES", "BY", "EQ", "GEQ", "LEQ", "NEQ", "ASGN", 
+		"STRING", "NEWLINE", "SKIP_"
+	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
 	/**

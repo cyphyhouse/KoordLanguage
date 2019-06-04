@@ -1,4 +1,4 @@
-// Generated from /Users/johnwang/Desktop/koord/src/main/java/Koord.g4 by ANTLR 4.7.2
+// Generated from Koord.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class KoordParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -32,42 +32,33 @@ public class KoordParser extends Parser {
 		RULE_bexpr = 13, RULE_aexpr = 14, RULE_number = 15, RULE_relop = 16, RULE_decblock = 17, 
 		RULE_decl = 18, RULE_arraydec = 19, RULE_module = 20, RULE_actuatordecls = 21, 
 		RULE_sensordecls = 22, RULE_init = 23;
-	private static String[] makeRuleNames() {
-		return new String[] {
-			"lexemes", "top", "program", "defs", "funcdef", "param", "event", "statementblock", 
-			"stmt", "funccall", "arglist", "assign", "expr", "bexpr", "aexpr", "number", 
-			"relop", "decblock", "decl", "arraydec", "module", "actuatordecls", "sensordecls", 
-			"init"
-		};
-	}
-	public static final String[] ruleNames = makeRuleNames();
+	public static final String[] ruleNames = {
+		"lexemes", "top", "program", "defs", "funcdef", "param", "event", "statementblock", 
+		"stmt", "funccall", "arglist", "assign", "expr", "bexpr", "aexpr", "number", 
+		"relop", "decblock", "decl", "arraydec", "module", "actuatordecls", "sensordecls", 
+		"init"
+	};
 
-	private static String[] makeLiteralNames() {
-		return new String[] {
-			null, "'agent'", "'module'", "'using'", "'def'", "'type'", "'fun'", "'adt'", 
-			"'actuators'", "'sensors'", "'allwrite'", "'allread'", "'local'", "'list'", 
-			"'map'", "'queue'", "'init'", "'int'", "'float'", "'boolean'", "'string'", 
-			"'pos'", "'inputMap'", "'if'", "'else'", "'atomic'", "'pre'", "'eff'", 
-			"'true'", "'false'", "'pid'", "'numBots'", "':'", "','", "';'", "'('", 
-			"')'", "'['", "']'", "'{'", "'}'", "'<'", "'>'", null, null, "'!'", null, 
-			null, null, null, "'+'", "'-'", "'*'", "'/'", "'=='", "'>='", "'<='", 
-			"'!='", "'='"
-		};
-	}
-	private static final String[] _LITERAL_NAMES = makeLiteralNames();
-	private static String[] makeSymbolicNames() {
-		return new String[] {
-			null, "AGENT", "MODULE", "USING", "DEF", "TYPE", "FUN", "ADT", "ACTUATORS", 
-			"SENSORS", "ALLWRITE", "ALLREAD", "LOCAL", "LIST", "MAP", "QUEUE", "INIT", 
-			"INT", "FLOAT", "BOOL", "STRINGTYPE", "POS", "INPUTMAP", "IF", "ELSE", 
-			"ATOMIC", "PRE", "EFF", "TRUE", "FALSE", "PID", "NUMAGENTS", "COLON", 
-			"COMMA", "SEMICOLON", "LPAR", "RPAR", "LBRACE", "RBRACE", "LCURLY", "RCURLY", 
-			"LANGLE", "RANGLE", "AND", "OR", "NOT", "MODULENAME", "VARNAME", "INUM", 
-			"FNUM", "PLUS", "MINUS", "TIMES", "BY", "EQ", "GEQ", "LEQ", "NEQ", "ASGN", 
-			"STRING", "NEWLINE", "SKIP_", "INDENT", "DEDENT", "CID"
-		};
-	}
-	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
+	private static final String[] _LITERAL_NAMES = {
+		null, "'agent'", "'module'", "'using'", "'def'", "'type'", "'fun'", "'adt'", 
+		"'actuators'", "'sensors'", "'allwrite'", "'allread'", "'local'", "'list'", 
+		"'map'", "'queue'", "'init'", "'int'", "'float'", "'boolean'", "'string'", 
+		"'pos'", "'inputMap'", "'if'", "'else'", "'atomic'", "'pre'", "'eff'", 
+		"'true'", "'false'", "'pid'", "'numBots'", "':'", "','", "';'", "'('", 
+		"')'", "'['", "']'", "'{'", "'}'", "'<'", "'>'", null, null, "'!'", null, 
+		null, null, null, "'+'", "'-'", "'*'", "'/'", "'=='", "'>='", "'<='", 
+		"'!='", "'='"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, "AGENT", "MODULE", "USING", "DEF", "TYPE", "FUN", "ADT", "ACTUATORS", 
+		"SENSORS", "ALLWRITE", "ALLREAD", "LOCAL", "LIST", "MAP", "QUEUE", "INIT", 
+		"INT", "FLOAT", "BOOL", "STRINGTYPE", "POS", "INPUTMAP", "IF", "ELSE", 
+		"ATOMIC", "PRE", "EFF", "TRUE", "FALSE", "PID", "NUMAGENTS", "COLON", 
+		"COMMA", "SEMICOLON", "LPAR", "RPAR", "LBRACE", "RBRACE", "LCURLY", "RCURLY", 
+		"LANGLE", "RANGLE", "AND", "OR", "NOT", "MODULENAME", "VARNAME", "INUM", 
+		"FNUM", "PLUS", "MINUS", "TIMES", "BY", "EQ", "GEQ", "LEQ", "NEQ", "ASGN", 
+		"STRING", "NEWLINE", "SKIP_", "INDENT", "DEDENT", "CID"
+	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
 	/**
@@ -117,7 +108,6 @@ public class KoordParser extends Parser {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
-
 	public static class LexemesContext extends ParserRuleContext {
 		public TerminalNode AGENT() { return getToken(KoordParser.AGENT, 0); }
 		public TerminalNode MODULE() { return getToken(KoordParser.MODULE, 0); }
