@@ -42,4 +42,10 @@ public class ParseFileTest {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
         assert(checker.testFile("src/test/resources/shapeform.koord"));
     }
+
+    @Test
+    public void newlinestart() throws IOException{
+        Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
+        assert(checker.testFile("src/test/resources/newlinestart.koord"));
+    }
 }

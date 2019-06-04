@@ -29,14 +29,14 @@ tokens { INDENT, DEDENT }
   }
   @Override
   public Token nextToken() {
-    if (_input.LA(1) == EOF) {
-        if (!spaces.isEmpty()) {
+    if (_input.LA(1) == EOF && !spaces.isEmpty()) {
+        if (spaces.peek() != 0) {
 
-        emit(commonToken(KoordParser.NEWLINE, "<newline>"));
-      while (!spaces.isEmpty()) {
-        spaces.poll();
-        emit(commonToken(KoordParser.DEDENT, "dedent"));
-      }
+            emit(commonToken(KoordParser.NEWLINE, "<newline>"));
+            while (spaces.peek() != 0) {
+                spaces.poll();
+                emit(commonToken(KoordParser.DEDENT, "dedent"));
+            }
         }
     }
     Token next = super.nextToken();
@@ -127,15 +127,18 @@ NEWLINE
  :  '\n' WS?
   
    {
+      if (spaces.isEmpty()) {
+        spaces.push(0);
+      }
       Integer numSpaces = (int) getText().chars().filter(x -> x == ' ').count();
       if (_input.LA(1) != '\n')            {
         emit(commonToken(NEWLINE, "<newline>"));
 
-        if (spaces.isEmpty() || numSpaces > spaces.peek()) {
+        if (numSpaces > spaces.peek()) {
             emit(commonToken(KoordParser.INDENT, "<indent>"));
             spaces.push(numSpaces);
         } else if (spaces.peek() > numSpaces ) {
-          while (!spaces.isEmpty() && spaces.peek() > numSpaces) {
+          while (spaces.peek() > numSpaces) {
 
             emit(commonToken(KoordParser.DEDENT, "<dedent>"));
             spaces.pop();
@@ -165,7 +168,7 @@ PLUS| MINUS| TIMES| BY| EQ| GEQ| LEQ| NEQ| ASGN | NEWLINE | SKIP_ | INDENT | DED
 top : lexemes+;
 
 
-program :  defs  module*   decblock*   init?  event+ EOF;
+program :  NEWLINE? defs  module*   decblock*   init?  event+ EOF;
 defs : funcdef* /* adtdef* */;
 funcdef : DEF FUN VARNAME LPAR param* RPAR COLON NEWLINE statementblock;
 //adtdef : DEF ADT VARNAME COLON decl+;
