@@ -56,25 +56,7 @@ public class SymbolTable {
         return multipleDeclaration;
     }
 
-    /**
-     * When a shared variable is used as a local variable
-     * @return list of bad vars
-     */
-    public List<String> getSharedRequiresId() {
-        return sharedRequiresId;
-    }
-
-    /**
-     * When a local variable is treated like a shared variable
-     * @return list of bad vars
-     */
-    public List<String> getLocalWithId() {
-        return localWithId;
-    }
-
     private List<String> multipleDeclaration = new ArrayList<>();
-    private List<String> sharedRequiresId = new ArrayList<>();
-    private List<String> localWithId = new ArrayList<>();
     private List<ParserRuleContext> typeMismatch = new ArrayList<>();
     private List<String> assignToSensor = new ArrayList<>();
 
@@ -268,6 +250,7 @@ public class SymbolTable {
                     types.push(Type.String);
                 } else if (ctx.LBRACE() != null) {
                 }
+                //if the size is 1, then the type should be the exact same
             }
 
             @Override
@@ -327,7 +310,6 @@ public class SymbolTable {
 
 
     /**
-     * Performs a tree walk on construction
      * @param tree the tree to walk on
      */
     public SymbolTable(ParseTree tree) {
@@ -353,6 +335,10 @@ public class SymbolTable {
         return unresolvedSymbols;
     }
 
+    /**
+     * Create a human readable form.
+     * @return string
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (SymbolTableEntry entry : vars.values()) {
@@ -375,9 +361,9 @@ public class SymbolTable {
      * @return whether it is valid
      */
     public boolean isValid() {
-        return multipleDeclaration.isEmpty()
-                && sharedRequiresId.isEmpty()
-                && localWithId.isEmpty()
+        return
+                unresolvedSymbols.isEmpty()
+                &&  multipleDeclaration.isEmpty()
                 && typeMismatch.isEmpty()
                 && assignToSensor.isEmpty();
     }
