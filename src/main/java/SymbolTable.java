@@ -1,5 +1,7 @@
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.*;
 
@@ -62,81 +64,7 @@ public class SymbolTable {
 
         ParseTreeWalker walker = new ParseTreeWalker();
 
-        walker.walk(new KoordBaseListener() {
-
-            private Scope currentScope;
-            private String moduleName;
-
-            @Override
-            public void enterModule(KoordParser.ModuleContext ctx) {
-                moduleName = ctx.MODULENAME().getText();
-            }
-
-            @Override
-            public void exitModule(KoordParser.ModuleContext ctx) {
-                moduleName = null;
-            }
-
-            @Override
-            public void enterActuatordecls(KoordParser.ActuatordeclsContext ctx) {
-                currentScope = Scope.Actuator;
-            }
-
-            @Override
-            public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
-                currentScope = Scope.Sensor;
-            }
-
-            @Override
-            public void enterDecblock(KoordParser.DecblockContext ctx) {
-                if (ctx.ALLREAD() != null) {
-                    currentScope = Scope.AllRead;
-                } else if (ctx.ALLWRITE() != null) {
-                    currentScope = Scope.AllWrite;
-                } else if (ctx.LOCAL() != null) {
-                    currentScope = Scope.Local;
-                } else {
-                    System.err.println("Unknown scope");
-                }
-            }
-
-            @Override
-            public void enterDecl(KoordParser.DeclContext ctx) {
-                Type t = null;
-
-                if (ctx.FLOAT() != null) {
-                    t = Type.Float;
-                } else if (ctx.INT() != null) {
-                    t = Type.Int;
-                } else if (ctx.BOOL() != null) {
-                    t = Type.Bool;
-                } else if (ctx.POS() != null) {
-                    t = Type.Pos;
-                } else if (ctx.STRINGTYPE() != null) {
-                    t = Type.String;
-
-                } else {
-                    System.err.println("Unable to determine type");
-                }
-
-                if (ctx.arraydec() != null) {
-                    t = Type.Array(t);
-                }
-
-                String name = ctx.VARNAME().getText();
-                if (moduleName != null) {
-                    name = moduleName + "." + name;
-                }
-                if (vars.get(name) != null) {
-                    multipleDeclaration.add(name);
-                    return;
-                }
-
-                var entry = new SymbolTableEntry(currentScope, t, name);
-                vars.put(name, entry);
-            }
-
-        }, tree);
+        walker.walk(new SymbolTableBuilderListener(), tree);
     }
 
     /**
@@ -184,116 +112,7 @@ public class SymbolTable {
     private void checkTypes(ParseTree tree) {
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(new KoordBaseListener() {
-            private Deque<Type> types = new LinkedList<>();
-
-            @Override
-            public void exitNumber(KoordParser.NumberContext ctx) {
-                if (ctx.FNUM() != null) {
-                    types.push(Type.Float);
-                } else if (ctx.INUM() != null) {
-                    types.push(Type.Int);
-                } else if (ctx.PID() != null) {
-                    types.push(Type.Int);
-                } else {
-                    System.err.println("Unable to recognize number");
-                }
-            }
-
-            @Override
-            public void exitAexpr(KoordParser.AexprContext ctx) {
-                if (ctx.aexpr().size() == 2) {
-
-
-                    var right = types.pop();
-                    var left = types.pop();
-                    if (right == null || left == null) {
-                        types.push(null);
-                        return;
-                    }
-                    if (ctx.PLUS() != null) {
-
-                        //string concatenation
-                        if (right.equals(Type.String) || left.equals(Type.String)) {
-                            types.push(Type.String);
-                            return;
-                        }
-                    }
-                    if (!right.equals(left)) {
-                        typeMismatch.add(ctx); //because there is no associated variable
-                    }
-                    types.push(left);
-
-                } else if (ctx.VARNAME() != null) {
-                    var varType = vars.get(ctx.VARNAME().getText());
-                    if (ctx.LBRACE() != null) {
-                        var index = types.pop();
-                        if (!index.equals(Type.Int)) {
-                            typeMismatch.add(ctx); //because there is no associated variable
-                        }
-
-                        if (varType.type.isArray()) {
-                            types.push(varType.type.getInnerType());
-                        } else {
-                            typeMismatch.add(ctx);
-                        }
-                    } else {
-
-                        types.push(varType.type);
-                    }
-
-                } else if (ctx.funccall() != null) {
-                    //do nothing for now
-                    types.push(null);
-                } else if (ctx.STRING() != null) {
-                    types.push(Type.String);
-                } else if (ctx.LBRACE() != null) {
-                }
-                //if the size is 1, then the type should be the exact same
-            }
-
-            @Override
-            public void exitBexpr(KoordParser.BexprContext ctx) {
-                if (ctx.VARNAME() == null) {
-                    for (var t : ctx.aexpr()) {
-                        types.poll();
-                    }
-                    for (var t : ctx.bexpr()) {
-                        types.poll();
-                    }
-                    types.push(Type.Bool);
-                }
-            }
-
-            @Override
-            public void exitAssign(KoordParser.AssignContext ctx) {
-                Type t = vars.get(ctx.VARNAME().getText()).type;
-                Type actual = types.poll();
-                if (actual == null) {
-                    return; //null means the type is not yet determined
-                    //eg a function
-                }
-
-                //check if indexing into array
-                if (ctx.LBRACE() != null) {
-                    if (t.isArray()) {
-                        //the inner type should be equal to it
-                        if (!t.getInnerType().equals(actual)) {
-                            typeMismatch.add(ctx);
-                        }
-                    } else {
-                        typeMismatch.add(ctx);
-                    }
-                } else {
-
-                    if (!t.equals(actual)) {
-                        typeMismatch.add(ctx);
-                    }
-                }
-
-            }
-
-        }, tree);
+        walker.walk(new TypeCheckerListener(), tree);
     }
 
     private void checkIfDeclared(TerminalNode variable) {
@@ -373,5 +192,193 @@ public class SymbolTable {
         public String toString() {
             return String.format("{name: %s, type: %s, scope: %s}", name, type.toString(), scope.toString());
         }
+    }
+
+    private class SymbolTableBuilderListener extends KoordBaseListener {
+
+
+        private Scope currentScope;
+        private String moduleName;
+
+        @Override
+        public void enterModule(KoordParser.ModuleContext ctx) {
+            moduleName = ctx.MODULENAME().getText();
+        }
+
+        @Override
+        public void exitModule(KoordParser.ModuleContext ctx) {
+            moduleName = null;
+        }
+
+        @Override
+        public void enterActuatordecls(KoordParser.ActuatordeclsContext ctx) {
+            currentScope = Scope.Actuator;
+        }
+
+        @Override
+        public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
+            currentScope = Scope.Sensor;
+        }
+
+        @Override
+        public void enterDecblock(KoordParser.DecblockContext ctx) {
+            if (ctx.ALLREAD() != null) {
+                currentScope = Scope.AllRead;
+            } else if (ctx.ALLWRITE() != null) {
+                currentScope = Scope.AllWrite;
+            } else if (ctx.LOCAL() != null) {
+                currentScope = Scope.Local;
+            } else {
+                System.err.println("Unknown scope");
+            }
+        }
+
+        @Override
+        public void enterDecl(KoordParser.DeclContext ctx) {
+            Type t = null;
+
+            if (ctx.FLOAT() != null) {
+                t = Type.Float;
+            } else if (ctx.INT() != null) {
+                t = Type.Int;
+            } else if (ctx.BOOL() != null) {
+                t = Type.Bool;
+            } else if (ctx.POS() != null) {
+                t = Type.Pos;
+            } else if (ctx.STRINGTYPE() != null) {
+                t = Type.String;
+
+            } else {
+                System.err.println("Unable to determine type");
+            }
+
+            if (ctx.arraydec() != null) {
+                t = Type.Array(t);
+            }
+
+            String name = ctx.VARNAME().getText();
+            if (moduleName != null) {
+                name = moduleName + "." + name;
+            }
+            if (vars.get(name) != null) {
+                multipleDeclaration.add(name);
+                return;
+            }
+
+            var entry = new SymbolTableEntry(currentScope, t, name);
+            vars.put(name, entry);
+        }
+
+    }
+
+    private class TypeCheckerListener extends KoordBaseListener {
+        private Deque<Type> types = new LinkedList<>();
+
+        @Override
+        public void exitNumber(KoordParser.NumberContext ctx) {
+            if (ctx.FNUM() != null) {
+                types.push(Type.Float);
+            } else if (ctx.INUM() != null) {
+                types.push(Type.Int);
+            } else if (ctx.PID() != null) {
+                types.push(Type.Int);
+            } else {
+                System.err.println("Unable to recognize number");
+            }
+        }
+
+        @Override
+        public void exitAexpr(KoordParser.AexprContext ctx) {
+            if (ctx.aexpr().size() == 2) {
+
+
+                var right = types.pop();
+                var left = types.pop();
+                if (right == null || left == null) {
+                    types.push(null);
+                    return;
+                }
+                if (ctx.PLUS() != null) {
+
+                    //string concatenation
+                    if (right.equals(Type.String) || left.equals(Type.String)) {
+                        types.push(Type.String);
+                        return;
+                    }
+                }
+                if (!right.equals(left)) {
+                    typeMismatch.add(ctx); //because there is no associated variable
+                }
+                types.push(left);
+
+            } else if (ctx.VARNAME() != null) {
+                var varType = vars.get(ctx.VARNAME().getText());
+                if (ctx.LBRACE() != null) {
+                    var index = types.pop();
+                    if (!index.equals(Type.Int)) {
+                        typeMismatch.add(ctx); //because there is no associated variable
+                    }
+
+                    if (varType.type.isArray()) {
+                        types.push(varType.type.getInnerType());
+                    } else {
+                        typeMismatch.add(ctx);
+                    }
+                } else {
+
+                    types.push(varType.type);
+                }
+
+            } else if (ctx.funccall() != null) {
+                //do nothing for now
+                types.push(null);
+            } else if (ctx.STRING() != null) {
+                types.push(Type.String);
+            } else if (ctx.LBRACE() != null) {
+            }
+            //if the size is 1, then the type should be the exact same
+        }
+
+        @Override
+        public void exitBexpr(KoordParser.BexprContext ctx) {
+            if (ctx.VARNAME() == null) {
+                for (var t : ctx.aexpr()) {
+                    types.poll();
+                }
+                for (var t : ctx.bexpr()) {
+                    types.poll();
+                }
+                types.push(Type.Bool);
+            }
+        }
+
+        @Override
+        public void exitAssign(KoordParser.AssignContext ctx) {
+            Type t = vars.get(ctx.VARNAME().getText()).type;
+            Type actual = types.poll();
+            if (actual == null) {
+                return; //null means the type is not yet determined
+                //eg a function
+            }
+
+            //check if indexing into array
+            if (ctx.LBRACE() != null) {
+                if (t.isArray()) {
+                    //the inner type should be equal to it
+                    if (!t.getInnerType().equals(actual)) {
+                        typeMismatch.add(ctx);
+                    }
+                } else {
+                    typeMismatch.add(ctx);
+                }
+            } else {
+
+                if (!t.equals(actual)) {
+                    typeMismatch.add(ctx);
+                }
+            }
+
+        }
+
     }
 }
