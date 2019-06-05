@@ -1,13 +1,14 @@
-using IO:
+using Log:
   sensors:
-     int foo
+    int stdin
   actuators:
-     string log
+    stream stdout
 
 
 
 dosomething:
   pre:true
   eff:
-    IO.log = "hi"
-    IO.log = "hello" + IO.foo
+    Log.stdout <<  "hi"
+    Log.stdout <<  "1 + 1 = " << 2
+

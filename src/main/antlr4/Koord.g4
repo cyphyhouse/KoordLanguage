@@ -73,6 +73,7 @@ INT:'int';
 FLOAT:'float';
 BOOL:'boolean'; //bool or boolean?
 STRINGTYPE:'string';
+STREAM : 'stream';
 
 
 POS:'pos';
@@ -120,6 +121,7 @@ GEQ : '>=';
 LEQ : '<=';
 NEQ : '!=';
 ASGN : '=';
+LSHIFT : '<<';
 
 STRING : '"' (~('"'))*? '"';
 
@@ -159,16 +161,6 @@ fragment WS : [ \t]+ ; //should be parsed ?
 
 
 
-lexemes : AGENT|MODULE| DEF |TYPE |FUN | ACTUATORS|SENSORS|
-ALLWRITE|ALLREAD|LOCAL| LIST|MAP|QUEUE| INIT|INT|FLOAT|BOOL| POS|IF|ELSE|ATOMIC|
-PRE|EFF|TRUE|FALSE| PID|NUMAGENTS | COLON| COMMA| SEMICOLON| LPAR| RPAR| LBRACE|
-RBRACE| LCURLY| RCURLY| LANGLE| RANGLE| AND| OR| NOT| VARNAME| CID| INUM| FNUM|
-PLUS| MINUS| TIMES| BY| EQ| GEQ| LEQ| NEQ| ASGN | NEWLINE | SKIP_ | INDENT | DEDENT;
-
-
-top : lexemes+;
-
-
 program :  NEWLINE? defs  module*   decblock*   init?  event+ EOF;
 defs : funcdef* /* adtdef* */;
 funcdef : DEF FUN VARNAME LPAR param* RPAR COLON NEWLINE statementblock;
@@ -180,8 +172,12 @@ statementblock : INDENT stmt+ DEDENT;
 
 stmt : assign NEWLINE
      | funccall NEWLINE
+     | iostream NEWLINE
      | IF expr COLON NEWLINE statementblock (ELSE COLON NEWLINE statementblock)?
      | ATOMIC COLON NEWLINE statementblock; //add later
+
+iostream : VARNAME LSHIFT expr
+    | iostream LSHIFT expr;
 
 funccall : VARNAME LPAR (arglist)? RPAR;
 
@@ -220,9 +216,10 @@ aexpr :
 number : FNUM | INUM | PID;
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
+
 decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
+decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
 
 arraydec : LBRACE RBRACE;
 

@@ -23,3 +23,5 @@ public class TypeTest {
         assertNotEquals(Type.Array(Type.Array(Type.Bool)), (Type.Array((Type.Bool))));
     }
 }
+
+
