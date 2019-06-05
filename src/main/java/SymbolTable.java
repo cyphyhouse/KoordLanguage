@@ -9,9 +9,28 @@ import java.util.*;
 public class SymbolTable {
 
     private Map<String, SymbolTableEntry> vars = new HashMap<>();
+    private List<String> unresolvedSymbols = new ArrayList<>();
+    private List<String> multipleDeclaration = new ArrayList<>();
+    private List<ParserRuleContext> typeMismatch = new ArrayList<>();
+    private List<String> assignToSensor = new ArrayList<>();
+
+    /**
+     * @param tree the tree to walk on
+     */
+    public SymbolTable(ParseTree tree) {
+        this.buildTable(tree);
+        if (this.multipleDeclaration.isEmpty()) {
+            checkAllDeclared(tree);
+            if (this.unresolvedSymbols.isEmpty()) {
+                checkTypes(tree);
+                checkScope(tree);
+            }
+        }
+    }
 
     /**
      * Type mismatches, such as assigning a boolean to an int
+     *
      * @return list of variables that are bad
      */
     public List<ParserRuleContext> getTypeMismatch() {
@@ -20,6 +39,7 @@ public class SymbolTable {
 
     /**
      * Sensors are read only and cannot be assigned to.
+     *
      * @return list of variables that are bad
      */
     public List<String> getAssignToSensor() {
@@ -27,39 +47,13 @@ public class SymbolTable {
     }
 
     /**
-     * The information associated with each variable.
-     */
-    class SymbolTableEntry {
-        public Scope scope;
-        public Type type;
-        public String name;
-
-        SymbolTableEntry(Scope s, Type t, String n) {
-            this.scope = s;
-            this.type = t;
-            this.name = n;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("{name: %s, type: %s, scope: %s}", name, type.toString(), scope.toString());
-        }
-    }
-
-    private List<String> unresolvedSymbols = new ArrayList<>();
-
-    /**
      * When a variable is declared multiple times
+     *
      * @return list of bad vars
      */
     public List<String> getMultipleDeclaration() {
         return multipleDeclaration;
     }
-
-    private List<String> multipleDeclaration = new ArrayList<>();
-    private List<ParserRuleContext> typeMismatch = new ArrayList<>();
-    private List<String> assignToSensor = new ArrayList<>();
-
 
     /**
      * Builds the symbol table
@@ -72,25 +66,27 @@ public class SymbolTable {
 
             private Scope currentScope;
             private String moduleName;
-                    @Override
-                    public void enterModule(KoordParser.ModuleContext ctx) {
-                        moduleName = ctx.MODULENAME().getText();
-                    }
 
-                    @Override
-                    public void exitModule(KoordParser.ModuleContext ctx) {
-                        moduleName = null;
-                    }
+            @Override
+            public void enterModule(KoordParser.ModuleContext ctx) {
+                moduleName = ctx.MODULENAME().getText();
+            }
 
-                    @Override
-                    public void enterActuatordecls(KoordParser.ActuatordeclsContext ctx) {
-                        currentScope = Scope.Actuator;
-                    }
+            @Override
+            public void exitModule(KoordParser.ModuleContext ctx) {
+                moduleName = null;
+            }
 
-                    @Override
-                    public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
-                        currentScope = Scope.Sensor;
-                    }
+            @Override
+            public void enterActuatordecls(KoordParser.ActuatordeclsContext ctx) {
+                currentScope = Scope.Actuator;
+            }
+
+            @Override
+            public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
+                currentScope = Scope.Sensor;
+            }
+
             @Override
             public void enterDecblock(KoordParser.DecblockContext ctx) {
                 if (ctx.ALLREAD() != null) {
@@ -103,6 +99,7 @@ public class SymbolTable {
                     System.err.println("Unknown scope");
                 }
             }
+
             @Override
             public void enterDecl(KoordParser.DeclContext ctx) {
                 Type t = null;
@@ -115,7 +112,7 @@ public class SymbolTable {
                     t = Type.Bool;
                 } else if (ctx.POS() != null) {
                     t = Type.Pos;
-                }else if (ctx.STRINGTYPE() != null) {
+                } else if (ctx.STRINGTYPE() != null) {
                     t = Type.String;
 
                 } else {
@@ -155,6 +152,7 @@ public class SymbolTable {
                 TerminalNode variable = ctx.VARNAME();
                 checkIfDeclared(variable);
             }
+
             @Override
             public void enterAexpr(KoordParser.AexprContext ctx) {
                 TerminalNode variable = ctx.VARNAME();
@@ -168,6 +166,7 @@ public class SymbolTable {
             }
         }, tree);
     }
+
     private void checkScope(ParseTree tree) {
 
         ParseTreeWalker walker = new ParseTreeWalker();
@@ -179,7 +178,7 @@ public class SymbolTable {
                     assignToSensor.add(entry.name);
                 }
             }
-        },tree);
+        }, tree);
     }
 
     private void checkTypes(ParseTree tree) {
@@ -206,24 +205,24 @@ public class SymbolTable {
                 if (ctx.aexpr().size() == 2) {
 
 
-                        var right = types.pop();
-                        var left = types.pop();
-                        if (right == null || left == null) {
-                            types.push(null);
+                    var right = types.pop();
+                    var left = types.pop();
+                    if (right == null || left == null) {
+                        types.push(null);
+                        return;
+                    }
+                    if (ctx.PLUS() != null) {
+
+                        //string concatenation
+                        if (right.equals(Type.String) || left.equals(Type.String)) {
+                            types.push(Type.String);
                             return;
                         }
-                        if (ctx.PLUS() != null) {
-
-                            //string concatenation
-                            if (right.equals(Type.String) || left.equals(Type.String) ) {
-                                types.push(Type.String);
-                                return;
-                            }
-                        }
-                        if (!right.equals(left)) {
-                            typeMismatch.add(ctx); //because there is no associated variable
-                        }
-                        types.push(left);
+                    }
+                    if (!right.equals(left)) {
+                        typeMismatch.add(ctx); //because there is no associated variable
+                    }
+                    types.push(left);
 
                 } else if (ctx.VARNAME() != null) {
                     var varType = vars.get(ctx.VARNAME().getText());
@@ -307,28 +306,13 @@ public class SymbolTable {
         }
     }
 
-
-
-    /**
-     * @param tree the tree to walk on
-     */
-    public SymbolTable(ParseTree tree) {
-        this.buildTable(tree);
-        if (this.multipleDeclaration.isEmpty()) {
-            checkAllDeclared(tree);
-            if (this.unresolvedSymbols.isEmpty()) {
-                checkTypes(tree);
-                checkScope(tree);
-            }
-        }
-    }
-
     public Set<String> getAllVars() {
         return vars.keySet();
     }
 
     /**
      * Variables that have not been declared
+     *
      * @return bad vars
      */
     public List<String> getUnresolvedSymbols() {
@@ -337,6 +321,7 @@ public class SymbolTable {
 
     /**
      * Create a human readable form.
+     *
      * @return string
      */
     public String toString() {
@@ -349,6 +334,7 @@ public class SymbolTable {
 
     /**
      * The table that maps var names to symbol info
+     *
      * @return the table
      */
     public Map<String, SymbolTableEntry> getTable() {
@@ -358,13 +344,34 @@ public class SymbolTable {
 
     /**
      * Checks if there are any errors with type and scope
+     *
      * @return whether it is valid
      */
     public boolean isValid() {
         return
                 unresolvedSymbols.isEmpty()
-                &&  multipleDeclaration.isEmpty()
-                && typeMismatch.isEmpty()
-                && assignToSensor.isEmpty();
+                        && multipleDeclaration.isEmpty()
+                        && typeMismatch.isEmpty()
+                        && assignToSensor.isEmpty();
+    }
+
+    /**
+     * The information associated with each variable.
+     */
+    class SymbolTableEntry {
+        public Scope scope;
+        public Type type;
+        public String name;
+
+        SymbolTableEntry(Scope s, Type t, String n) {
+            this.scope = s;
+            this.type = t;
+            this.name = n;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("{name: %s, type: %s, scope: %s}", name, type.toString(), scope.toString());
+        }
     }
 }

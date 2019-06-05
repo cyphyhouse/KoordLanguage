@@ -6,46 +6,50 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.BitSet;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class ParseFileTest {
 
     @Test
-    public void badfile() throws IOException{ //should fail
+    public void badfile() throws IOException { //should fail
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(!checker.testFile("src/test/resources/badfile.koord"));
+        assertFalse(checker.testFile("src/test/resources/badfile.koord"));
     }
 
     @Test
-    public void file1() throws IOException{
+    public void file1() throws IOException {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/test1.koord"));
+        assertTrue(checker.testFile("src/test/resources/test1.koord"));
     }
 
     @Test
-    public void file2() throws IOException{
+    public void file2() throws IOException {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/test2.koord"));
+        assertTrue(checker.testFile("src/test/resources/test2.koord"));
     }
 
     @Test
-    public void file3() throws IOException{
+    public void file3() throws IOException {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/test3.koord"));
+        assertTrue(checker.testFile("src/test/resources/test3.koord"));
     }
 
     @Test
-    public void lineform_mod() throws IOException{
+    public void lineform_mod() throws IOException {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/lineform.koord"));
-    }
-    @Test
-    public void shapeform_mod() throws IOException{
-        Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/shapeform.koord"));
+        assertTrue(checker.testFile("src/test/resources/lineform.koord"));
     }
 
     @Test
-    public void newlinestart() throws IOException{
+    public void shapeform_mod() throws IOException {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assert(checker.testFile("src/test/resources/newlinestart.koord"));
+        assertTrue(checker.testFile("src/test/resources/shapeform.koord"));
+    }
+
+    @Test
+    public void newlinestart() throws IOException {
+        Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
+        assertTrue(checker.testFile("src/test/resources/newlinestart.koord"));
     }
 }

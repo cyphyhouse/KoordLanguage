@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class SymbolTest {
 
     @Test
@@ -16,10 +19,10 @@ public class SymbolTest {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-        List<String> expected = Arrays.asList(new String[] {"added", "finalsum", "numadded", "sum" });
+        List<String> expected = Arrays.asList(new String[]{"added", "finalsum", "numadded", "sum"});
 
 
-        assert(expected.equals(actual) );
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -28,7 +31,7 @@ public class SymbolTest {
         ParseTree tree = p.program();
         List<String> actual = new SymbolTable(tree).getUnresolvedSymbols();
 
-        assert(actual.isEmpty());
+        assertTrue(actual.isEmpty());
 
     }
 
@@ -38,14 +41,14 @@ public class SymbolTest {
         ParseTree tree = p.program();
         var map = new SymbolTable(tree).getTable();
         var a = map.get("a");
-        assert(a.scope == Scope.AllWrite);
-        assert(map.get("b").scope == Scope.AllWrite);
-        assert(map.get("c").scope == Scope.AllRead);
-        assert(map.get("d").scope == Scope.AllRead);
-        assert(map.get("e").scope == Scope.Local);
-        assert(map.get("f").scope == Scope.Local);
-        assert(map.get("Motion.foo").scope == Scope.Actuator);
-        assert(map.get("Motion.bar").scope == Scope.Sensor);
+        assertEquals(a.scope, Scope.AllWrite);
+        assertEquals(map.get("b").scope, Scope.AllWrite);
+        assertEquals(map.get("c").scope, Scope.AllRead);
+        assertEquals(map.get("d").scope, Scope.AllRead);
+        assertEquals(map.get("e").scope, Scope.Local);
+        assertEquals(map.get("f").scope, Scope.Local);
+        assertEquals(map.get("Motion.foo").scope, Scope.Actuator);
+        assertEquals(map.get("Motion.bar").scope, Scope.Sensor);
 
     }
 
@@ -59,8 +62,8 @@ public class SymbolTest {
                 .map((x) -> x.getText())
                 .collect(Collectors.toList());
 
-        assert(badTypes.get(0).contains("a"));
-        assert(badTypes.get(1).contains("f"));
+        assertTrue(badTypes.get(0).contains("a"));
+        assertTrue(badTypes.get(1).contains("f"));
 
     }
 
@@ -75,9 +78,9 @@ public class SymbolTest {
                 .collect(Collectors.toList());
         var assignToSensor = table.getAssignToSensor();
 
-        assert(badTypes.get(0).contains("e"));
-        assert(badTypes.get(1).contains("c"));
-        assert(assignToSensor.contains("Motion.foo"));
+        assertTrue(badTypes.get(0).contains("e"));
+        assertTrue(badTypes.get(1).contains("c"));
+        assertTrue(assignToSensor.contains("Motion.foo"));
     }
 
 
@@ -87,7 +90,7 @@ public class SymbolTest {
         ParseTree p = Utils.treeFromFile("src/test/resources/multipledecl.koord");
         var map = new SymbolTable(p);
         var multipleDec = map.getMultipleDeclaration();
-        assert(multipleDec.contains("a"));
+        assert (multipleDec.contains("a"));
 
     }
 
@@ -100,9 +103,10 @@ public class SymbolTest {
                 .stream()
                 .map((x) -> x.getText())
                 .collect(Collectors.toList());
-        assert(badTypes.get(0).contains("apple"));
+        assertTrue(badTypes.get(0).contains("apple"));
 
     }
+
     @Test
     public void nestedTypeFail() {
 
@@ -112,10 +116,9 @@ public class SymbolTest {
                 .stream()
                 .map((x) -> x.getText())
                 .collect(Collectors.toList());
-        assert(badTypes.get(1).contains("banana"));
+        assertTrue(badTypes.get(1).contains("banana"));
 
     }
-
 
 
 }
