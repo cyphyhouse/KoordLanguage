@@ -8,7 +8,7 @@ tokens { INDENT, DEDENT }
 }
 
 @lexer::members { //this must be put on the top, and not after the grammar rules
-                
+//     modified from https://github.com/antlr/grammars-v4/blob/master/python3/Python3.g4           
   private int prevNumSpaces = 0;             
   private Queue<Token> tokens = new LinkedList<>();
   private Deque<Integer> spaces = new LinkedList<>();
@@ -110,7 +110,7 @@ fragment CID : [A-Z][a-zA-Z0-9]*;
 MODULENAME : CID;
 VARNAME : LID | (CID '.' LID);
 INUM : [0-9]+;
-FNUM : [0-9]+([.][0-9]+)?;
+FNUM : [0-9]+[.][0-9]+;
 PLUS : '+';
 MINUS : '-';
 TIMES : '*';
@@ -121,12 +121,13 @@ LEQ : '<=';
 NEQ : '!=';
 ASGN : '=';
 
-STRING : '"' .*? '"';
+STRING : '"' (~('"'))*? '"';
 
 NEWLINE
  :  '\n' WS?
   
    {
+//     modified from https://github.com/antlr/grammars-v4/blob/master/python3/Python3.g4           
       if (spaces.isEmpty()) {
         spaces.push(0);
       }
