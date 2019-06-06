@@ -120,5 +120,14 @@ public class SymbolTest {
 
     }
 
+    @Test
+    public void assignToStream() {
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/badlog.koord");
+        var map = new SymbolTable(p);
+        var assignStream = map.getAssignStream();
+        assertTrue(assignStream.contains("Log.stdout"));
+
+    }
 
 }
