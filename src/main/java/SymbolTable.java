@@ -15,6 +15,7 @@ public class SymbolTable {
     private List<String> multipleDeclaration = new ArrayList<>();
     private List<ParserRuleContext> typeMismatch = new ArrayList<>();
     private List<String> assignToSensor = new ArrayList<>();
+    private List<String> assignStream = new ArrayList<>();
 
     /**
      * @param tree the tree to walk on
@@ -105,6 +106,9 @@ public class SymbolTable {
                 if (entry.scope == Scope.Sensor) {
                     assignToSensor.add(entry.name);
                 }
+                if (entry.type.equals(Type.Stream)) {
+                    assignStream.add(entry.name);
+                }
             }
         }, tree);
     }
@@ -171,7 +175,12 @@ public class SymbolTable {
                 unresolvedSymbols.isEmpty()
                         && multipleDeclaration.isEmpty()
                         && typeMismatch.isEmpty()
-                        && assignToSensor.isEmpty();
+                        && assignToSensor.isEmpty()
+                        && assignStream.isEmpty();
+    }
+
+    public List<String> getAssignStream() {
+        return assignStream;
     }
 
     /**
