@@ -15,6 +15,7 @@ public class SymbolTable {
     private List<String> multipleDeclaration = new ArrayList<>();
     private List<ParserRuleContext> typeMismatch = new ArrayList<>();
     private List<String> assignToSensor = new ArrayList<>();
+    private List<String> writeToReadOnly = new ArrayList<>();
 
     /**
      * @param tree the tree to walk on
@@ -105,6 +106,22 @@ public class SymbolTable {
                 if (entry.scope == Scope.Sensor) {
                     assignToSensor.add(entry.name);
                 }
+                if (entry.scope.equals(Scope.AllRead)) {
+                    if (ctx.aexpr() == null) {
+
+                        writeToReadOnly.add(entry.name);
+                        return;
+                    }
+                    var num = ctx.aexpr().number();
+                    if (num == null) {
+                        writeToReadOnly.add(entry.name);
+                        return;
+                    }
+                    if (num.PID() == null) {
+                        writeToReadOnly.add(entry.name);
+                        return;
+                    }
+                }
             }
         }, tree);
     }
@@ -171,7 +188,12 @@ public class SymbolTable {
                 unresolvedSymbols.isEmpty()
                         && multipleDeclaration.isEmpty()
                         && typeMismatch.isEmpty()
-                        && assignToSensor.isEmpty();
+                        && assignToSensor.isEmpty()
+                        && writeToReadOnly.isEmpty();
+    }
+
+    public List<String> getWriteToReadOnly() {
+        return writeToReadOnly;
     }
 
     /**

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SymbolTest {
@@ -120,5 +121,17 @@ public class SymbolTest {
 
     }
 
+    @Test
+    public void assignToReadOnly() {
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/assign_to_readonly.koord");
+        var map = new SymbolTable(p);
+        var badAssign = map.getWriteToReadOnly();
+        assertTrue(badAssign.contains("reada"));
+        assertTrue(badAssign.contains("readb"));
+        assertTrue(badAssign.contains("readc"));
+        assertFalse(badAssign.contains("valid"));
+
+    }
 
 }
