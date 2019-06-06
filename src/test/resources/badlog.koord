@@ -4,10 +4,12 @@ using Log:
   actuators:
     stream stdout
 
-
+local:
+  int i
 
 dosomething:
   pre:true
   eff:
     Log.stdout =  "hi"
     Log.stdout =  "1 + 1 = " + 2
+    i << "hello"

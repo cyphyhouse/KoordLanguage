@@ -391,5 +391,15 @@ public class SymbolTable {
 
         }
 
+        @Override
+        public void exitIostream(KoordParser.IostreamContext ctx) {
+            if (ctx.VARNAME() != null) {
+                var entry = vars.get(ctx.VARNAME().getText());
+                if (!entry.type.equals(Type.Stream)) {
+                    typeMismatch.add(ctx);
+                }
+            }
+        }
+
     }
 }
