@@ -32,12 +32,13 @@ public class Utils {
         KoordParser parser = new KoordParser(tokenStream);
         return parser;
     }
+
     /**
-     *
      * A simple listener that only checks if a syntax error was emitted
      */
     public static class SyntaxChecker implements ANTLRErrorListener {
         public boolean isValid = true;
+
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object o, int i, int i1, String s, RecognitionException e) {
             isValid = false;
@@ -80,8 +81,6 @@ public class Utils {
             p.expr();
             return this.isValid;
         }
-
-
 
 
     }

@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class SymbolTest {
 
     @Test
@@ -16,10 +19,10 @@ public class SymbolTest {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-        List<String> expected = Arrays.asList(new String[] {"added", "finalsum", "numadded", "sum" });
+        List<String> expected = Arrays.asList(new String[]{"added", "finalsum", "numadded", "sum"});
 
 
-        assert(expected.equals(actual) );
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -28,7 +31,7 @@ public class SymbolTest {
         ParseTree tree = p.program();
         List<String> actual = new SymbolTable(tree).getUnresolvedSymbols();
 
-        assert(actual.isEmpty());
+        assertTrue(actual.isEmpty());
 
     }
 
@@ -38,27 +41,29 @@ public class SymbolTest {
         ParseTree tree = p.program();
         var map = new SymbolTable(tree).getTable();
         var a = map.get("a");
-        assert(a.scope == Scope.AllWrite);
-        assert(map.get("b").scope == Scope.AllWrite);
-        assert(map.get("c").scope == Scope.AllRead);
-        assert(map.get("d").scope == Scope.AllRead);
-        assert(map.get("e").scope == Scope.Local);
-        assert(map.get("f").scope == Scope.Local);
-        assert(map.get("Motion.foo").scope == Scope.Actuator);
-        assert(map.get("Motion.bar").scope == Scope.Sensor);
+        assertEquals(a.scope, Scope.AllWrite);
+        assertEquals(map.get("b").scope, Scope.AllWrite);
+        assertEquals(map.get("c").scope, Scope.AllRead);
+        assertEquals(map.get("d").scope, Scope.AllRead);
+        assertEquals(map.get("e").scope, Scope.Local);
+        assertEquals(map.get("f").scope, Scope.Local);
+        assertEquals(map.get("Motion.foo").scope, Scope.Actuator);
+        assertEquals(map.get("Motion.bar").scope, Scope.Sensor);
 
     }
 
     @Test
-    public void sharedLocalUsage() {
+    public void arrayScalar() {
         KoordParser p = Utils.parserFromFile("src/test/resources/badscope.koord");
         ParseTree tree = p.program();
         var table = new SymbolTable(tree);
-        var badLocals = table.getLocalWithId();
-        var badShared = table.getSharedRequiresId();
+        var badTypes = table.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
 
-        assert(badLocals.contains("f"));
-        assert(badShared.contains("a"));
+        assertTrue(badTypes.get(0).contains("a"));
+        assertTrue(badTypes.get(1).contains("f"));
 
     }
 
@@ -67,13 +72,15 @@ public class SymbolTest {
         KoordParser p = Utils.parserFromFile("src/test/resources/badassign.koord");
         ParseTree tree = p.program();
         var table = new SymbolTable(tree);
-        var badLocals = table.getLocalWithId();
-        var badShared = table.getSharedRequiresId();
+        var badTypes = table.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
         var assignToSensor = table.getAssignToSensor();
 
-        assert(badLocals.contains("e"));
-        assert(badShared.contains("c"));
-        assert(assignToSensor.contains("Motion.foo"));
+        assertTrue(badTypes.get(0).contains("e"));
+        assertTrue(badTypes.get(1).contains("c"));
+        assertTrue(assignToSensor.contains("Motion.foo"));
     }
 
 
@@ -83,7 +90,7 @@ public class SymbolTest {
         ParseTree p = Utils.treeFromFile("src/test/resources/multipledecl.koord");
         var map = new SymbolTable(p);
         var multipleDec = map.getMultipleDeclaration();
-        assert(multipleDec.contains("a"));
+        assert (multipleDec.contains("a"));
 
     }
 
@@ -92,17 +99,26 @@ public class SymbolTest {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/badtype.koord");
         var map = new SymbolTable(p);
-        var types = map.getTypeMismatch();
-        assert(types.contains("apple"));
+        var badTypes = map.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
+        assertTrue(badTypes.get(0).contains("apple"));
 
     }
+
     @Test
     public void nestedTypeFail() {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/badtype.koord");
         var map = new SymbolTable(p);
-        var types = map.getTypeMismatch();
-        assert(types.contains(null));
+        var badTypes = map.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
+        assertTrue(badTypes.get(1).contains("banana"));
 
     }
+
+
 }

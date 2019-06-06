@@ -1,0 +1,22 @@
+using IO:
+  sensors:
+     int foo
+  actuators:
+     string log
+
+allread:
+  int a[]
+  int b[]
+
+local:
+  int c[]
+  int d
+
+
+
+dosomething:
+  pre:true
+  eff:
+    c[d] = a[d] + d + c[d]
+    d = a[b[a[d]]]
+    c[c[d]] = d

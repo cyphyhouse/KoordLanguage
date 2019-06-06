@@ -1,0 +1,5 @@
+
+dosomething:
+  pre:true
+  eff:
+    hello()

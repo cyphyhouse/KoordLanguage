@@ -8,7 +8,7 @@ tokens { INDENT, DEDENT }
 }
 
 @lexer::members { //this must be put on the top, and not after the grammar rules
-                
+//     modified from https://github.com/antlr/grammars-v4/blob/master/python3/Python3.g4           
   private int prevNumSpaces = 0;             
   private Queue<Token> tokens = new LinkedList<>();
   private Deque<Integer> spaces = new LinkedList<>();
@@ -29,20 +29,23 @@ tokens { INDENT, DEDENT }
   }
   @Override
   public Token nextToken() {
-    if (_input.LA(1) == EOF) {
-        if (!spaces.isEmpty()) {
+    if (_input.LA(1) == EOF && !spaces.isEmpty()) {
+        if (spaces.peek() != 0) {
 
-        emit(commonToken(KoordParser.NEWLINE, "<newline>"));
-      while (!spaces.isEmpty()) {
-        spaces.poll();
-        emit(commonToken(KoordParser.DEDENT, "dedent"));
-      }
+            emit(commonToken(KoordParser.NEWLINE, "<newline>"));
+            while (spaces.peek() != 0) {
+                spaces.poll();
+                emit(commonToken(KoordParser.DEDENT, "dedent"));
+            }
         }
     }
     Token next = super.nextToken();
     return tokens.isEmpty() ? next : tokens.poll();
   }
 }
+
+
+
 
 AGENT: 'agent';
 MODULE:'module';
@@ -69,6 +72,7 @@ INIT:'init';
 INT:'int';
 FLOAT:'float';
 BOOL:'boolean'; //bool or boolean?
+STRINGTYPE:'string';
 
 
 POS:'pos';
@@ -106,7 +110,7 @@ fragment CID : [A-Z][a-zA-Z0-9]*;
 MODULENAME : CID;
 VARNAME : LID | (CID '.' LID);
 INUM : [0-9]+;
-FNUM : [0-9]+([.][0-9]+)?;
+FNUM : [0-9]+[.][0-9]+;
 PLUS : '+';
 MINUS : '-';
 TIMES : '*';
@@ -117,21 +121,25 @@ LEQ : '<=';
 NEQ : '!=';
 ASGN : '=';
 
-
+STRING : '"' (~('"'))*? '"';
 
 NEWLINE
  :  '\n' WS?
   
    {
+//     modified from https://github.com/antlr/grammars-v4/blob/master/python3/Python3.g4           
+      if (spaces.isEmpty()) {
+        spaces.push(0);
+      }
       Integer numSpaces = (int) getText().chars().filter(x -> x == ' ').count();
       if (_input.LA(1) != '\n')            {
         emit(commonToken(NEWLINE, "<newline>"));
 
-        if (spaces.isEmpty() || numSpaces > spaces.peek()) {
+        if (numSpaces > spaces.peek()) {
             emit(commonToken(KoordParser.INDENT, "<indent>"));
             spaces.push(numSpaces);
         } else if (spaces.peek() > numSpaces ) {
-          while (!spaces.isEmpty() && spaces.peek() > numSpaces) {
+          while (spaces.peek() > numSpaces) {
 
             emit(commonToken(KoordParser.DEDENT, "<dedent>"));
             spaces.pop();
@@ -161,7 +169,7 @@ PLUS| MINUS| TIMES| BY| EQ| GEQ| LEQ| NEQ| ASGN | NEWLINE | SKIP_ | INDENT | DED
 top : lexemes+;
 
 
-program :  defs  module*   decblock*   init?  event+ EOF;
+program :  NEWLINE? defs  module*   decblock*   init?  event+ EOF;
 defs : funcdef* /* adtdef* */;
 funcdef : DEF FUN VARNAME LPAR param* RPAR COLON NEWLINE statementblock;
 //adtdef : DEF ADT VARNAME COLON decl+;
@@ -204,6 +212,7 @@ aexpr :
       | number
       | VARNAME LBRACE aexpr RBRACE
       | NUMAGENTS
+      | STRING
       | VARNAME;
 
 
@@ -213,7 +222,9 @@ relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
 decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE) /* there might be more */ VARNAME (ASGN expr)? NEWLINE;
+decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
+
+arraydec : LBRACE RBRACE;
 
 module : USING MODULENAME COLON NEWLINE INDENT (actuatordecls sensordecls | sensordecls actuatordecls) DEDENT;
 
