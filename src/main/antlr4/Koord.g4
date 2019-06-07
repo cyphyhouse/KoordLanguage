@@ -216,7 +216,6 @@ aexpr :
 number : FNUM | INUM | PID;
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
-
 decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
 
 decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
