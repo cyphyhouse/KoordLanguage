@@ -260,7 +260,7 @@ public class SymbolTable {
             } else if (ctx.STREAM() != null) {
                 t = Type.Stream;
             } else {
-                    System.err.println("Unable to determine type");
+                System.err.println("Unable to determine type");
             }
 
             if (ctx.arraydec() != null) {
