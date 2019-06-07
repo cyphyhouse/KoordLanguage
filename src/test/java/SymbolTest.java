@@ -126,7 +126,7 @@ public class SymbolTest {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/assign_to_readonly.koord");
         var map = new SymbolTable(p);
-        var badAssign = map.getWriteToReadOnly();
+        var badAssign = map.getAssignToReadOnly();
         assertTrue(badAssign.contains("reada"));
         assertTrue(badAssign.contains("readb"));
         assertTrue(badAssign.contains("readc"));
