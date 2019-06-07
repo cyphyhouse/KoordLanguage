@@ -1,6 +1,6 @@
 using Log:
   sensors:
-    int stdin
+    stream stdin
   actuators:
     stream stdout
 
