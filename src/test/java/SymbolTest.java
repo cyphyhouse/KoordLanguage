@@ -130,4 +130,17 @@ public class SymbolTest {
 
     }
 
+    @Test
+    public void localUsedAsStream() {
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/badlog.koord");
+        var map = new SymbolTable(p);
+        var assignStream = map.getAssignStream();
+        var badTypes = map.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
+        assertTrue(badTypes.get(2).contains("i"));
+
+    }
 }
