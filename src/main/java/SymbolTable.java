@@ -15,6 +15,7 @@ public class SymbolTable {
     private List<String> multipleDeclaration = new ArrayList<>();
     private List<ParserRuleContext> typeMismatch = new ArrayList<>();
     private List<String> assignToSensor = new ArrayList<>();
+    private List<String> assignToStream = new ArrayList<>();
     private List<String> assignToReadOnly = new ArrayList<>();
 
     /**
@@ -106,6 +107,9 @@ public class SymbolTable {
                 if (entry.scope == Scope.Sensor) {
                     assignToSensor.add(entry.name);
                 }
+                if (entry.type.equals(Type.Stream)) {
+                    assignToStream.add(entry.name);
+                }
                 if (entry.scope.equals(Scope.AllRead)) {
                     if (ctx.aexpr() == null) {
 
@@ -189,7 +193,12 @@ public class SymbolTable {
                         && multipleDeclaration.isEmpty()
                         && typeMismatch.isEmpty()
                         && assignToSensor.isEmpty()
+                        && assignToStream.isEmpty()
                         && assignToReadOnly.isEmpty();
+    }
+
+    public List<String> getAssignToStream() {
+        return assignToStream;
     }
 
     public List<String> getAssignToReadOnly() {
@@ -270,6 +279,8 @@ public class SymbolTable {
             } else if (ctx.STRINGTYPE() != null) {
                 t = Type.String;
 
+            } else if (ctx.STREAM() != null) {
+                t = Type.Stream;
             } else {
                 System.err.println("Unable to determine type");
             }
@@ -400,6 +411,16 @@ public class SymbolTable {
                 }
             }
 
+        }
+
+        @Override
+        public void exitIostream(KoordParser.IostreamContext ctx) {
+            if (ctx.VARNAME() != null) {
+                var entry = vars.get(ctx.VARNAME().getText());
+                if (!entry.type.equals(Type.Stream)) {
+                    typeMismatch.add(ctx);
+                }
+            }
         }
 
     }

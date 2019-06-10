@@ -7,6 +7,7 @@ class Type {
     private static final int PosVal = 4;
     private static final int ArrayVal = 5;
     private static final int StringVal = 6;
+    private static final int StreamVal = 7;
 
     public static final Type Bool = new Type(BoolVal);
     public static final Type Queue = new Type(QueueVal);
@@ -14,6 +15,7 @@ class Type {
     public static final Type Float = new Type(FloatVal);
     public static final Type String = new Type(StringVal);
     public static final Type Pos = new Type(PosVal);
+    public static final Type Stream = new Type(StreamVal);
 
     private final int code;
     private Type innerType = null;
@@ -90,6 +92,8 @@ class Type {
                 return "[" + this.innerType.toString() + "]";
             case StringVal:
                 return "String";
+            case StreamVal:
+                return "Stream";
         }
         return "unknown";
     }

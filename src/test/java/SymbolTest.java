@@ -122,6 +122,16 @@ public class SymbolTest {
     }
 
     @Test
+    public void assignToStream() {
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/badlog.koord");
+        var map = new SymbolTable(p);
+        var assignToStream = map.getAssignToStream();
+        assertTrue(assignToStream.contains("Log.stdout"));
+
+    }
+
+    @Test
     public void assignToReadOnly() {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/assign_to_readonly.koord");
@@ -134,4 +144,17 @@ public class SymbolTest {
 
     }
 
+    @Test
+    public void localUsedAsStream() {
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/badlog.koord");
+        var map = new SymbolTable(p);
+        var assignToStream = map.getAssignToStream();
+        var badTypes = map.getTypeMismatch()
+                .stream()
+                .map((x) -> x.getText())
+                .collect(Collectors.toList());
+        assertTrue(badTypes.get(2).contains("i"));
+
+    }
 }
