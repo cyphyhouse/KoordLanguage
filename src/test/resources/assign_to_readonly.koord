@@ -1,0 +1,22 @@
+allwrite:
+  int a[]
+  boolean b[]
+
+allread:
+  int reada[]
+  int readb[]
+  int readc[]
+  int valid[]
+
+local:
+  int e
+  float f
+
+dosomething:
+  pre:true
+  eff:
+    reada = 12
+    readb[3] = 15
+    readc[pid + 12] = 5
+    valid[pid] = 5
+

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SymbolTest {
@@ -125,8 +126,21 @@ public class SymbolTest {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/badlog.koord");
         var map = new SymbolTable(p);
-        var assignStream = map.getAssignStream();
-        assertTrue(assignStream.contains("Log.stdout"));
+        var assignToStream = map.getAssignToStream();
+        assertTrue(assignToStream.contains("Log.stdout"));
+
+    }
+
+    @Test
+    public void assignToReadOnly() {
+
+        ParseTree p = Utils.treeFromFile("src/test/resources/assign_to_readonly.koord");
+        var map = new SymbolTable(p);
+        var badAssign = map.getAssignToReadOnly();
+        assertTrue(badAssign.contains("reada"));
+        assertTrue(badAssign.contains("readb"));
+        assertTrue(badAssign.contains("readc"));
+        assertFalse(badAssign.contains("valid"));
 
     }
 
@@ -135,7 +149,7 @@ public class SymbolTest {
 
         ParseTree p = Utils.treeFromFile("src/test/resources/badlog.koord");
         var map = new SymbolTable(p);
-        var assignStream = map.getAssignStream();
+        var assignToStream = map.getAssignToStream();
         var badTypes = map.getTypeMismatch()
                 .stream()
                 .map((x) -> x.getText())

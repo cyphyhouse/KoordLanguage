@@ -15,7 +15,8 @@ public class SymbolTable {
     private List<String> multipleDeclaration = new ArrayList<>();
     private List<ParserRuleContext> typeMismatch = new ArrayList<>();
     private List<String> assignToSensor = new ArrayList<>();
-    private List<String> assignStream = new ArrayList<>();
+    private List<String> assignToStream = new ArrayList<>();
+    private List<String> assignToReadOnly = new ArrayList<>();
 
     /**
      * @param tree the tree to walk on
@@ -107,7 +108,23 @@ public class SymbolTable {
                     assignToSensor.add(entry.name);
                 }
                 if (entry.type.equals(Type.Stream)) {
-                    assignStream.add(entry.name);
+                    assignToStream.add(entry.name);
+                }
+                if (entry.scope.equals(Scope.AllRead)) {
+                    if (ctx.aexpr() == null) {
+
+                        assignToReadOnly.add(entry.name);
+                        return;
+                    }
+                    var num = ctx.aexpr().number();
+                    if (num == null) {
+                        assignToReadOnly.add(entry.name);
+                        return;
+                    }
+                    if (num.PID() == null) {
+                        assignToReadOnly.add(entry.name);
+                        return;
+                    }
                 }
             }
         }, tree);
@@ -176,11 +193,16 @@ public class SymbolTable {
                         && multipleDeclaration.isEmpty()
                         && typeMismatch.isEmpty()
                         && assignToSensor.isEmpty()
-                        && assignStream.isEmpty();
+                        && assignToStream.isEmpty()
+                        && assignToReadOnly.isEmpty();
     }
 
-    public List<String> getAssignStream() {
-        return assignStream;
+    public List<String> getAssignToStream() {
+        return assignToStream;
+    }
+
+    public List<String> getAssignToReadOnly() {
+        return assignToReadOnly;
     }
 
     /**
