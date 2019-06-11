@@ -27,6 +27,10 @@ public class BasicBlock {
     private BasicBlock falseExit;
     private BasicBlock singleExit;
 
+    //when the last statement is a branch,
+    //the condition is stored here instead of instructions
+    private KoordParser.ExprContext condition;
+
 
     private static Deque<BasicBlock> blocks = new ArrayDeque<>();
     public static BasicBlock createFromTree(ParseTree tree) {
@@ -37,7 +41,11 @@ public class BasicBlock {
         walker.walk(new KoordBaseListener() {
             @Override
             public void enterStmt(KoordParser.StmtContext ctx) {
-                blocks.peek().instructions.add(ctx);
+                if (ctx.conditional() == null) {
+                    blocks.peek().instructions.add(ctx);
+                } else {
+                    blocks.peek().condition = ctx.conditional().expr();
+                }
             }
 
             @Override
@@ -87,10 +95,14 @@ public class BasicBlock {
     }
 
     public String toString() {
-        var list = instructions
+        var statements = instructions
                 .stream()
                 .map(x -> x.getText())
                 .collect(Collectors.joining(", "));
-        return list;
+
+        var ret = "statements: [" + statements + "]"
+                + "condition: " + (condition == null? "null" : condition.getText());
+
+        return ret;
     }
 }
