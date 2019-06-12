@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 
 public class BasicBlock {
 
+    public List<KoordParser.StmtContext> getInstructions() {
+        return instructions;
+    }
+
     private List<KoordParser.StmtContext> instructions;
 
     public BasicBlock getTrueExit() {
@@ -68,19 +72,23 @@ public class BasicBlock {
             @Override
             public void exitConditional(KoordParser.ConditionalContext ctx) {
 
-                BasicBlock falseBlock = null;
+                BasicBlock falseBlock;
                 if (ctx.elseblock() != null) {
                     falseBlock = blocks.pop();
+                } else {
+                    falseBlock = new BasicBlock();
                 }
                 var trueBlock = blocks.pop();
 
                 var splitBlock = blocks.pop();
 
+                if (ctx.elseblock() == null) {
+                    splitBlock.falseExit = falseBlock;
+                }
+
                 var mergeBlock = new BasicBlock();
 
-                if (falseBlock != null) {
-                    falseBlock.singleExit = mergeBlock;
-                }
+                falseBlock.singleExit = mergeBlock;
                 trueBlock.singleExit = mergeBlock;
                 blocks.push(mergeBlock);
             }

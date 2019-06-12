@@ -133,4 +133,69 @@ f()  <-------+-------> g()           |                   |
 
          */
     }
+
+    @Test
+    void hangingIf() {
+        var tree = Utils.treeFromFile("src/test/resources/hangingif.koord");
+        BasicBlock root = BasicBlock.createFromTree(tree);
+
+
+        var branch1 = root.getTrueExit();
+        var branch2 = root.getFalseExit();
+        assertTrue(branch2.getInstructions().isEmpty());
+
+        var branch3 = branch1.getTrueExit();
+        assertTrue(branch3.toString().contains("a()"));
+
+        var branch4 = branch1.getFalseExit();
+        assertTrue(branch4.toString().contains("b()"));
+
+
+        var branch5 = branch3.getTrueExit();
+        assertTrue(branch5.toString().contains("f()"));
+        var branch6 = branch3.getFalseExit();
+        assertTrue(branch6.getInstructions().isEmpty());
+
+
+        assertEquals(branch5.getSingleExit(), branch6.getSingleExit());
+        var branch7 = branch5.getSingleExit();
+        assertTrue(branch7.toString().contains("h()"));
+        var branch8 = branch4.getSingleExit();
+        assertTrue(branch8.toString().contains("e()"));
+        assertEquals(branch7.getSingleExit(), branch8);
+
+
+        assertEquals(branch8.getSingleExit(), branch2.getSingleExit());
+        assertTrue(branch8.getSingleExit().toString().contains("g()"));
+         /*
+
+                                      if true
+                                         +
+                                         |
+                         if false<-------+----------->  blank
+                            +                            +
+        +-----------+       |                            |
+        |    a()    +<------+-----> b()                  |
+        |   if true |                +                   |
+        +----+------+                |                   |
+             |                       |                   |
+             |                       |                   |
+f()  <-------+-------> <blank>       |                   |
+ +                      +            |                   |
+ |                      |            |                   |
+ |                      |            |                   |
+ |                      |            |                   |
+ +---------> h()<-------+            |                   |
+              +                      |                   |
+              |                      |                   |
+              +--------> e()---------+                   |
+                          +                              |
+                          |                              |
+                          |       +-------+              |
+                          +-----> |       +<-------------+
+                                  |  g()  |
+                                  +-------+
+
+         */
+    }
 }
