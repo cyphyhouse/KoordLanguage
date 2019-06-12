@@ -198,4 +198,15 @@ f()  <-------+-------> <blank>       |                   |
 
          */
     }
+
+
+    @Test
+    public void timeNestedIf() {
+
+        var tree = Utils.treeFromFile("src/test/resources/time.koord");
+        BasicBlock root = BasicBlock.createFromTree(tree);
+        Timer t = new Timer(root);
+        assertEquals(t.getWorstCost(), 16);
+        //assuming we have 1, 5, 10
+    }
 }
