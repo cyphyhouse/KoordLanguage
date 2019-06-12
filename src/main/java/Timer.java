@@ -3,7 +3,14 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Used to find the worst case scenario in a control flow graph.
+ */
 public class Timer {
+
+    /**
+     * Rerpresents the cost of each statement type.
+     */
     public enum StatementType {
         Assign(1),
         FunctionCall(5),
@@ -15,7 +22,11 @@ public class Timer {
         }
 
 
-
+        /**
+         * Turns a statement into the enum
+         * @param ctx statement context
+         * @return a statement type
+         */
         static StatementType fromStatementContext(KoordParser.StmtContext ctx) {
             if (ctx.assign() != null) {
                 return Assign;
@@ -30,6 +41,11 @@ public class Timer {
             return null;
         }
 
+        /**
+         * Finds the cost of a basic block, but not the descendents
+         * @param b the block
+         * @return the cost
+         */
         static int blockCost(BasicBlock b) {
 
             int cost = b
@@ -45,11 +61,19 @@ public class Timer {
 
     private BasicBlock beginBlock;
 
-    public Timer(BasicBlock b) {
-        beginBlock = b;
+    /**
+     * Creates the timer using the basic block.
+     * @param root The root of the tree.
+     */
+    public Timer(BasicBlock root) {
+        beginBlock = root;
     }
 
 
+    /**
+     * Finds the worst case scenario using a dfs.
+     * @return The worst cost.
+     */
     public int getWorstCost() {
 
         Deque<BasicBlock> blocks = new ArrayDeque<>();
