@@ -1,6 +1,6 @@
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -8,36 +8,35 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a basic block, a linear block of instructions.
+ * This block could either have two outgoing arrows, indicating that
+ * the block ends with a branch statement, or it could have a single
+ * out going arrow, indicating that it is pointing toward a merge block,
+ * or it could have no arrows, meaning that it is the end.
+ */
 public class BasicBlock {
 
-    public List<KoordParser.StmtContext> getInstructions() {
-        return instructions;
-    }
-
+    private static Deque<BasicBlock> blocks = new ArrayDeque<>();
     private List<KoordParser.StmtContext> instructions;
-
-    public BasicBlock getTrueExit() {
-        return trueExit;
-    }
-
-    public BasicBlock getFalseExit() {
-        return falseExit;
-    }
-
-    public BasicBlock getSingleExit() {
-        return singleExit;
-    }
-
     private BasicBlock trueExit;
     private BasicBlock falseExit;
     private BasicBlock singleExit;
-
     //when the last statement is a branch,
     //the condition is stored here instead of instructions
     private KoordParser.ExprContext condition;
 
+    private BasicBlock() {
+        instructions = new ArrayList<>();
+    }
 
-    private static Deque<BasicBlock> blocks = new ArrayDeque<>();
+    /**
+     * Factory method to construct a control flow graph.
+     * Use this instead of the constructor.
+     *
+     * @param tree the parse tree
+     * @return the root of the control flow graph
+     */
     public static BasicBlock createFromTree(ParseTree tree) {
         blocks.clear();
         BasicBlock begin = new BasicBlock();
@@ -59,6 +58,7 @@ public class BasicBlock {
 
                 blocks.push(blocks.peek().trueExit);
             }
+
             @Override
             public void enterElseblock(KoordParser.ElseblockContext ctx) {
                 //means that the true block has finished
@@ -70,6 +70,7 @@ public class BasicBlock {
                 blocks.push(falseBlock);
 
             }
+
             @Override
             public void exitConditional(KoordParser.ConditionalContext ctx) {
 
@@ -99,10 +100,49 @@ public class BasicBlock {
         return begin;
     }
 
-    private BasicBlock() {
-        instructions = new ArrayList<>();
+    /**
+     * The linear list of statements that are inside the BasicBlock.
+     *
+     * @return the list of statements
+     */
+    public List<KoordParser.StmtContext> getInstructions() {
+        return instructions;
     }
 
+    /**
+     * The arrow when the corresponding branch statement is true.
+     *
+     * @return the block
+     */
+    public BasicBlock getTrueExit() {
+        return trueExit;
+    }
+
+    /**
+     * The arrow when the branch statement is false, aka the else statement.
+     * If there is an if with no else, this will point to an empty basic block.
+     *
+     * @return the else block
+     */
+    public BasicBlock getFalseExit() {
+        return falseExit;
+    }
+
+    /**
+     * Used when pointing to a merge block.
+     *
+     * @return the block.
+     */
+    public BasicBlock getSingleExit() {
+        return singleExit;
+    }
+
+    /**
+     * Create a human readable form of the basic block.
+     * Shows the statements and the condition.
+     *
+     * @return the string form
+     */
     public String toString() {
         var statements = instructions
                 .stream()
@@ -110,6 +150,6 @@ public class BasicBlock {
                 .collect(Collectors.joining(", "));
 
         return "statements: [" + statements + "]"
-                + "condition: " + (condition == null? "null" : condition.getText());
+                + "condition: " + (condition == null ? "null" : condition.getText());
     }
 }

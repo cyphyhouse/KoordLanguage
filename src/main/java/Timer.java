@@ -1,8 +1,4 @@
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -15,7 +11,7 @@ import java.util.Map;
 public class Timer {
 
     /**
-     * Rerpresents the cost of each statement type.
+     * Rerpresents the cost of each statement/expression type.
      */
     public enum StatementType {
         Assign(1),
@@ -25,6 +21,9 @@ public class Timer {
         Minus(2),
         Multiply(2);
 
+        /**
+         * Cost of the statement/expression
+         */
         public int cost;
         StatementType(int i) {
             cost = i;
