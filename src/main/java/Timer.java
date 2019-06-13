@@ -1,3 +1,9 @@
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -14,13 +20,15 @@ public class Timer {
     public enum StatementType {
         Assign(1),
         FunctionCall(5),
-        Stream(10);
+        Stream(10),
+        Add(1),
+        Minus(2),
+        Multiply(2);
 
-        int cost;
+        public int cost;
         StatementType(int i) {
             cost = i;
         }
-
 
         /**
          * Turns a statement into the enum
@@ -41,6 +49,25 @@ public class Timer {
             return null;
         }
 
+        static int expressionCost;
+        static int statementCost(KoordParser.StmtContext tree) {
+            expressionCost = fromStatementContext(tree).cost;
+            ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(new KoordBaseListener() {
+                @Override
+                public void enterAexpr(KoordParser.AexprContext ctx) {
+                    if (ctx.PLUS() != null) {
+                        expressionCost += StatementType.Add.cost;
+                    } else if (ctx.MINUS() != null) {
+                        expressionCost += StatementType.Minus.cost;
+                    } else if (ctx.TIMES() != null) {
+                        expressionCost += StatementType.Multiply.cost;
+                    }
+                }
+            }, tree);
+            return expressionCost;
+        }
+
         /**
          * Finds the cost of a basic block, but not the descendents
          * @param b the block
@@ -51,7 +78,7 @@ public class Timer {
             int cost = b
                     .getInstructions()
                     .stream()
-                    .mapToInt(ctx -> StatementType.fromStatementContext(ctx).cost)
+                    .mapToInt(ctx -> statementCost(ctx))
                     .sum();
 
             return cost;
