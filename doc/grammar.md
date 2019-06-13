@@ -124,7 +124,7 @@ Arrays are declared like in c, not in java, with the brackets going at the end o
 
 # Example Code
 
-[Log](../src/test/resources/log.koord)
-[Lineform](../src/test/resources/lineform.koord)
-[Hvac](../src/test/resources/hvac.koord)
-[Shapeform](../src/test/resources/shapeform.koord)
+- [Log](../src/test/resources/log.koord)
+- [Lineform](../src/test/resources/lineform.koord)
+- [Hvac](../src/test/resources/hvac.koord)
+- [Shapeform](../src/test/resources/shapeform.koord)
