@@ -1,4 +1,5 @@
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.*;
 
 import java.util.ArrayDeque;
@@ -105,12 +106,10 @@ public class BasicBlock {
     public String toString() {
         var statements = instructions
                 .stream()
-                .map(x -> x.getText())
+                .map(RuleContext::getText)
                 .collect(Collectors.joining(", "));
 
-        var ret = "statements: [" + statements + "]"
+        return "statements: [" + statements + "]"
                 + "condition: " + (condition == null? "null" : condition.getText());
-
-        return ret;
     }
 }
