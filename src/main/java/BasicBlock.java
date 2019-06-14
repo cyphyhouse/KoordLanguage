@@ -163,19 +163,19 @@ public class BasicBlock {
     public void dfs(BasicBlockListener listener) {
         listener.enterNode(this);
         if (singleExit != null) {
-            listener.enterSingle(this);
+            listener.enterSingle(singleExit);
             singleExit.dfs(listener);
-            listener.exitSingle(this);
+            listener.exitSingle(singleExit);
         }
         if (trueExit != null) {
-            listener.enterTrue(this);
+            listener.enterTrue(trueExit);
             trueExit.dfs(listener);
-            listener.exitTrue(this);
+            listener.exitTrue(trueExit);
         }
         if (falseExit != null) {
-            listener.enterFalse(this);
+            listener.enterFalse(falseExit);
             falseExit.dfs(listener);
-            listener.exitFalse(this);
+            listener.exitFalse(falseExit);
         }
         listener.exitNode(this);
     }
@@ -217,4 +217,43 @@ public class BasicBlock {
         listener.exitNode(this);
         seen.add(this);
     }
+
+    /**
+     * Does a topological sort and visits them.
+     *
+     * @param listener listener with call backs.
+     */
+    public void topological(BasicBlockListener listener) {
+        seen.clear();
+        var order = new LinkedList<BasicBlock>();
+        topoRec(order);
+
+        for (var a : order) {
+            listener.enterNode(a);
+            listener.exitNode(a);
+        }
+
+
+    }
+
+    private void topoRec(Deque<BasicBlock> order) {
+        if (seen.contains(this)) {
+            return;
+        }
+
+        if (singleExit != null) {
+            singleExit.topoRec(order);
+        }
+        if (trueExit != null) {
+            trueExit.topoRec(order);
+        }
+        if (falseExit != null) {
+            falseExit.topoRec(order);
+        }
+
+        seen.add(this);
+        order.addFirst(this);
+    }
+
+
 }
