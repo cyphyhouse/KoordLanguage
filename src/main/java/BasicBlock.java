@@ -200,5 +200,6 @@ public class BasicBlock {
             listener.exitFalse(falseExit);
         }
         listener.exitNode(this);
+        seen.add(this);
     }
 }
