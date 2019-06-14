@@ -1,6 +1,4 @@
-
-
-# Overview
+verview
 
 Koord is language that is focused on events and reacting to them. It uses significant whitespace similar to python.
 
@@ -33,18 +31,55 @@ using Motion:
     boolean done 
 ```
 
+
+## Known Modules 
+
+*Motion* :
+
+```
+using Motion:
+  actuators:
+    pos target
+  sensors:
+    boolean done 
+```
+
+*Log* : 
+```
+using Log:
+  actuators:
+    stream stdout
+  sensors:
+    stream  stdin 
+```
+
+To use streams, the `<<` syntax is needed.  
+
+```
+stdout << "Hello World"
+```
+
 # Variable Declaration 
 
 Variables must either be declared as local, allread or allwrite.
 
-Local means that a variable cannot be seen by other bots, it can only be seen by the bot with the variable.
-
-allread means that other bots may read from the variable, but other bots may not write to the variable.  The variable owner may still write to the bot.
-
-allwrite means any bot may write to the variable.
-
 Variables need to have a type and must start with a lower case letter.
 Variables may also be given an initial value.
+## Local
+Local means that a variable cannot be seen by other bots, it can only be seen by the bot with the variable.
+
+## Allread
+allread means that other bots may read from the variable, but other bots may not write to the variable.  
+The variable owner may still write to the bot. To declare an allread variable, it must be declared as an array.
+A read requires array access, with the index representing the id of the bot. An allread variable can only be written to
+by using the syntax `varname[pid] = ...`, and will not accept syntax that should be the same thing, such as 
+`varname[pid * 1] = ...`
+
+## All Write
+allwrite means any bot may write to the variable.
+
+
+## Example
 
 
 ```
@@ -53,8 +88,8 @@ allwrite:
   boolean b
     
 allread:
-  int c
-  int d
+  int c[]
+  int d[]
         
 local:
   int e
@@ -80,20 +115,15 @@ dosomething:
  - boolean
  - int
  - float
+ - stream
+ - arrays
 
-# Variable usage
+Arrays are declared like in c, not in java, with the brackets going at the end of the variable.
 
-Local variables may be written to and read from like in other languages.  Shared variables (allwrite/allread) must always have an associated robot id with them.
+# Example Code
 
-For instance if `x` is a shared variable, then x is assigned as, 
+- [Log](../src/test/resources/log.koord)
+- [Lineform](../src/test/resources/lineform.koord)
+- [Hvac](../src/test/resources/hvac.koord)
+- [Shapeform](../src/test/resources/shapeform.koord)
 
-```
-x[pid] = 12
-```
-
-if `x` is local, then
-
-```
-x = 12
-```
-is sufficient.
