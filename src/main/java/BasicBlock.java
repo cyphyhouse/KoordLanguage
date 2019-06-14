@@ -2,10 +2,7 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -151,5 +148,57 @@ public class BasicBlock {
 
         return "statements: [" + statements + "]"
                 + "condition: " + (condition == null ? "null" : condition.getText());
+    }
+
+    private Set<BasicBlock> seen = new HashSet<>();
+
+    public void dfs(BasicBlockListener listener) {
+        listener.enterNode(this);
+        if (singleExit != null) {
+            listener.enterSingle(this);
+            singleExit.dfs(listener);
+            listener.exitSingle(this);
+        }
+        if (trueExit != null) {
+            listener.enterTrue(this);
+            trueExit.dfs(listener);
+            listener.exitTrue(this);
+        }
+        if (falseExit != null) {
+            listener.enterFalse(this);
+            falseExit.dfs(listener);
+            listener.exitFalse(this);
+        }
+        listener.exitNode(this);
+    }
+
+    public void memoDfs(BasicBlockListener listener) {
+        seen.clear();
+        memoRec(listener);
+
+    }
+
+    private void memoRec(BasicBlockListener listener) {
+        if (seen.contains(this)) {
+            return;
+        }
+
+        listener.enterNode(this);
+        if (singleExit != null) {
+            listener.enterSingle(singleExit);
+            singleExit.memoRec(listener);
+            listener.exitSingle(singleExit);
+        }
+        if (trueExit != null) {
+            listener.enterTrue(trueExit);
+            trueExit.memoRec(listener);
+            listener.exitTrue(trueExit);
+        }
+        if (falseExit != null) {
+            listener.enterFalse(falseExit);
+            falseExit.memoRec(listener);
+            listener.exitFalse(falseExit);
+        }
+        listener.exitNode(this);
     }
 }

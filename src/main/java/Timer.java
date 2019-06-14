@@ -1,7 +1,5 @@
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,55 +94,67 @@ public class Timer {
     }
 
 
+    private Map<BasicBlock, Integer> costs = new HashMap<>();
     /**
      * Finds the worst case scenario using a dfs.
      * @return The worst cost.
      */
     public int getWorstCost() {
 
-        Deque<BasicBlock> blocks = new ArrayDeque<>();
-        Map<BasicBlock, Integer> costs = new HashMap<>();
+        beginBlock.memoDfs(new BasicBlockListener() {
+            @Override
+            public void enterTrue(BasicBlock block) {
 
-        blocks.push(beginBlock);
-
-        while (!blocks.isEmpty()) {
-            BasicBlock currentBlock = blocks.peek();
-            if (costs.containsKey(currentBlock)) {
-                blocks.pop();
-                continue;
             }
 
-            int cost = StatementType.blockCost(currentBlock);
+            @Override
+            public void exitTrue(BasicBlock block) {
 
-            var single = currentBlock.getSingleExit();
-            var trueExit = currentBlock.getTrueExit();
-            var falseExit = currentBlock.getFalseExit();
-
-            if (single != null && !costs.containsKey(single)) {
-                blocks.push(single);
-                continue;
-            }
-            if (trueExit != null && !costs.containsKey(trueExit)) {
-                blocks.push(trueExit);
-                continue;
-            }
-            if (falseExit != null && !costs.containsKey(falseExit)) {
-                blocks.push(falseExit);
-                continue;
             }
 
-
-            if (single != null) {
-                cost += costs.get(single);
-            } else if (trueExit != null && falseExit != null) {
-                cost += Math.max(costs.get(trueExit), costs.get(falseExit));
-            } else {
-                //this is a leaf node
+            @Override
+            public void enterFalse(BasicBlock block) {
             }
 
-            costs.put(currentBlock, cost);
-        }
+            @Override
+            public void exitFalse(BasicBlock block) {
 
+            }
+
+            @Override
+            public void enterSingle(BasicBlock block) {
+
+            }
+
+            @Override
+            public void exitSingle(BasicBlock block) {
+
+            }
+
+            @Override
+            public void enterNode(BasicBlock block) {
+
+            }
+
+            @Override
+            public void exitNode(BasicBlock block) {
+                int cost = StatementType.blockCost(block);
+
+                BasicBlock single = block.getSingleExit();
+                BasicBlock trueExit = block.getTrueExit();
+                BasicBlock falseExit = block.getFalseExit();
+
+                if (single != null) {
+                    cost += costs.get(single);
+                }
+
+                if (trueExit != null && falseExit != null) {
+                    cost += Math.max(costs.get(trueExit), costs.get(falseExit));
+                }
+
+                costs.put(block, cost);
+            }
+        });
         return costs.get(beginBlock);
     }
 
