@@ -1,0 +1,11 @@
+
+dosomething:
+  pre:true
+  eff:
+    if true:
+      if false:
+        a()
+      else:
+        b()
+    else:
+      c()

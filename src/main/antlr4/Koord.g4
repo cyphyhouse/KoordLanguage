@@ -173,8 +173,12 @@ statementblock : INDENT stmt+ DEDENT;
 stmt : assign NEWLINE
      | funccall NEWLINE
      | iostream NEWLINE
-     | IF expr COLON NEWLINE statementblock (ELSE COLON NEWLINE statementblock)?
+     | conditional
      | ATOMIC COLON NEWLINE statementblock; //add later
+
+conditional : IF expr COLON NEWLINE statementblock elseblock?;
+
+elseblock : ELSE COLON NEWLINE statementblock;
 
 iostream : VARNAME LSHIFT expr
     | iostream LSHIFT expr;
