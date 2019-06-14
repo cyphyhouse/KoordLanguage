@@ -152,6 +152,14 @@ public class BasicBlock {
 
     private Set<BasicBlock> seen = new HashSet<>();
 
+    /**
+     * Performs a dfs on the node.
+     * This is sometimes unwanted, as it will go through every
+     * possible path from the block to the end.
+     * Could potentially take O(2^n)
+     *
+     * @param listener A listener that provides callbacks.
+     */
     public void dfs(BasicBlockListener listener) {
         listener.enterNode(this);
         if (singleExit != null) {
@@ -172,6 +180,13 @@ public class BasicBlock {
         listener.exitNode(this);
     }
 
+    /**
+     * Performs a dfs that memoizes.
+     * This will visit each node only once,
+     * so it will be O(numberOfBlocks).
+     *
+     * @param listener the listener with callbacks.
+     */
     public void memoDfs(BasicBlockListener listener) {
         seen.clear();
         memoRec(listener);
