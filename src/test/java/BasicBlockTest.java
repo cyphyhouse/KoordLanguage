@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BasicBlockTest {
     @Test
@@ -217,5 +219,65 @@ f()  <-------+-------> <blank>       |                   |
         Timer t = new Timer(root);
         assertEquals(t.getWorstCost(), 19);
         //assuming we have 1, 5, 10, 2 and 1 for multiplecatio, addition
+    }
+
+    private int findIndexOfSubString(List<String> list, String sub) {
+        return IntStream.range(0, list.size())
+                .filter(x -> list.get(x).contains(sub))
+                .findFirst()
+                .getAsInt();
+    }
+
+    @Test
+    public void topoSort() {
+        var tree = Utils.treeFromFile("src/test/resources/deepernestedif.koord");
+        BasicBlock root = BasicBlock.createFromTree(tree);
+        List<String> list = new ArrayList<>();
+        root.topological(new BasicBlockListener() {
+            @Override
+            public void enterTrue(BasicBlock block) {
+
+            }
+
+            @Override
+            public void exitTrue(BasicBlock block) {
+
+            }
+
+            @Override
+            public void enterFalse(BasicBlock block) {
+
+            }
+
+            @Override
+            public void exitFalse(BasicBlock block) {
+
+            }
+
+            @Override
+            public void enterSingle(BasicBlock block) {
+
+            }
+
+            @Override
+            public void exitSingle(BasicBlock block) {
+
+            }
+
+            @Override
+            public void enterNode(BasicBlock block) {
+                list.add(block.toString());
+
+            }
+
+            @Override
+            public void exitNode(BasicBlock block) {
+
+            }
+        });
+        assertTrue(findIndexOfSubString(list, "a()") < findIndexOfSubString(list, "f()"));
+        assertTrue(findIndexOfSubString(list, "a()") < findIndexOfSubString(list, "g()"));
+        assertTrue(findIndexOfSubString(list, "b()") < findIndexOfSubString(list, "e()"));
+
     }
 }
