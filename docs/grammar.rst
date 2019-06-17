@@ -1,25 +1,25 @@
 Overview
-===
+========
 
 Koord is language that is focused on events and reacting to them. It uses significant whitespace similar to python.
 
 A koord file consists of five main sections:
 
- - Definitions
- - Modules
- - Variable Declarations
- - Initiation
- - Events
+- Definitions
+- Modules
+- Variable Declarations
+- Initiation
+- Events
 
 These sections must be declared in this order.
 
 Definitions
-===
+===========
 
 The definitions blocks consists of function declarations. 
 
 Modules
-===
+=======
 
 The modules sections declares sensors and actuators that are to be used. 
 Variables can either be an actuator or a sensor, must be declared in the respective block.
@@ -34,7 +34,7 @@ For instance, using the module Motion:
 
 
 Known Modules 
----
+-------------
 
 **Motion** ::
 
@@ -44,16 +44,18 @@ Known Modules
         pos target
       sensors:
         boolean done 
+ 
+**Log**::
 
-
-**Log** ::
     using Log:
       actuators:
         stream stdout
       sensors:
         stream  stdin 
 
-To use streams, the `<<` syntax is needed.  
+To use streams, the `<<` syntax is needed.
+
+::
 
     stdout << "Hello World"
 
@@ -73,7 +75,7 @@ Local
 Local means that a variable cannot be seen by other bots, it can only be seen by the bot with the variable.
 
 Allread
-------
+-------
 allread means that other bots may read from the variable, but other bots may not write to the variable.  
 The variable owner may still write to the bot. To declare an allread variable, it must be declared as an array.
 A read requires array access, with the index representing the id of the bot. An allread variable can only be written to
@@ -90,6 +92,7 @@ Example
 
 
 ::
+
     allwrite:
       int a
       boolean b
@@ -108,6 +111,8 @@ Events
 
 Events consist of a label, a pre condition, and an effect. A precondition must be a boolean value.
 The precondution must be on the same line as the `pre:` label.
+
+::
 
     dosomething:
       pre:true
