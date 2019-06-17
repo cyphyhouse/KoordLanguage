@@ -43,19 +43,18 @@ public class BasicBlock {
             @Override
             public void enterStmt(KoordParser.StmtContext ctx) {
                 if (ctx.conditional() == null) {
-                    blocks.peek().instructions.add(ctx);
+                    blocks.element().instructions.add(ctx);
                 } else {
-                    blocks.peek().condition = ctx.conditional().expr();
+                    blocks.element().condition = ctx.conditional().expr();
                 }
             }
 
             @Override
             public void enterConditional(KoordParser.ConditionalContext ctx) {
-                blocks.peek().trueExit = new BasicBlock();
+                blocks.element().trueExit = new BasicBlock();
 
-                blocks.push(blocks.peek().trueExit);
+                blocks.push(blocks.element().trueExit);
             }
-
             @Override
             public void enterElseblock(KoordParser.ElseblockContext ctx) {
                 //means that the true block has finished
@@ -67,7 +66,6 @@ public class BasicBlock {
                 blocks.push(falseBlock);
 
             }
-
             @Override
             public void exitConditional(KoordParser.ConditionalContext ctx) {
 
