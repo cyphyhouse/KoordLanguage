@@ -17,10 +17,6 @@ public class SymbolTable {
     private List<String> assignToSensor = new ArrayList<>();
     private List<String> assignToStream = new ArrayList<>();
     private List<String> assignToReadOnly = new ArrayList<>();
-    /**
-     * Takes variables that are used for a particular event.
-     */
-    private Map<String, Set<SymbolTableEntry>> eventVars = new HashMap<>();
 
     private ParseTree tree;
 
@@ -122,16 +118,13 @@ public class SymbolTable {
                     if (ctx.aexpr() == null) {
 
                         assignToReadOnly.add(entry.name);
-                        return;
                     }
                     var num = ctx.aexpr().number();
                     if (num == null) {
                         assignToReadOnly.add(entry.name);
-                        return;
                     }
                     if (num.PID() == null) {
                         assignToReadOnly.add(entry.name);
-                        return;
                     }
                 }
             }
@@ -149,7 +142,6 @@ public class SymbolTable {
             var entry = vars.get(variable.getText());
             if (entry == null) {
                 unresolvedSymbols.add(variable.getText());
-                return;
             }
         }
     }
@@ -242,7 +234,6 @@ public class SymbolTable {
 
         private Scope currentScope;
         private String moduleName;
-        private String eventName;
 
         @Override
         public void enterModule(KoordParser.ModuleContext ctx) {
@@ -264,11 +255,6 @@ public class SymbolTable {
             currentScope = Scope.Sensor;
         }
 
-        @Override
-        public void enterEvent(KoordParser.EventContext ctx) {
-            eventName = ctx.VARNAME().getText();
-            eventVars.put(eventName, new HashSet<>());
-        }
 
         @Override
         public void enterDecblock(KoordParser.DecblockContext ctx) {
@@ -394,10 +380,10 @@ public class SymbolTable {
         @Override
         public void exitBexpr(KoordParser.BexprContext ctx) {
             if (ctx.VARNAME() == null) {
-                for (var t : ctx.aexpr()) {
+                for (var ignored : ctx.aexpr()) {
                     types.poll();
                 }
-                for (var t : ctx.bexpr()) {
+                for (var ignored : ctx.bexpr()) {
                     types.poll();
                 }
                 types.push(Type.Bool);
