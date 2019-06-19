@@ -17,6 +17,7 @@ public class ParseTest {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
         checker.testExpr(a);
         assertTrue(checker.isValid);
+
     }
 
     @Test

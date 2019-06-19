@@ -5,12 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * For analysis on variable usage, such as when assigning
+ * to a shared variable or reading from one.
+ * <p>
+ * For each variable usage, it should contain the symbol table
+ * information along with the event and whether it was read or write.
+ */
 public class UsageTable {
     private List<TableEntry> table = new ArrayList<>();
     private String currentEvent;
     private SymbolTable symbolTable;
 
 
+    /**
+     * Builds the table, including the information
+     * from the symbol table along.
+     * @param symbolTable the symbol table
+     */
     public UsageTable(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
         ParseTree tree = symbolTable.getTree();
@@ -65,6 +77,11 @@ public class UsageTable {
 
     }
 
+    /**
+     * Gets all variables that are read from.
+     * @param event which event
+     * @return List of variables.
+     */
     public List<String> getReadVars(String event) {
         return table.stream()
                 .filter(x -> x.event.equals(event) && x.usage == Usage.Read)
@@ -72,6 +89,11 @@ public class UsageTable {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets shared (non local) variables that are read from.
+     * @param event which event
+     * @return List of variables.
+     */
     public List<String> getSharedReadVars(String event) {
         return table.stream()
                 .filter(x -> x.event.equals(event) && x.usage == Usage.Read && x.entry.scope != Scope.Local)
@@ -79,6 +101,11 @@ public class UsageTable {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets all variables that are written to.
+     * @param event which event
+     * @return List of variables.
+     */
     public List<String> getWriteVars(String event) {
         return table.stream()
                 .filter(x -> x.event.equals(event) && x.usage == Usage.Write)
@@ -86,6 +113,11 @@ public class UsageTable {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets shared (non local) variables that are written to.
+     * @param event which event
+     * @return List of variables.
+     */
     public List<String> getSharedWriteVars(String event) {
         return table.stream()
                 .filter(x -> x.event.equals(event) && x.usage == Usage.Write && x.entry.scope != Scope.Local)
