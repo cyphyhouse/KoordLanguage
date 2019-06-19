@@ -1,0 +1,31 @@
+
+
+allwrite:
+  int writeFoo
+  int writeBar
+
+allread:
+  int readFoo[]
+  int readBar[]
+
+local:
+  int localFoo
+
+
+eventA:
+   pre:(true)
+   eff:
+     localFoo = writeFoo
+     writeFoo = 12
+
+eventB:
+   pre:true
+   eff:
+     localFoo = readFoo[0]
+     writeBar = 5
+
+
+
+
+
+

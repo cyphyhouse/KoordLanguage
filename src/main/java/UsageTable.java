@@ -3,6 +3,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UsageTable {
     private List<TableEntry> table = new ArrayList<>();
@@ -62,6 +63,34 @@ public class UsageTable {
             }
         }, tree);
 
+    }
+
+    public List<String> getReadVars(String event) {
+        return table.stream()
+                .filter(x -> x.event.equals(event) && x.usage == Usage.Read)
+                .map(x -> x.entry.name)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getSharedReadVars(String event) {
+        return table.stream()
+                .filter(x -> x.event.equals(event) && x.usage == Usage.Read && x.entry.scope != Scope.Local)
+                .map(x -> x.entry.name)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getWriteVars(String event) {
+        return table.stream()
+                .filter(x -> x.event.equals(event) && x.usage == Usage.Write)
+                .map(x -> x.entry.name)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getSharedWriteVars(String event) {
+        return table.stream()
+                .filter(x -> x.event.equals(event) && x.usage == Usage.Write && x.entry.scope != Scope.Local)
+                .map(x -> x.entry.name)
+                .collect(Collectors.toList());
     }
 
     enum Usage {
