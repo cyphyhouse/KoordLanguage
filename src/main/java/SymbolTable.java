@@ -118,10 +118,12 @@ public class SymbolTable {
                     if (ctx.aexpr() == null) {
 
                         assignToReadOnly.add(entry.name);
+                        return;
                     }
                     var num = ctx.aexpr().number();
                     if (num == null) {
                         assignToReadOnly.add(entry.name);
+                        return;
                     }
                     if (num.PID() == null) {
                         assignToReadOnly.add(entry.name);
