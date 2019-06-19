@@ -17,17 +17,25 @@ public class SymbolTable {
     private List<String> assignToSensor = new ArrayList<>();
     private List<String> assignToStream = new ArrayList<>();
     private List<String> assignToReadOnly = new ArrayList<>();
+    /**
+     * Takes variables that are used for a particular event.
+     */
+    private Map<String, Set<SymbolTableEntry>> eventVars = new HashMap<>();
+
+    private ParseTree tree;
 
     /**
      * @param tree the tree to walk on
      */
     public SymbolTable(ParseTree tree) {
+        this.tree = tree;
         this.buildTable(tree);
         if (this.multipleDeclaration.isEmpty()) {
             checkAllDeclared(tree);
             if (this.unresolvedSymbols.isEmpty()) {
                 checkTypes(tree);
                 checkScope(tree);
+
             }
         }
     }
@@ -205,6 +213,10 @@ public class SymbolTable {
         return assignToReadOnly;
     }
 
+    public ParseTree getTree() {
+        return tree;
+    }
+
     /**
      * The information associated with each variable.
      */
@@ -230,6 +242,7 @@ public class SymbolTable {
 
         private Scope currentScope;
         private String moduleName;
+        private String eventName;
 
         @Override
         public void enterModule(KoordParser.ModuleContext ctx) {
@@ -249,6 +262,12 @@ public class SymbolTable {
         @Override
         public void enterSensordecls(KoordParser.SensordeclsContext ctx) {
             currentScope = Scope.Sensor;
+        }
+
+        @Override
+        public void enterEvent(KoordParser.EventContext ctx) {
+            eventName = ctx.VARNAME().getText();
+            eventVars.put(eventName, new HashSet<>());
         }
 
         @Override
