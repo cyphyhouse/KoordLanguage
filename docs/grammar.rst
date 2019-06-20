@@ -24,7 +24,7 @@ Modules
 The modules sections declares sensors and actuators that are to be used. 
 Variables can either be an actuator or a sensor, must be declared in the respective block.
 Module names must begin with a capital letter.
-For instance, using the module Motion:
+For instance, using the module Motion::
 
     using Motion:
       actuators:
@@ -122,12 +122,12 @@ The precondution must be on the same line as the `pre:` label.
 Types
 =====
 
- - pos
- - boolean
- - int
- - float
- - stream
- - arrays
+- pos
+- boolean
+- int
+- float
+- stream
+- arrays
 
 Arrays are declared like in c, not in java, with the brackets going at the end of the variable.
 
