@@ -1,0 +1,24 @@
+using Log:
+  sensors:
+    stream stdin
+  actuators:
+    stream stdout
+
+local:
+  int var1
+dosomething:
+  pre:true
+  eff:
+    if true:
+      if false:
+        var1 = 12 * 5 + 3
+        if true:
+          f()
+        else:
+          var1 = 5
+        h()
+      else:
+        b()
+      e()
+    else:
+      stdout << "hi"

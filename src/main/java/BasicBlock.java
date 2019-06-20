@@ -1,42 +1,39 @@
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a basic block, a linear block of instructions.
+ * This block could either have two outgoing arrows, indicating that
+ * the block ends with a branch statement, or it could have a single
+ * out going arrow, indicating that it is pointing toward a merge block,
+ * or it could have no arrows, meaning that it is the end.
+ */
 public class BasicBlock {
 
-    public List<KoordParser.StmtContext> getInstructions() {
-        return instructions;
-    }
-
+    private static Deque<BasicBlock> blocks = new ArrayDeque<>();
     private List<KoordParser.StmtContext> instructions;
-
-    public BasicBlock getTrueExit() {
-        return trueExit;
-    }
-
-    public BasicBlock getFalseExit() {
-        return falseExit;
-    }
-
-    public BasicBlock getSingleExit() {
-        return singleExit;
-    }
-
     private BasicBlock trueExit;
     private BasicBlock falseExit;
     private BasicBlock singleExit;
-
     //when the last statement is a branch,
     //the condition is stored here instead of instructions
     private KoordParser.ExprContext condition;
 
+    private BasicBlock() {
+        instructions = new ArrayList<>();
+    }
 
-    private static Deque<BasicBlock> blocks = new ArrayDeque<>();
+    /**
+     * Factory method to construct a control flow graph.
+     * Use this instead of the constructor.
+     *
+     * @param tree the parse tree
+     * @return the root of the control flow graph
+     */
     public static BasicBlock createFromTree(ParseTree tree) {
         blocks.clear();
         BasicBlock begin = new BasicBlock();
@@ -58,6 +55,7 @@ public class BasicBlock {
 
                 blocks.push(blocks.peek().trueExit);
             }
+
             @Override
             public void enterElseblock(KoordParser.ElseblockContext ctx) {
                 //means that the true block has finished
@@ -69,6 +67,7 @@ public class BasicBlock {
                 blocks.push(falseBlock);
 
             }
+
             @Override
             public void exitConditional(KoordParser.ConditionalContext ctx) {
 
@@ -98,19 +97,163 @@ public class BasicBlock {
         return begin;
     }
 
-    private BasicBlock() {
-        instructions = new ArrayList<>();
+    /**
+     * The linear list of statements that are inside the BasicBlock.
+     *
+     * @return the list of statements
+     */
+    public List<KoordParser.StmtContext> getInstructions() {
+        return instructions;
     }
 
+    /**
+     * The arrow when the corresponding branch statement is true.
+     *
+     * @return the block
+     */
+    public BasicBlock getTrueExit() {
+        return trueExit;
+    }
+
+    /**
+     * The arrow when the branch statement is false, aka the else statement.
+     * If there is an if with no else, this will point to an empty basic block.
+     *
+     * @return the else block
+     */
+    public BasicBlock getFalseExit() {
+        return falseExit;
+    }
+
+    /**
+     * Used when pointing to a merge block.
+     *
+     * @return the block.
+     */
+    public BasicBlock getSingleExit() {
+        return singleExit;
+    }
+
+    /**
+     * Create a human readable form of the basic block.
+     * Shows the statements and the condition.
+     *
+     * @return the string form
+     */
     public String toString() {
         var statements = instructions
                 .stream()
-                .map(x -> x.getText())
+                .map(RuleContext::getText)
                 .collect(Collectors.joining(", "));
 
-        var ret = "statements: [" + statements + "]"
-                + "condition: " + (condition == null? "null" : condition.getText());
-
-        return ret;
+        return "statements: [" + statements + "]"
+                + "condition: " + (condition == null ? "null" : condition.getText());
     }
+
+    private Set<BasicBlock> seen = new HashSet<>();
+
+    /**
+     * Performs a dfs on the node.
+     * This is sometimes unwanted, as it will go through every
+     * possible path from the block to the end.
+     * Could potentially take O(2^n)
+     *
+     * @param listener A listener that provides callbacks.
+     */
+    public void dfs(BasicBlockListener listener) {
+        listener.enterNode(this);
+        if (singleExit != null) {
+            listener.enterSingle(singleExit);
+            singleExit.dfs(listener);
+            listener.exitSingle(singleExit);
+        }
+        if (trueExit != null) {
+            listener.enterTrue(trueExit);
+            trueExit.dfs(listener);
+            listener.exitTrue(trueExit);
+        }
+        if (falseExit != null) {
+            listener.enterFalse(falseExit);
+            falseExit.dfs(listener);
+            listener.exitFalse(falseExit);
+        }
+        listener.exitNode(this);
+    }
+
+    /**
+     * Performs a dfs that memoizes.
+     * This will visit each node only once,
+     * so it will be O(numberOfBlocks).
+     *
+     * @param listener the listener with callbacks.
+     */
+    public void memoDfs(BasicBlockListener listener) {
+        seen.clear();
+        memoRec(listener);
+
+    }
+
+    private void memoRec(BasicBlockListener listener) {
+        if (seen.contains(this)) {
+            return;
+        }
+
+        listener.enterNode(this);
+        if (singleExit != null) {
+            listener.enterSingle(singleExit);
+            singleExit.memoRec(listener);
+            listener.exitSingle(singleExit);
+        }
+        if (trueExit != null) {
+            listener.enterTrue(trueExit);
+            trueExit.memoRec(listener);
+            listener.exitTrue(trueExit);
+        }
+        if (falseExit != null) {
+            listener.enterFalse(falseExit);
+            falseExit.memoRec(listener);
+            listener.exitFalse(falseExit);
+        }
+        listener.exitNode(this);
+        seen.add(this);
+    }
+
+    /**
+     * Does a topological sort and visits them.
+     *
+     * @param listener listener with call backs.
+     */
+    public void topological(BasicBlockListener listener) {
+        seen.clear();
+        var order = new LinkedList<BasicBlock>();
+        topoRec(order);
+
+        for (var a : order) {
+            listener.enterNode(a);
+            listener.exitNode(a);
+        }
+
+
+    }
+
+    private void topoRec(Deque<BasicBlock> order) {
+        if (seen.contains(this)) {
+            return;
+        }
+
+        if (singleExit != null) {
+            singleExit.topoRec(order);
+        }
+        if (trueExit != null) {
+            trueExit.topoRec(order);
+        }
+        if (falseExit != null) {
+            falseExit.topoRec(order);
+        }
+
+        seen.add(this);
+        order.addFirst(this);
+    }
+
+
 }
