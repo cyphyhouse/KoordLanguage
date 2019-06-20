@@ -1,4 +1,7 @@
-class Type {
+/**
+ * Used the represent types in Kooord
+ */
+public class Type {
 
     private static final int IntVal = 0;
     private static final int FloatVal = 1;
@@ -9,12 +12,29 @@ class Type {
     private static final int StringVal = 6;
     private static final int StreamVal = 7;
 
+    /**
+     * Boolean type
+     */
     public static final Type Bool = new Type(BoolVal);
-    public static final Type Queue = new Type(QueueVal);
+    /**
+     * Integer type
+     */
     public static final Type Int = new Type(IntVal);
+    /**
+     * Floating point type
+     */
     public static final Type Float = new Type(FloatVal);
+    /**
+     * String type
+     */
     public static final Type String = new Type(StringVal);
+    /**
+     * Position type
+     */
     public static final Type Pos = new Type(PosVal);
+    /**
+     * Stream type
+     */
     public static final Type Stream = new Type(StreamVal);
 
     private final int code;
@@ -50,8 +70,8 @@ class Type {
      * You should use this method instead of == because == will not work
      * with arrays.
      *
-     * @param other
-     * @return
+     * @param other the other type
+     * @return whether they are equal
      */
     @Override
     public boolean equals(Object other) {
@@ -65,7 +85,7 @@ class Type {
     /**
      * Whether the type is an array
      *
-     * @return whether teh type is an arary
+     * @return whether the type is an array
      */
     public boolean isArray() {
         return this.code == ArrayVal;

@@ -12,11 +12,29 @@ public class Timer {
      * Rerpresents the cost of each statement/expression type.
      */
     public enum StatementType {
+        /**
+         * Variable assignment cost
+         */
         Assign(1),
+        /**
+         * A function call cost
+         */
         FunctionCall(5),
+        /**
+         * IO stream cost
+         */
         Stream(10),
+        /**
+         * Add cost
+         */
         Add(1),
+        /**
+         * Subtraction cost
+         */
         Minus(2),
+        /**
+         * Multiplication cost
+         */
         Multiply(2);
 
         /**
