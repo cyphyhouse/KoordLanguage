@@ -46,6 +46,10 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>12</source>
+                    <target>12</target>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -54,9 +58,5 @@
             </plugin>
         </plugins>
     </build>
-<properties>
-  <maven.compiler.source>1.10</maven.compiler.source>
-  <maven.compiler.target>1.10</maven.compiler.target>
-</properties>
 
 </project>
