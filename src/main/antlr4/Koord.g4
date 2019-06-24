@@ -89,6 +89,7 @@ FALSE:'false';
 
 PID:'pid';
 NUMAGENTS:'numBots'; //num agents or numbots?
+STOP : 'stop';
 
 
 COLON : ':';
@@ -211,6 +212,7 @@ aexpr :
       | funccall
       | number
       | VARNAME LBRACE aexpr RBRACE
+      | LPAR aexpr (COMMA aexpr)* RPAR
       | NUMAGENTS
       | STRING
       | VARNAME;

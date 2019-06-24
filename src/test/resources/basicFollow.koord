@@ -1,0 +1,23 @@
+using Motion:
+    actuators:
+        pos target
+    sensors:
+        pos position
+
+local:
+    int tries = 1
+    pos dest = (0.0, 0.0, 1.0)
+    pos land = (0.0, 0.0, 0.0)
+
+event1:
+    pre: tries == 1
+    eff:
+        Motion.target = dest
+        tries = 2
+
+event2:
+    pre: tries == 2
+    eff:
+        Motion.target = land
+        tries = 3
+        stop
