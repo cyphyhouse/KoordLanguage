@@ -175,6 +175,7 @@ stmt : assign NEWLINE
      | funccall NEWLINE
      | iostream NEWLINE
      | conditional
+     | STOP NEWLINE
      | ATOMIC COLON NEWLINE statementblock; //add later
 
 conditional : IF expr COLON NEWLINE statementblock elseblock?;
@@ -212,7 +213,6 @@ aexpr :
       | funccall
       | number
       | VARNAME LBRACE aexpr RBRACE
-      | LPAR aexpr (COMMA aexpr)* RPAR
       | NUMAGENTS
       | STRING
       | VARNAME;
