@@ -6,8 +6,8 @@ using Motion:
 
 local:
     int tries = 1
-    pos dest = (0.0, 0.0, 1.0)
-    pos land = (0.0, 0.0, 0.0)
+    pos dest = pos3d(0.0, 0.0, 1.0)
+    pos land = pos3d(0.0, 0.0, 0.0)
 
 event1:
     pre: tries == 1
