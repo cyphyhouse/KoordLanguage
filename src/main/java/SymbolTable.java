@@ -252,16 +252,18 @@ public class SymbolTable {
         }
 
         @Override
-        public void enterDecblock(KoordParser.DecblockContext ctx) {
-            if (ctx.ALLREAD() != null) {
-                currentScope = Scope.AllRead;
-            } else if (ctx.ALLWRITE() != null) {
-                currentScope = Scope.AllWrite;
-            } else if (ctx.LOCAL() != null) {
-                currentScope = Scope.Local;
-            } else {
-                System.err.println("Unknown scope");
-            }
+        public void enterAllreadvars(KoordParser.AllreadvarsContext ctx) {
+            currentScope = Scope.AllRead;
+        }
+
+        @Override
+        public void enterAllwritevars(KoordParser.AllwritevarsContext ctx) {
+            currentScope = Scope.AllWrite;
+        }
+
+        @Override
+        public void enterLocalvars(KoordParser.LocalvarsContext ctx) {
+            currentScope = Scope.Local;
         }
 
         @Override
