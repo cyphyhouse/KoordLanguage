@@ -162,7 +162,7 @@ fragment WS : [ \t]+ ; //should be parsed ?
 
 
 
-program :  NEWLINE? defs  module*   decblock*   init?  event+ EOF;
+program :  NEWLINE? defs  module*   (allreadvars | allwritevars | localvars)*   init?  event+ EOF;
 defs : funcdef* /* adtdef* */;
 funcdef : DEF FUN VARNAME LPAR param* RPAR COLON NEWLINE statementblock;
 //adtdef : DEF ADT VARNAME COLON decl+;
@@ -222,7 +222,10 @@ aexpr :
 number : FNUM | INUM | PID;
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
-decblock : (ALLWRITE | ALLREAD | LOCAL) COLON NEWLINE INDENT decl+ DEDENT;
+allwritevars : ALLWRITE COLON NEWLINE INDENT decl+ DEDENT;
+allreadvars : ALLREAD COLON NEWLINE INDENT decl+ DEDENT;
+localvars : LOCAL COLON NEWLINE INDENT decl+ DEDENT;
+
 
 decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
 
