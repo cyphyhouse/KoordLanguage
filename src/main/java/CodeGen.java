@@ -5,13 +5,13 @@ public class CodeGen {
     public static String imports = "from agentThread import AgentThread\n" +
             "from geometry_msgs.msg import Pose\n" +
             "from gvh import Gvh\n" +
-            "import time\n";
+            "import time\n\n";
     public static String generatedMethods = "" +
             "def pos3d(a, b, c):\n" +
             "   pos = Pose()\n" +
             "   pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
             "   return pos\n" +
-            "";
+            "\n";
     public static String classStart =
             "class BasicFollowApp(AgentThread):\n" +
                     "\n" +
