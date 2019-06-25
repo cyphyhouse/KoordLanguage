@@ -1,7 +1,6 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.util.BitSet;
@@ -20,7 +19,7 @@ public class Utils {
         return parser;
     }
 
-    public static ParseTree treeFromFile(String filename) {
+    public static KoordParser.ProgramContext treeFromFile(String filename) {
         var parser = parserFromFile(filename);
         return parser.program();
     }
