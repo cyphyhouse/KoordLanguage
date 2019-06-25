@@ -1,18 +1,24 @@
 import java.util.Map;
 
+/**
+ * Class for code generation from Koord to Python.
+ */
 public class CodeGen {
+    /**
+     * The amount of spaces used for indentation in the generated python.
+     */
     public static final int INDENT_SPACES = 4;
-    public static String imports = "from agentThread import AgentThread\n" +
+    private static final String imports = "from agentThread import AgentThread\n" +
             "from geometry_msgs.msg import Pose\n" +
             "from gvh import Gvh\n" +
             "import time\n\n";
-    public static String generatedMethods = "" +
+    private static final String generatedMethods = "" +
             "def pos3d(a, b, c):\n" +
             "   pos = Pose()\n" +
             "   pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
             "   return pos\n" +
             "\n";
-    public static String classStart =
+    private static final String classStart =
             "class BasicFollowApp(AgentThread):\n" +
                     "\n" +
                     "    def __init__(self, pid: int, num_bots: int):\n" +
@@ -20,9 +26,12 @@ public class CodeGen {
                     "        self.start()\n" +
                     "\n" +
                     "    def run(self):\n";
-    public static String mainLoop =
+    private static final String mainLoop =
             "        while not self.stopped():\n" +
                     "            time.sleep(1.0)\n";
+
+    //assigning to an actuatator correspons to a function call in
+    //the python
     private static Map<String, String> actuatorToFunction = Map.of(
             "Motion.target", "self.agent_gvh.moat.goTo"
     );
@@ -31,6 +40,13 @@ public class CodeGen {
     private SymbolTable table;
 
 
+    /**
+     * Constructor that traverses the tree and generates
+     * the code.
+     *
+     * @param table the symbol table
+     * @param ctx   the tree
+     */
     public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
         this.table = table;
         builder = new StringBuilder();
@@ -48,7 +64,7 @@ public class CodeGen {
         }
     }
 
-    public void generateLocals(KoordParser.LocalvarsContext ctx) {
+    private void generateLocals(KoordParser.LocalvarsContext ctx) {
         for (var decls : ctx.decl()) {
             builder.append(" ".repeat(currentIndent) + decls.VARNAME().getText() + " = ");
             generateExpression(decls.expr());
@@ -141,6 +157,10 @@ public class CodeGen {
 
     }
 
+    /**
+     * Creates the generated python program.
+     * @return the python program
+     */
     @Override
     public String toString() {
         return builder.toString();
