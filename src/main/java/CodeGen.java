@@ -1,3 +1,4 @@
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -12,23 +13,27 @@ public class CodeGen {
             "from geometry_msgs.msg import Pose\n" +
             "from gvh import Gvh\n" +
             "import time\n\n";
-    private static final String generatedMethods = "" +
+    public static final double TIME_DELTA = 1.0;
+    private static final String generatedFunctions = "" +
             "def pos3d(a, b, c):\n" +
             "   pos = Pose()\n" +
             "   pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
-            "   return pos\n" +
-            "\n";
+            "   return pos\n\n" +
+            "def write_to_shared(var_name, index):\n" +
+            "   pass\n\n" +
+            "def read_from_shared(var_name, index):\n" +
+            "   pass\n\n";
     private static final String classStart =
-            "class BasicFollowApp(AgentThread):\n" +
+            "class %s(AgentThread):\n" +
                     "\n" +
                     "    def __init__(self, pid: int, num_bots: int):\n" +
-                    "        super(BasicFollowApp, self).__init__(Gvh(pid, num_bots))\n" +
+                    "        super(%s, self).__init__(Gvh(pid, num_bots))\n" +
                     "        self.start()\n" +
                     "\n" +
                     "    def run(self):\n";
     private static final String mainLoop =
             "        while not self.stopped():\n" +
-                    "            time.sleep(1.0)\n";
+                    "            time.sleep(%f)\n";
 
     //assigning to an actuatator correspons to a function call in
     //the python
@@ -48,15 +53,22 @@ public class CodeGen {
      * @param ctx   the tree
      */
     public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
+        this(table, ctx, "DefaultName");
+    }
+
+    public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx, String name) {
+
         this.table = table;
         builder = new StringBuilder();
         builder.append(imports);
-        builder.append(generatedMethods);
-        builder.append(classStart);
+        builder.append(generatedFunctions);
+        builder.append(String.format(classStart, name, name));
         currentIndent = INDENT_SPACES * 2;
-        generateLocals(ctx.localvars(0));
+        if (ctx.localvars(0) != null) {
+            generateLocals(ctx.localvars(0));
+        }
 
-        builder.append(mainLoop);
+        builder.append(String.format((Locale) null, mainLoop, TIME_DELTA));
         currentIndent = INDENT_SPACES * 3;
 
         for (var event : ctx.event()) {
@@ -67,7 +79,11 @@ public class CodeGen {
     private void generateLocals(KoordParser.LocalvarsContext ctx) {
         for (var decls : ctx.decl()) {
             builder.append(" ".repeat(currentIndent) + decls.VARNAME().getText() + " = ");
-            generateExpression(decls.expr());
+            if (decls.expr() != null) {
+                generateExpression(decls.expr());
+            } else {
+                builder.append("None");
+            }
             builder.append("\n");
         }
     }
@@ -91,9 +107,27 @@ public class CodeGen {
 
         } else if (ctx.STOP() != null) {
             builder.append("self.stop()");
+        } else if (ctx.conditional() != null) {
+            builder.append("if ");
+            generateExpression(ctx.conditional().expr());
+            builder.append(":\n");
+            generateStatementBlock(ctx.conditional().statementblock());
+            var elseblock = ctx.conditional().elseblock();
+            if (elseblock != null) {
+                generateStatementBlock(elseblock.statementblock());
+            }
         }
         builder.append("\n");
 
+    }
+
+    private void generateStatementBlock(KoordParser.StatementblockContext ctx) {
+
+        currentIndent += INDENT_SPACES;
+        for (var stmt : ctx.stmt()) {
+            generateStatement(stmt);
+        }
+        currentIndent -= INDENT_SPACES;
     }
 
     private void generateEvent(KoordParser.EventContext ctx) {
@@ -123,13 +157,25 @@ public class CodeGen {
 
     private void generateAExpression(KoordParser.AexprContext ctx) {
         if (ctx.VARNAME() != null) {
-            builder.append(ctx.VARNAME().getText());
-        }
-
-        if (ctx.number() != null) {
-            builder.append(ctx.number().getText());
-        }
-        if (ctx.funccall() != null) {
+            var entry = table.getTable().get(ctx.VARNAME().getText());
+            if (entry.scope == Scope.Local) {
+                builder.append(entry.name);
+            } else if (entry.scope == Scope.AllWrite || entry.scope == Scope.AllRead) {
+                builder.append("read_from_shared(\"")
+                        .append(entry.name)
+                        .append("\", ");
+                generateAExpression(ctx.aexpr(0));
+                builder.append(")");
+            }
+        } else if (ctx.number() != null) {
+            if (ctx.number().PID() != null) {
+                builder.append("self.pid()");
+            } else if (ctx.number().NUMAGENTS() != null) {
+                builder.append("self.num_agents()");
+            } else {
+                builder.append(ctx.number().getText());
+            }
+        } else if (ctx.funccall() != null) {
             builder.append(ctx.funccall().VARNAME().getText() + "(");
             var func = ctx.funccall();
             if (func.arglist() != null) {
@@ -142,6 +188,22 @@ public class CodeGen {
             }
 
             builder.append(")");
+        } else if (ctx.TIMES() != null) {
+            generateAExpression(ctx.aexpr(0));
+            builder.append(" * ");
+            generateAExpression(ctx.aexpr(1));
+        } else if (ctx.BY() != null) {
+            generateAExpression(ctx.aexpr(0));
+            builder.append(" / ");
+            generateAExpression(ctx.aexpr(1));
+        } else if (ctx.PLUS() != null) {
+            generateAExpression(ctx.aexpr(0));
+            builder.append(" + ");
+            generateAExpression(ctx.aexpr(1));
+        } else if (ctx.MINUS() != null) {
+            generateAExpression(ctx.aexpr(0));
+            builder.append(" - ");
+            generateAExpression(ctx.aexpr(1));
         }
 
     }
@@ -149,13 +211,29 @@ public class CodeGen {
     private void generateBExpression(KoordParser.BexprContext ctx) {
         if (ctx.relop() != null) {
             generateAExpression(ctx.aexpr(0));
-            builder.append(" ");
-            builder.append(ctx.relop().getText());
-            builder.append(" ");
+            builder.append(" ")
+                    .append(ctx.relop().getText())
+                    .append(" ");
             generateAExpression(ctx.aexpr(1));
+        } else if (ctx.TRUE() != null) {
+            builder.append("True");
+        } else if (ctx.FALSE() != null) {
+            builder.append("False");
+        } else if (ctx.LPAR() != null) {
+            builder.append("(");
+            generateBExpression(ctx.bexpr(0));
+            builder.append(")");
+        } else if (ctx.OR() != null) {
+            generateBExpression(ctx.bexpr(0));
+            builder.append(" or ");
+            generateBExpression(ctx.bexpr(1));
+        } else if (ctx.AND() != null) {
+            generateBExpression(ctx.bexpr(0));
+            builder.append(" and ");
+            generateBExpression(ctx.bexpr(1));
         }
-
     }
+
 
     /**
      * Creates the generated python program.
