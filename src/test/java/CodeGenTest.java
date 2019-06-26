@@ -45,4 +45,8 @@ public class CodeGenTest {
     void syntaxLineForm() {
         verifySyntax("src/test/resources/lineform.koord");
     }
+    @Test
+    void syntaxShapeForm() {
+        verifySyntax("src/test/resources/shapeform.koord");
+    }
 }
