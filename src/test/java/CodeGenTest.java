@@ -49,4 +49,9 @@ public class CodeGenTest {
     void syntaxShapeForm() {
         verifySyntax("src/test/resources/shapeform.koord");
     }
+
+    @Test
+    void log() {
+        verifySyntax("src/test/resources/log.koord");
+    }
 }
