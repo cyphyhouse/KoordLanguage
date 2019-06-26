@@ -1,5 +1,4 @@
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Class for code generation from Koord to Python.
@@ -18,30 +17,29 @@ public class CodeGen {
             "def pos3d(a, b, c):\n" +
             "   pos = Pose()\n" +
             "   pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
-            "   return pos\n\n" +
-            "def write_to_shared(var_name, index, value):\n" +
-            "   pass\n\n" +
-            "def read_from_shared(var_name, index):\n" +
-            "   pass\n\n" +
-            "def read_from_sensor(var_name):\n" +
-            "   pass\n\n";
+            "   return pos\n\n";
+    private static final String generateMethods =
+            "    def write_to_shared(self, var_name, index, value):\n" +
+                    "       pass\n\n" +
+                    "    def read_from_shared(self, var_name, index):\n" +
+                    "        pass\n\n" +
+                    "    def read_from_sensor(self, var_name):\n" +
+                    "       pass\n\n" +
+                    "    def write_to_actuator(self, var_name, value):\n" +
+                    "        if var_name == \"Motion.target\":\n" +
+                    "             self.agent_gvh.moat.goTo(value)\n\n";
     private static final String classStart =
             "class %s(AgentThread):\n" +
                     "\n" +
                     "    def __init__(self, pid: int, num_bots: int):\n" +
                     "        super(%s, self).__init__(Gvh(pid, num_bots))\n" +
                     "        self.start()\n" +
-                    "\n" +
+                    "\n" + generateMethods +
                     "    def run(self):\n";
     private static final String mainLoop =
             "        while not self.stopped():\n" +
                     "            time.sleep(%f)\n";
 
-    //assigning to an actuatator correspons to a function call in
-    //the python
-    private static Map<String, String> actuatorToFunction = Map.of(
-            "Motion.target", "self.agent_gvh.moat.goTo"
-    );
     private StringBuilder builder;
     private int currentIndent;
     private SymbolTable table;
@@ -109,12 +107,13 @@ public class CodeGen {
                 builder.append(" = ");
                 generateExpression(ctx.assign().expr());
             } else if (entry.scope == Scope.Actuator) {
-                builder.append(actuatorToFunction.get(str));
-                builder.append("(");
+                builder.append("self.write_to_actuator(\"")
+                        .append(entry.name)
+                        .append("\", ");
                 generateExpression(ctx.assign().expr());
                 builder.append(")");
             } else if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
-                builder.append("write_to_shared(\"")
+                builder.append("self.write_to_shared(\"")
                         .append(str)
                         .append("\", ");
                 if (ctx.assign().aexpr() == null) {
@@ -184,11 +183,16 @@ public class CodeGen {
             if (entry.scope == Scope.Local) {
                 builder.append(entry.name);
             } else if (entry.scope == Scope.AllWrite || entry.scope == Scope.AllRead) {
-                builder.append("read_from_shared(\"")
+                builder.append("self.read_from_shared(\"")
                         .append(entry.name)
                         .append("\", ");
                 generateAExpression(ctx.aexpr(0));
                 builder.append(")");
+            } else if (entry.scope == Scope.Sensor) {
+                builder.append("self.read_from_sensor(\"")
+                        .append(entry.name)
+                        .append("\")");
+
             }
         } else if (ctx.number() != null) {
             if (ctx.number().PID() != null) {
