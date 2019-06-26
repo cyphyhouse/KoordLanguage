@@ -317,6 +317,8 @@ public class SymbolTable {
                 types.push(Type.Int);
             } else if (ctx.PID() != null) {
                 types.push(Type.Int);
+            } else if (ctx.NUMAGENTS() != null) {
+                types.push(Type.Int);
             } else {
                 System.err.println("Unable to recognize number");
             }

@@ -8,9 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class CodeGenTest {
-    @Test
-    void verifySyntax() {
-        var tree = Utils.treeFromFile("src/test/resources/basicFollow.koord");
+    void verifySyntax(String filename) {
+        var tree = Utils.treeFromFile(filename);
         var symbol = new SymbolTable(tree);
 
         var gen = new CodeGen(symbol, tree);
@@ -18,8 +17,11 @@ public class CodeGenTest {
         try (var writer = new PrintWriter(outputFile)) {
 
             writer.print(gen.toString());
+            writer.flush();
+            //verifies syntax
             var process = Runtime.getRuntime().exec(new String[]{"python3", "-m", "py_compile", outputFile});
-            assertEquals(process.waitFor(), 0);
+            process.waitFor();
+            assertEquals(process.exitValue(), 0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             fail("bad file");
@@ -32,5 +34,15 @@ public class CodeGenTest {
         }
 
 
+    }
+
+    @Test
+    void syntaxBasicFollow() {
+        verifySyntax("src/test/resources/basicFollow.koord");
+    }
+
+    @Test
+    void syntaxLineForm() {
+        verifySyntax("src/test/resources/lineform.koord");
     }
 }
