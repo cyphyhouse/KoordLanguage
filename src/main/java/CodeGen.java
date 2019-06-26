@@ -19,9 +19,11 @@ public class CodeGen {
             "   pos = Pose()\n" +
             "   pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
             "   return pos\n\n" +
-            "def write_to_shared(var_name, index):\n" +
+            "def write_to_shared(var_name, index, value):\n" +
             "   pass\n\n" +
             "def read_from_shared(var_name, index):\n" +
+            "   pass\n\n" +
+            "def read_from_sensor(var_name):\n" +
             "   pass\n\n";
     private static final String classStart =
             "class %s(AgentThread):\n" +
@@ -69,11 +71,19 @@ public class CodeGen {
         }
 
         builder.append(String.format((Locale) null, mainLoop, TIME_DELTA));
+
+        if (ctx.init() != null) {
+            generateInitial(ctx.init());
+        }
         currentIndent = INDENT_SPACES * 3;
 
         for (var event : ctx.event()) {
             generateEvent(event);
         }
+    }
+
+    private void generateInitial(KoordParser.InitContext ctx) {
+        generateStatementBlock(ctx.statementblock());
     }
 
     private void generateLocals(KoordParser.LocalvarsContext ctx) {
@@ -103,6 +113,19 @@ public class CodeGen {
                 builder.append("(");
                 generateExpression(ctx.assign().expr());
                 builder.append(")");
+            } else if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
+                builder.append("write_to_shared(\"")
+                        .append(str)
+                        .append("\", ");
+                if (ctx.assign().aexpr() == null) {
+                    builder.append("None");
+                } else {
+                    generateAExpression(ctx.assign().aexpr());
+                }
+                builder.append(", ");
+                generateExpression(ctx.assign().expr());
+                builder.append(")");
+
             }
 
         } else if (ctx.STOP() != null) {
