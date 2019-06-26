@@ -17,7 +17,10 @@ public class CodeGen {
             "def pos3d(a, b, c):\n" +
             "   pos = Pose()\n" +
             "   pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
-            "   return pos\n\n";
+            "   return pos\n\n" +
+            "def log(message):\n" +
+            "   print(str(message))\n";
+
     private static final String generateMethods =
             "    def write_to_shared(self, var_name, index, value):\n" +
                     "       pass\n\n" +
@@ -138,8 +141,21 @@ public class CodeGen {
             if (elseblock != null) {
                 generateStatementBlock(elseblock.statementblock());
             }
+        } else if (ctx.iostream() != null) {
+            generateStream(ctx.iostream());
         }
         builder.append("\n");
+
+    }
+
+    private void generateStream(KoordParser.IostreamContext ctx) {
+        if (ctx.iostream() != null) {
+            generateStream(ctx.iostream());
+            builder.append(" ".repeat(currentIndent));
+        }
+        builder.append("log(");
+        generateExpression(ctx.expr());
+        builder.append(")\n");
 
     }
 
@@ -231,6 +247,8 @@ public class CodeGen {
             generateAExpression(ctx.aexpr(0));
             builder.append(" - ");
             generateAExpression(ctx.aexpr(1));
+        } else if (ctx.STRING() != null) {
+            builder.append(ctx.getText());
         }
 
     }
