@@ -213,13 +213,13 @@ aexpr :
       | funccall
       | number
       | VARNAME LBRACE aexpr RBRACE
-      | NUMAGENTS
       | STRING
       | VARNAME;
 
 
 
-number : FNUM | INUM | PID;
+number : FNUM | INUM | PID | NUMAGENTS;
+
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 
 allwritevars : ALLWRITE COLON NEWLINE INDENT decl+ DEDENT;
