@@ -11,26 +11,26 @@ public class CodeGen {
     private static final String imports = "from agentThread import AgentThread\n" +
             "from geometry_msgs.msg import Pose\n" +
             "from gvh import Gvh\n" +
-            "import time\n\n";
+            "import time\n\n\n";
     public static final double TIME_DELTA = 1.0;
     private static final String generatedFunctions = "" +
             "def pos3d(a, b, c):\n" +
-            "   pos = Pose()\n" +
-            "   pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
-            "   return pos\n\n" +
+            "    pos = Pose()\n" +
+            "    pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
+            "    return pos\n\n\n" +
             "def log(message):\n" +
-            "   print(str(message))\n";
+            "    print(str(message))\n\n\n";
 
     private static final String generateMethods =
             "    def write_to_shared(self, var_name, index, value):\n" +
-                    "       pass\n\n" +
+                    "        pass\n\n" +
                     "    def read_from_shared(self, var_name, index):\n" +
                     "        pass\n\n" +
                     "    def read_from_sensor(self, var_name):\n" +
-                    "       pass\n\n" +
+                    "        pass\n\n" +
                     "    def write_to_actuator(self, var_name, value):\n" +
                     "        if var_name == \"Motion.target\":\n" +
-                    "             self.agent_gvh.moat.goTo(value)\n\n";
+                    "            self.agent_gvh.moat.goTo(value)\n\n";
     private static final String classStart =
             "class %s(AgentThread):\n" +
                     "\n" +
