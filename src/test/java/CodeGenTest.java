@@ -51,7 +51,12 @@ public class CodeGenTest {
     }
 
     @Test
-    void log() {
+    void syntaxLog() {
         verifySyntax("src/test/resources/log.koord");
+    }
+
+    @Test
+    void syntaxHvac() {
+        verifySyntax("src/test/resources/hvac.koord");
     }
 }
