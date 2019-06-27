@@ -54,6 +54,6 @@ public class CodeGenTest {
 
     @Test
     void syntaxHvac() {
-        verifySyntax("src/test/resources/hvac.koord", "GeneratedPython/hvac");
+        verifySyntax("src/test/resources/hvac.koord", "GeneratedPython/hvac.py");
     }
 }
