@@ -139,6 +139,8 @@ public class CodeGen {
             generateStatementBlock(ctx.conditional().statementblock());
             var elseblock = ctx.conditional().elseblock();
             if (elseblock != null) {
+                builder.append(" ".repeat(currentIndent))
+                        .append("else:\n");
                 generateStatementBlock(elseblock.statementblock());
             }
         } else if (ctx.iostream() != null) {
@@ -244,9 +246,15 @@ public class CodeGen {
             builder.append(" + ");
             generateAExpression(ctx.aexpr(1));
         } else if (ctx.MINUS() != null) {
-            generateAExpression(ctx.aexpr(0));
-            builder.append(" - ");
-            generateAExpression(ctx.aexpr(1));
+            if (ctx.aexpr().size() == 2) {
+                generateAExpression(ctx.aexpr(0));
+                builder.append(" - ");
+                generateAExpression(ctx.aexpr(1));
+            } else if (ctx.aexpr().size() == 1) {
+                builder.append(" -");
+                generateAExpression(ctx.aexpr(0));
+
+            }
         } else if (ctx.STRING() != null) {
             builder.append(ctx.getText());
         }
