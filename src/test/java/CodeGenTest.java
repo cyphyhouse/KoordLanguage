@@ -33,6 +33,29 @@ public class CodeGenTest {
         }
     }
 
+    void mockSharedVariables(String input, String output, String testFile) {
+
+        var tree = Utils.treeFromFile(input);
+        var symbol = new SymbolTable(tree);
+
+        var gen = new CodeGen(symbol, tree);
+        try (var writer = new PrintWriter(output)) {
+
+            writer.print(gen.toString());
+            writer.flush();
+            var process = Runtime.getRuntime().exec(new String[]{"python3", output});
+            process.waitFor();
+            assertEquals(process.exitValue(), 0);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     void syntaxBasicFollow() {
         verifySyntax("src/test/resources/basicFollow.koord", "GeneratedPython/basicFollow.py");
@@ -44,7 +67,7 @@ public class CodeGenTest {
     }
     @Test
     void syntaxShapeForm() {
-        verifySyntax("src/test/resources/shapeform.koord", "GeneratedPython/shapeform");
+        verifySyntax("src/test/resources/shapeform.koord", "GeneratedPython/shapeform.py");
     }
 
     @Test
@@ -55,5 +78,11 @@ public class CodeGenTest {
     @Test
     void syntaxHvac() {
         verifySyntax("src/test/resources/hvac.koord", "GeneratedPython/hvac.py");
+    }
+
+    @Test
+    void mockLineForm() {
+        mockSharedVariables("src/test/resources/lineform.koord", "MockGvh/lineform.py", null);
+
     }
 }

@@ -11,6 +11,7 @@ public class CodeGen {
     private static final String imports = "from agentThread import AgentThread\n" +
             "from geometry_msgs.msg import Pose\n" +
             "from gvh import Gvh\n" +
+            "from commHandler import CommHandler\n" +
             "import time\n\n\n";
     public static final double TIME_DELTA = 1.0;
     private static final String generatedFunctions = "" +
@@ -18,13 +19,24 @@ public class CodeGen {
             "    pos = Pose()\n" +
             "    pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
             "    return pos\n\n\n" +
+            "def midpoint(x, y):\n" +
+            "    mid_x = (x.position.x + y.position.x) / 2\n" +
+            "    mid_y = (x.position.y + y.position.y) / 2\n" +
+            "    mid_z = (x.position.z + y.position.z) / 2\n" +
+            "    ret = Pose()\n" +
+            "    ret.position.x, ret.position.y, ret.position.z = mid_x, mid_y, mid_z\n" +
+            "    return ret\n\n" +
+
+            "" +
             "def log(message):\n" +
             "    print(str(message))\n\n\n";
 
     private static final String generateMethods =
             "    def write_to_shared(self, var_name, index, value):\n" +
-                    "        pass\n\n" +
+                    "        self.request_mutex(var_name)\n" +
+                    "        self.agent_gvh.put(var_name, value, index)\n\n" +
                     "    def read_from_shared(self, var_name, index):\n" +
+                    "        self.agent_gvh.get(var_name, index)\n\n" +
                     "        pass\n\n" +
                     "    def read_from_sensor(self, var_name):\n" +
                     "        pass\n\n" +
@@ -34,8 +46,8 @@ public class CodeGen {
     private static final String classStart =
             "class %s(AgentThread):\n" +
                     "\n" +
-                    "    def __init__(self, pid: int, num_bots: int):\n" +
-                    "        super(%s, self).__init__(Gvh(pid, num_bots))\n" +
+                    "    def __init__(self, pid: int, num_bots: int, receiver_ip, r_port):\n" +
+                    "        super(%s, self).__init__(Gvh(pid, num_bots), CommHandler(receiver_ip, r_port))\n" +
                     "        self.start()\n" +
                     "\n" + generateMethods +
                     "    def run(self):\n";
