@@ -21,7 +21,8 @@ class DefaultName(AgentThread):
         self.start()
 
     def write_to_shared(self, var_name, index, value):
-        pass
+       self.request_mutex()
+       self.agent_gvh.put(var_name, index        pass
 
     def read_from_shared(self, var_name, index):
         pass
