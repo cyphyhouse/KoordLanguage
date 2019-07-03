@@ -5,6 +5,8 @@ from typing import Any
 from gvh import Gvh
 
 
+class Pos():
+    pass
 class AgentThread(ABC, Thread):
 
     def __init__(self, agent_gvh: Gvh, comm_handler):

@@ -1,5 +1,3 @@
-import java.util.Locale;
-
 /**
  * Class for code generation from Koord to Python.
  */
@@ -8,52 +6,26 @@ public class CodeGen {
      * The amount of spaces used for indentation in the generated python.
      */
     public static final int INDENT_SPACES = 4;
-    private static final String imports = "from agentThread import AgentThread\n" +
-            "from geometry_msgs.msg import Pose\n" +
-            "from gvh import Gvh\n" +
-            "from commHandler import CommHandler\n" +
-            "import time\n\n\n";
+    private static final String INDENT = " ".repeat(INDENT_SPACES);
+    private static final String imports = "from agentThread import AgentThread, Pos\n";
     public static final double TIME_DELTA = 1.0;
-    private static final String generatedFunctions = "" +
-            "def pos3d(a, b, c):\n" +
-            "    pos = Pose()\n" +
-            "    pos.position.x, pos.position.y, pos.position.z = a, b, c\n" +
-            "    return pos\n\n\n" +
-            "def midpoint(x, y):\n" +
-            "    mid_x = (x.position.x + y.position.x) / 2\n" +
-            "    mid_y = (x.position.y + y.position.y) / 2\n" +
-            "    mid_z = (x.position.z + y.position.z) / 2\n" +
-            "    ret = Pose()\n" +
-            "    ret.position.x, ret.position.y, ret.position.z = mid_x, mid_y, mid_z\n" +
-            "    return ret\n\n" +
-
-            "" +
-            "def log(message):\n" +
-            "    print(str(message))\n\n\n";
+    private static final String generatedFunctions = "";
 
     private static final String generateMethods =
-            "    def write_to_shared(self, var_name, index, value):\n" +
-                    "        self.request_mutex(var_name)\n" +
-                    "        self.agent_gvh.put(var_name, value, index)\n\n" +
-                    "    def read_from_shared(self, var_name, index):\n" +
-                    "        self.agent_gvh.get(var_name, index)\n\n" +
-                    "        pass\n\n" +
-                    "    def read_from_sensor(self, var_name):\n" +
-                    "        pass\n\n" +
-                    "    def write_to_actuator(self, var_name, value):\n" +
-                    "        if var_name == \"Motion.target\":\n" +
-                    "            self.agent_gvh.moat.goTo(value)\n\n";
+            "\n";
     private static final String classStart =
             "class %s(AgentThread):\n" +
                     "\n" +
-                    "    def __init__(self, pid: int, num_bots: int, receiver_ip, r_port):\n" +
-                    "        super(%s, self).__init__(Gvh(pid, num_bots), CommHandler(receiver_ip, r_port))\n" +
+                    "    def __init__(self, config):\n" +
+                    "        super(%s, self).__init__(config)\n" +
                     "        self.start()\n" +
-                    "\n" + generateMethods +
-                    "    def run(self):\n";
-    private static final String mainLoop =
-            "        while not self.stopped():\n" +
-                    "            time.sleep(%f)\n";
+                    "\n" + generateMethods;
+    private static final String loopBody =
+            INDENT + "def loop_body(self):\n";
+
+    private static final String initiation =
+            INDENT + "def initialize_vars(self):\n" +
+                    INDENT + INDENT + "self.locals = {}\n";
 
     private StringBuilder builder;
     private int currentIndent;
@@ -79,16 +51,26 @@ public class CodeGen {
         builder.append(generatedFunctions);
         builder.append(String.format(classStart, name, name));
         currentIndent = INDENT_SPACES * 2;
+
+
+        builder.append(initiation);
         if (ctx.localvars(0) != null) {
             generateLocals(ctx.localvars(0));
         }
+        if (ctx.allwritevars(0) != null) {
+            generateAllWrite(ctx.allwritevars(0));
+        }
+        if (ctx.allreadvars(0) != null) {
+            generateAllRead(ctx.allreadvars(0));
+        }
 
-        builder.append(String.format((Locale) null, mainLoop, TIME_DELTA));
-
+        currentIndent = INDENT_SPACES * 1;
         if (ctx.init() != null) {
             generateInitial(ctx.init());
         }
-        currentIndent = INDENT_SPACES * 3;
+
+        builder.append(loopBody);
+        currentIndent = INDENT_SPACES * 2;
 
         for (var event : ctx.event()) {
             generateEvent(event);
@@ -101,7 +83,7 @@ public class CodeGen {
 
     private void generateLocals(KoordParser.LocalvarsContext ctx) {
         for (var decls : ctx.decl()) {
-            builder.append(" ".repeat(currentIndent) + decls.VARNAME().getText() + " = ");
+            builder.append(indent() + "self." + decls.VARNAME().getText() + " = ");
             if (decls.expr() != null) {
                 generateExpression(decls.expr());
             } else {
@@ -111,15 +93,38 @@ public class CodeGen {
         }
     }
 
+    private void generateAllRead(KoordParser.AllreadvarsContext ctx) {
+
+        for (var decls : ctx.decl()) {
+            var entry = table.getTable().get(decls.VARNAME().getText());
+            builder.append(indent())
+                    .append(String.format("self.create_ar_var('%s', %s)\n", entry.name, entry.type.python()));
+        }
+    }
+
+    private void generateAllWrite(KoordParser.AllwritevarsContext ctx) {
+
+        for (var decls : ctx.decl()) {
+            var entry = table.getTable().get(decls.VARNAME().getText());
+            builder.append(indent())
+                    .append(String.format("self.create_aw_var('%s', %s)\n", entry.name, entry.type.python()));
+        }
+    }
+
+    private String indent() {
+        return " ".repeat(currentIndent);
+    }
+
     private void generateStatement(KoordParser.StmtContext ctx) {
-        builder.append(" ".repeat(currentIndent));
+        builder.append(indent());
         if (ctx.assign() != null) {
             var str = ctx.assign().VARNAME().getText();
 
             var entry = table.getTable().get(str);
             if (entry.scope == Scope.Local) {
-                builder.append(str);
-                builder.append(" = ");
+                builder.append("self.locals['")
+                        .append(str)
+                        .append("'] = ");
                 generateExpression(ctx.assign().expr());
             } else if (entry.scope == Scope.Actuator) {
                 builder.append("self.write_to_actuator(\"")
@@ -151,23 +156,27 @@ public class CodeGen {
             generateStatementBlock(ctx.conditional().statementblock());
             var elseblock = ctx.conditional().elseblock();
             if (elseblock != null) {
-                builder.append(" ".repeat(currentIndent))
+                builder.append(indent())
                         .append("else:\n");
                 generateStatementBlock(elseblock.statementblock());
             }
         } else if (ctx.iostream() != null) {
             generateStream(ctx.iostream());
         }
-        builder.append("\n");
+        newline();
 
+    }
+
+    private StringBuilder newline() {
+        return builder.append("\n");
     }
 
     private void generateStream(KoordParser.IostreamContext ctx) {
         if (ctx.iostream() != null) {
             generateStream(ctx.iostream());
-            builder.append(" ".repeat(currentIndent));
+            builder.append(indent());
         }
-        builder.append("log(");
+        builder.append("self.log(");
         generateExpression(ctx.expr());
         builder.append(")\n");
 
@@ -183,7 +192,7 @@ public class CodeGen {
     }
 
     private void generateEvent(KoordParser.EventContext ctx) {
-        builder.append(" ".repeat(currentIndent));
+        builder.append(indent());
         builder.append("if ");
         generateBExpression(ctx.expr().bexpr());
         builder.append(":\n");
@@ -193,7 +202,7 @@ public class CodeGen {
         for (var statement : ctx.statementblock().stmt()) {
             generateStatement(statement);
         }
-        builder.append(" ".repeat(currentIndent) + "continue\n");
+        builder.append(indent() + "return\n");
         currentIndent -= INDENT_SPACES;
 
     }
@@ -211,7 +220,9 @@ public class CodeGen {
         if (ctx.VARNAME() != null) {
             var entry = table.getTable().get(ctx.VARNAME().getText());
             if (entry.scope == Scope.Local) {
-                builder.append(entry.name);
+                builder.append("self.locals['")
+                        .append(entry.name)
+                        .append("']");
             } else if (entry.scope == Scope.AllWrite || entry.scope == Scope.AllRead) {
                 builder.append("self.read_from_shared(\"")
                         .append(entry.name)
@@ -233,7 +244,9 @@ public class CodeGen {
                 builder.append(ctx.number().getText());
             }
         } else if (ctx.funccall() != null) {
-            builder.append(ctx.funccall().VARNAME().getText() + "(");
+            builder.append("self.")
+                    .append(ctx.funccall().VARNAME().getText())
+                    .append("(");
             var func = ctx.funccall();
             if (func.arglist() != null) {
                 var expressions = ctx.funccall().arglist().expr();

@@ -118,4 +118,31 @@ public class Type {
         return "unknown";
     }
 
+
+    /**
+     * Creates the type to use in the generated python
+     *
+     * @return the python type
+     */
+    public String python() {
+        switch (this.code) {
+            case IntVal:
+                return "int";
+            case PosVal:
+                return "Pose";
+            case BoolVal:
+                return "bool";
+            case FloatVal:
+                return "float";
+            case ArrayVal:
+                //for now assume that we mean the inner type
+                return this.innerType.toString();
+            case StringVal:
+                return "str";
+            case StreamVal:
+                return "IO";
+        }
+        return "unknown";
+    }
+
 }

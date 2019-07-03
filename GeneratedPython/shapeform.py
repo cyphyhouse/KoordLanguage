@@ -1,4 +1,6 @@
 from agentThread import AgentThread, Pos
+
+
 class DefaultName(AgentThread):
 
     def __init__(self, config):
@@ -12,8 +14,7 @@ class DefaultName(AgentThread):
 
     def loop_body(self):
         if (True):
-            if (self.pid() != 0 or self.pid() != self.num_agents()):
-                self.write_to_actuator("Motion.target", self.midpoint(self.read_from_shared("x", self.pid() + 1),
-                                                                      self.read_from_shared("x", self.pid() - 1)))
+            if (self.pid() != 0 and self.pid() != self.num_agents()):
+                self.write_to_actuator("Motion.target", self.midpoint(self.getNeighbors(self.pid())))
 
             return
