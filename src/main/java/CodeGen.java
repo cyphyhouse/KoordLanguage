@@ -127,15 +127,15 @@ public class CodeGen {
                         .append("'] = ");
                 generateExpression(ctx.assign().expr());
             } else if (entry.scope == Scope.Actuator) {
-                builder.append("self.write_to_actuator(\"")
+                builder.append("self.write_to_actuator('")
                         .append(entry.name)
-                        .append("\", ");
+                        .append("', ");
                 generateExpression(ctx.assign().expr());
                 builder.append(")");
             } else if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
-                builder.append("self.write_to_shared(\"")
+                builder.append("self.write_to_shared('")
                         .append(str)
-                        .append("\", ");
+                        .append("', ");
                 if (ctx.assign().aexpr() == null) {
                     builder.append("None");
                 } else {
@@ -224,15 +224,15 @@ public class CodeGen {
                         .append(entry.name)
                         .append("']");
             } else if (entry.scope == Scope.AllWrite || entry.scope == Scope.AllRead) {
-                builder.append("self.read_from_shared(\"")
+                builder.append("self.read_from_shared('")
                         .append(entry.name)
-                        .append("\", ");
+                        .append("', ");
                 generateAExpression(ctx.aexpr(0));
                 builder.append(")");
             } else if (entry.scope == Scope.Sensor) {
-                builder.append("self.read_from_sensor(\"")
+                builder.append("self.read_from_sensor('")
                         .append(entry.name)
-                        .append("\")");
+                        .append("')");
 
             }
         } else if (ctx.number() != null) {
