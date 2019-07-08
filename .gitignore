@@ -2,3 +2,7 @@ target/
 .idea/
 gen/
 *.iml
+venv/
+**/__pycache__/
+*.pyc
+jquery/
