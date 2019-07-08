@@ -9,7 +9,6 @@ class DefaultName(AgentThread):
 
     def initialize_vars(self):
         self.locals = {}
-
     def loop_body(self):
         if True:
             self.log("hi")
