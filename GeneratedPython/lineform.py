@@ -14,8 +14,9 @@ class DefaultName(AgentThread):
 
     def loop_body(self):
         if (True):
-            if (self.pid() != 0 and self.pid() != self.num_agents()):
-                self.write_to_actuator('Motion.target', self.midpoint(self.read_from_shared('x', self.pid() + 1),
-                                                                      self.read_from_shared('x', self.pid() - 1)))
+            if (self.pid() != 0 and self.pid() != self.num_agents() - 1):
+                self.write_to_shared('x', self.pid(), self.midpoint(self.read_from_shared('x', self.pid() + 1),
+                                                                    self.read_from_shared('x', self.pid() - 1)))
+                self.write_to_actuator('Motion.target', self.read_from_shared('x', self.pid()))
 
             return
