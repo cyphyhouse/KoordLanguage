@@ -43,7 +43,7 @@ public class CodeGenTest {
 
             writer.print(gen.toString());
             writer.flush();
-            var process = Runtime.getRuntime().exec(new String[]{"python3", output});
+            var process = Runtime.getRuntime().exec(new String[]{"python3", testFile});
             process.waitFor();
             assertEquals(process.exitValue(), 0);
         } catch (FileNotFoundException e) {
@@ -82,7 +82,6 @@ public class CodeGenTest {
 
     @Test
     void mockLineForm() {
-        mockSharedVariables("src/test/resources/lineform.koord", "MockGvh/lineform.py", null);
-
+        mockSharedVariables("src/test/resources/lineform.koord", "MockGvh/lineform.py", "MockGvh/lineformtest.py");
     }
 }

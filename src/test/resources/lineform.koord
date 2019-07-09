@@ -13,5 +13,6 @@ init:
 update:
    pre:(true)
    eff:
-      if (pid != 0 and pid != numBots):
-        Motion.target = midpoint(x[pid+1], x[pid-1])
+      if (pid != 0 and pid != numBots - 1):
+        x[pid] = midpoint(x[pid+1], x[pid-1])
+        Motion.target = x[pid]
