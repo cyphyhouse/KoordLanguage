@@ -7,12 +7,11 @@ public class CodeGen {
      */
     public static final int INDENT_SPACES = 4;
     private static final String INDENT = " ".repeat(INDENT_SPACES);
-    private static final String imports = "from agentThread import AgentThread, Pos\n";
+    private static final String imports = "from agentThread import AgentThread, Pos\n\n\n";
     public static final double TIME_DELTA = 1.0;
     private static final String generatedFunctions = "";
 
-    private static final String generateMethods =
-            "\n";
+    private static final String generateMethods = "";
     private static final String classStart =
             "class %s(AgentThread):\n" +
                     "\n" +
@@ -20,7 +19,7 @@ public class CodeGen {
                     "        super(%s, self).__init__(config)\n" +
                     "        self.start()\n" +
                     "\n" + generateMethods;
-    private static final String loopBody =
+    private static final String loopBody = "\n" +
             INDENT + "def loop_body(self):\n";
 
     private static final String initiation =
