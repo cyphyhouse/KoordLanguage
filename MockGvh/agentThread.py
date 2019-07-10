@@ -28,13 +28,9 @@ class AgentThread(ABC):
         pass
 
     def write_to_shared(self, var_name, index, value):
-        print("writing to shared", var_name, index)
-        print(self.shared_vars)
         self.shared_vars[var_name][index] = value
 
     def read_from_shared(self, var_name, index):
-        print("reading from shared", var_name, index)
-        print(self.shared_vars)
         return self.shared_vars[var_name][index]
 
     def read_from_sensor(self, var_name):
@@ -43,13 +39,11 @@ class AgentThread(ABC):
 
     def write_to_actuator(self, var_name, value):
         if var_name == "Motion.target":
-            print("Bot " + str(self._pid) + " Moving to " + str(value))
             self._pos = value
 
     def create_ar_var(self, name, type, initial_value=None):
         if name not in self.shared_vars:
             self.shared_vars[name] = [initial_value] * self._num_agents
-
 
     def create_aw_var(self, name, type, initial_value=None):
         if name not in self.shared_vars:

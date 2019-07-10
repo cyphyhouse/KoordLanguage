@@ -15,9 +15,9 @@ public class CodeGen {
     private static final String classStart =
             "class %s(AgentThread):\n" +
                     "\n" +
-                    "    def __init__(self, config):\n" +
-                    "        super(%s, self).__init__(config)\n" +
-                    "        self.start()\n" +
+                    INDENT + "def __init__(self, config):\n" +
+                    INDENT + INDENT + "super(%s, self).__init__(config)\n" +
+                    INDENT + INDENT + "self.start()\n" +
                     "\n" + generateMethods;
     private static final String loopBody = "\n" +
             INDENT + "def loop_body(self):\n";
