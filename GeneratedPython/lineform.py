@@ -1,4 +1,4 @@
-from agentThread import AgentThread, Pos
+from agentThread import AgentThread
 
 
 class DefaultName(AgentThread):
@@ -9,7 +9,7 @@ class DefaultName(AgentThread):
 
     def initialize_vars(self):
         self.locals = {}
-        self.create_ar_var('x', Pos)
+        self.create_ar_var('x', list)
         self.write_to_shared('x', self.pid(), self.read_from_sensor('Motion.position'))
 
     def loop_body(self):

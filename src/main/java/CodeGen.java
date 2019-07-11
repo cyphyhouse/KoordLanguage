@@ -8,7 +8,6 @@ public class CodeGen {
     public static final int INDENT_SPACES = 4;
     private static final String INDENT = " ".repeat(INDENT_SPACES);
     private static final String imports = "from agentThread import AgentThread, Pos\n\n\n";
-    public static final double TIME_DELTA = 1.0;
     private static final String generatedFunctions = "";
 
     private static final String generateMethods = "";
@@ -32,16 +31,22 @@ public class CodeGen {
 
 
     /**
+     * Creates a tree with a default name.
+     *
+     * @param table
+     * @param ctx
+     */
+    public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
+        this(table, ctx, "DefaultName");
+    }
+
+    /**
      * Constructor that traverses the tree and generates
      * the code.
      *
      * @param table the symbol table
      * @param ctx   the tree
      */
-    public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
-        this(table, ctx, "DefaultName");
-    }
-
     public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx, String name) {
 
         this.table = table;
@@ -161,6 +166,16 @@ public class CodeGen {
             }
         } else if (ctx.iostream() != null) {
             generateStream(ctx.iostream());
+        } else if (ctx.ATOMIC() != null) {
+            //add atomic stuff later
+            builder.append("self.lock()\n");
+
+            for (var s : ctx.statementblock().stmt()) {
+                generateStatement(s);
+            }
+            builder.append(indent())
+                    .append("self.unlock()\n");
+            return;
         }
         newline();
 
@@ -193,7 +208,8 @@ public class CodeGen {
     private void generateEvent(KoordParser.EventContext ctx) {
         builder.append(indent());
         builder.append("if ");
-        generateBExpression(ctx.expr().bexpr());
+
+        generateExpression(ctx.expr());
         builder.append(":\n");
         currentIndent += INDENT_SPACES;
 
@@ -226,7 +242,11 @@ public class CodeGen {
                 builder.append("self.read_from_shared('")
                         .append(entry.name)
                         .append("', ");
-                generateAExpression(ctx.aexpr(0));
+                if (ctx.aexpr(0) == null) {
+                    builder.append("None");
+                } else {
+                    generateAExpression(ctx.aexpr(0));
+                }
                 builder.append(")");
             } else if (entry.scope == Scope.Sensor) {
                 builder.append("self.read_from_sensor('")
@@ -281,6 +301,10 @@ public class CodeGen {
             }
         } else if (ctx.STRING() != null) {
             builder.append(ctx.getText());
+        } else if (ctx.LPAR() != null) {
+            builder.append("(");
+            generateAExpression(ctx.aexpr(0));
+            builder.append(")");
         }
 
     }
@@ -308,6 +332,18 @@ public class CodeGen {
             generateBExpression(ctx.bexpr(0));
             builder.append(" and ");
             generateBExpression(ctx.bexpr(1));
+        } else if (ctx.NOT() != null) {
+            builder.append(" not ");
+            generateBExpression(ctx.bexpr(0));
+        } else if (ctx.VARNAME() != null) {
+            var entry = table.getTable().get(ctx.VARNAME().getText());
+            if (entry.scope == Scope.Local) {
+                builder.append("self.locals['")
+                        .append(entry.name)
+                        .append("']");
+            } else {
+                //check for shared vialiton
+            }
         }
     }
 
