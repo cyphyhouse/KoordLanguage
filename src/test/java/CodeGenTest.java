@@ -79,9 +79,24 @@ public class CodeGenTest {
     void syntaxHvac() {
         verifySyntax("src/test/resources/hvac.koord", "GeneratedPython/hvac.py");
     }
+    @Test
+    void syntaxAddnums() {
+        verifySyntax("src/test/resources/addnums.koord", "GeneratedPython/addnums.py");
+    }
+
+    @Test
+    void syntaxLeader() {
+        verifySyntax("src/test/resources/leader.koord", "GeneratedPython/leader.py");
+    }
+
 
     @Test
     void mockLineForm() {
         mockSharedVariables("src/test/resources/lineform.koord", "MockGvh/lineform.py", "MockGvh/lineformtest.py");
+    }
+
+    @Test
+    void mockAddNum() {
+        mockSharedVariables("src/test/resources/addnums.koord", "MockGvh/addnums.py", "MockGvh/addnumstest.py");
     }
 }

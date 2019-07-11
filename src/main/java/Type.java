@@ -136,7 +136,7 @@ public class Type {
                 return "float";
             case ArrayVal:
                 //for now assume that we mean the inner type
-                return this.innerType.toString();
+                return "list";
             case StringVal:
                 return "str";
             case StreamVal:

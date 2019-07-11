@@ -28,6 +28,7 @@ class AgentThread(ABC):
         pass
 
     def write_to_shared(self, var_name, index, value):
+
         self.shared_vars[var_name][index] = value
 
     def read_from_shared(self, var_name, index):
