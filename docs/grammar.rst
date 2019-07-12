@@ -1,5 +1,6 @@
-Overview
-========
+-----------------
+Syntax References
+-----------------
 
 Koord is language that is focused on events and reacting to them. It uses significant whitespace similar to python.
 
