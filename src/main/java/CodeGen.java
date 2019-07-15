@@ -87,7 +87,7 @@ public class CodeGen {
 
     private void generateLocals(KoordParser.LocalvarsContext ctx) {
         for (var decls : ctx.decl()) {
-            builder.append(indent() + "self." + decls.VARNAME().getText() + " = ");
+            builder.append(indent() + "self.locals['" + decls.VARNAME().getText() + "'] = ");
             if (decls.expr() != null) {
                 generateExpression(decls.expr());
             } else {
@@ -102,7 +102,13 @@ public class CodeGen {
         for (var decls : ctx.decl()) {
             var entry = table.getTable().get(decls.VARNAME().getText());
             builder.append(indent())
-                    .append(String.format("self.create_ar_var('%s', %s)\n", entry.name, entry.type.python()));
+                    .append(String.format("self.create_ar_var('%s', %s, ", entry.name, entry.type.python()));
+            if (decls.expr() != null) {
+                generateExpression(decls.expr());
+            } else {
+                builder.append("None");
+            }
+            builder.append(")\n");
         }
     }
 
@@ -111,7 +117,13 @@ public class CodeGen {
         for (var decls : ctx.decl()) {
             var entry = table.getTable().get(decls.VARNAME().getText());
             builder.append(indent())
-                    .append(String.format("self.create_aw_var('%s', %s)\n", entry.name, entry.type.python()));
+                    .append(String.format("self.create_aw_var('%s', %s, ", entry.name, entry.type.python()));
+            if (decls.expr() != null) {
+                generateExpression(decls.expr());
+            } else {
+                builder.append("None");
+            }
+            builder.append(")\n");
         }
     }
 
@@ -168,7 +180,8 @@ public class CodeGen {
             generateStream(ctx.iostream());
         } else if (ctx.ATOMIC() != null) {
             //add atomic stuff later
-            builder.append("self.lock()\n");
+            builder.append("if not self.lock():\n" +
+                    indent() + " ".repeat(INDENT_SPACES) + "return\n");
 
             for (var s : ctx.statementblock().stmt()) {
                 generateStatement(s);
