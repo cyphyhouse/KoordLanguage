@@ -116,7 +116,7 @@ public class SymbolTable {
                         assignToReadOnly.add(entry.name);
                         return;
                     }
-                    var num = ctx.aexpr().number();
+                    var num = ctx.aexpr().constant();
                     if (num == null) {
                         assignToReadOnly.add(entry.name);
                         return;
@@ -310,7 +310,7 @@ public class SymbolTable {
         private Deque<Type> types = new LinkedList<>();
 
         @Override
-        public void exitNumber(KoordParser.NumberContext ctx) {
+        public void exitConstant(KoordParser.ConstantContext ctx) {
             if (ctx.FNUM() != null) {
                 types.push(Type.Float);
             } else if (ctx.INUM() != null) {

@@ -9,13 +9,14 @@ class DefaultName(AgentThread):
 
     def initialize_vars(self):
         self.locals = {}
-        self.voted = False
-        self.leader = None
-        self.create_aw_var('candidate', int)
+        self.locals['voted'] = False
+        self.locals['leader'] = None
+        self.create_aw_var('candidate', int, -1)
 
     def loop_body(self):
         if not self.locals['voted']:
-            self.lock()
+            if not self.lock():
+                return
             if self.read_from_shared('candidate', None) < self.pid():
                 self.write_to_shared('candidate', None, self.pid())
             else:

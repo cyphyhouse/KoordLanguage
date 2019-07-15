@@ -87,8 +87,8 @@ EFF:'eff';
 TRUE:'true';
 FALSE:'false';
 
-PID:'pid';
-NUMAGENTS:'numBots'; //num agents or numbots?
+PID:'pid'; //keyword of getting the id of this agent
+NUMAGENTS:'numAgents'; //keyword for getting the number of participants/agents
 STOP : 'stop';
 
 
@@ -211,14 +211,14 @@ aexpr :
       | aexpr (TIMES | BY)  aexpr
       | aexpr (PLUS | MINUS) aexpr
       | funccall
-      | number
+      | constant
       | VARNAME LBRACE aexpr RBRACE
       | STRING
       | VARNAME;
 
 
 
-number : FNUM | INUM | PID | NUMAGENTS;
+constant : FNUM | INUM | PID | NUMAGENTS;
 
 relop : LANGLE | RANGLE | GEQ | LEQ | EQ | NEQ; //more
 

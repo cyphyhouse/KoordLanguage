@@ -9,9 +9,9 @@ class DefaultName(AgentThread):
 
     def initialize_vars(self):
         self.locals = {}
-        self.tries = 1
-        self.dest = self.pos3d(0.0, 0.0, 1.0)
-        self.land = self.pos3d(0.0, 0.0, 0.0)
+        self.locals['tries'] = 1
+        self.locals['dest'] = self.pos3d(0.0, 0.0, 1.0)
+        self.locals['land'] = self.pos3d(0.0, 0.0, 0.0)
 
     def loop_body(self):
         if self.locals['tries'] == 1:

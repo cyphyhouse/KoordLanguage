@@ -14,5 +14,5 @@ init:
 update:
    pre: (true)
    eff:
-      if (pid != 0 and pid != numBots):
+      if (pid != 0 and pid != numAgents):
         Motion.target = midpoint(getNeighbors(pid))

@@ -29,7 +29,7 @@ public class CodeGenTest {
             fail("bad python command");
         } catch (InterruptedException e) {
             e.printStackTrace();
-            fail();
+            fail("interrupted ");
         }
     }
 
@@ -48,7 +48,6 @@ public class CodeGenTest {
             assertEquals(process.exitValue(), 0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            fail();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
