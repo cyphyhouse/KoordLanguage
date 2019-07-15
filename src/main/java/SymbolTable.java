@@ -233,7 +233,7 @@ public class SymbolTable {
 
         @Override
         public void enterModule(KoordParser.ModuleContext ctx) {
-            moduleName = ctx.MODULENAME().getText();
+            moduleName = ctx.UPPER().getText();
         }
 
         @Override
@@ -287,8 +287,10 @@ public class SymbolTable {
                 System.err.println("Unable to determine type");
             }
 
-            if (ctx.arraydec() != null) {
-                t = Type.Array(t);
+            if (!ctx.arraydec().isEmpty()) {
+                for (var dec : ctx.arraydec()) {
+                    t = Type.Array(t);
+                }
             }
 
             String name = ctx.VARNAME().getText();

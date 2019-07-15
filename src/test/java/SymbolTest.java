@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SymbolTest {
 
@@ -20,7 +18,7 @@ public class SymbolTest {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-        List<String> expected = Arrays.asList(new String[]{"added", "finalsum", "numadded", "sum"});
+        List<String> expected = Arrays.asList("added", "finalsum", "numadded", "sum");
 
 
         assertEquals(expected, actual);

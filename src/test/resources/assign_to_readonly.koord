@@ -1,12 +1,12 @@
 allwrite:
-  int a[]
-  boolean b[]
+  int[] a
+  boolean[] b
 
 allread:
-  int reada[]
-  int readb[]
-  int readc[]
-  int valid[]
+  int[] reada
+  int[] readb
+  int[] readc
+  int[] valid
 
 local:
   int e

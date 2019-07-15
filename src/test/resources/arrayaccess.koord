@@ -5,11 +5,11 @@ using IO:
      string log
 
 allread:
-  int a[]
-  int b[]
+  int[] a
+  int[] b
 
 local:
-  int c[]
+  int[] c
   int d
 
 

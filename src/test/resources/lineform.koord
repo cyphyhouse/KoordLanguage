@@ -5,7 +5,7 @@ using Motion:
     pos target
 
 allread:
-  pos x[]
+  pos[] x
 
 init:
    x[pid] = Motion.position
