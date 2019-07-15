@@ -9,14 +9,15 @@ class DefaultName(AgentThread):
 
     def initialize_vars(self):
         self.locals = {}
-        self.added = False
-        self.finalsum = None
-        self.create_aw_var('sum', int)
-        self.create_aw_var('numadded', int)
+        self.locals['added'] = False
+        self.locals['finalsum'] = None
+        self.create_aw_var('sum', int, 0)
+        self.create_aw_var('numadded', int, 0)
 
     def loop_body(self):
         if not self.locals['added']:
-            self.lock()
+            if not self.lock():
+                return
             self.write_to_shared('sum', None, self.read_from_shared('sum', None) + self.pid() * 2)
             self.write_to_shared('numadded', None, self.read_from_shared('numadded', None) + 1)
             self.locals['added'] = True

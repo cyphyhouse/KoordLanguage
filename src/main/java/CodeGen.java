@@ -267,13 +267,13 @@ public class CodeGen {
                         .append("')");
 
             }
-        } else if (ctx.number() != null) {
-            if (ctx.number().PID() != null) {
+        } else if (ctx.constant() != null) {
+            if (ctx.constant().PID() != null) {
                 builder.append("self.pid()");
-            } else if (ctx.number().NUMAGENTS() != null) {
+            } else if (ctx.constant().NUMAGENTS() != null) {
                 builder.append("self.num_agents()");
             } else {
-                builder.append(ctx.number().getText());
+                builder.append(ctx.constant().getText());
             }
         } else if (ctx.funccall() != null) {
             builder.append("self.")

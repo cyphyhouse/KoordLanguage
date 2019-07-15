@@ -13,6 +13,6 @@ adding:
       numadded = numadded + 1
       added = true 
 finalsum:
-  pre:(numadded == numBots)
+  pre:(numadded == numAgents)
   eff :
     finalsum = sum
