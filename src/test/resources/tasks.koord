@@ -1,0 +1,55 @@
+def Task:
+    pos loc
+    int assignId
+    int taskId
+
+using Motion:
+    actuators:
+        pos target
+    sensors:
+        pos position
+
+allwrite:
+    list<task> taskList
+
+allread:
+    pos[] routes
+
+local:
+    int i = 0
+    path p
+    task temp, new
+
+    int asgn = 0
+    int rchd = 1
+    int cmplt = 2
+
+    int stage = 0
+
+assign:
+    pre: stage == asgn
+    eff:
+        atomic:
+            for (i = 0, i < length, i = i + 1):
+                temp = get(taskList, i)
+                p = getPath(temp.loc)
+                if temp.assignId == 0 and notNull(p, routes):
+                    new = newTask(temp.loc, pid, temp.taskId)
+                    put(taskList,i, new)
+                    routes[pid] = p
+                    Motion.route = p
+                    stage = rchd
+
+reached:
+    pre: stage == rchd and Motion.done
+    eff:
+        routes[pid] = temp.loc
+        stage = cmplt
+
+cmplt:
+    pre: stage == cmplt
+    eff:
+        stage = asgn
+
+
+

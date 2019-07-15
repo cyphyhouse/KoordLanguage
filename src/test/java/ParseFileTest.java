@@ -1,10 +1,6 @@
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.ATNConfigSet;
-import org.antlr.v4.runtime.dfa.DFA;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.BitSet;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,5 +47,11 @@ public class ParseFileTest {
     public void newlinestart() throws IOException {
         Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
         assertTrue(checker.testFile("src/test/resources/newlinestart.koord"));
+    }
+
+    @Test
+    public void tasks() throws IOException {
+        Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
+        assertTrue(checker.testFile("src/test/resources/tasks.koord"));
     }
 }

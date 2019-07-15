@@ -1,10 +1,10 @@
 allwrite:
-  int a[]
-  boolean b[]
+  int[] a
+  boolean[] b[]
 
 allread:
-  int c[]
-  int d[]
+  int[] c
+  int[] d
 
 local:
   int e

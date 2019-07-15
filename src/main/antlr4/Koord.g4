@@ -55,6 +55,7 @@ DEF: 'def';
 TYPE: 'type';
 FUN: 'fun';
 ADT : 'adt';
+FOR : 'for';
 
 
 ACTUATORS:'actuators';
@@ -109,7 +110,7 @@ NOT : '!';
 fragment LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
 
 fragment CID : [A-Z][a-zA-Z0-9]*;
-MODULENAME : CID;
+UPPER : CID;
 VARNAME : LID | (CID '.' LID);
 INUM : [0-9]+;
 FNUM : [0-9]+[.][0-9]+;
@@ -163,9 +164,9 @@ fragment WS : [ \t]+ ; //should be parsed ?
 
 
 program :  NEWLINE? defs  module*   (allreadvars | allwritevars | localvars)*   init?  event+ EOF;
-defs : funcdef* /* adtdef* */;
+defs : funcdef*  adtdef*;
 funcdef : DEF FUN VARNAME LPAR param* RPAR COLON NEWLINE statementblock;
-//adtdef : DEF ADT VARNAME COLON decl+;
+adtdef : DEF UPPER COLON NEWLINE INDENT decl+ DEDENT;
 param : TYPE VARNAME;
 
 event : VARNAME COLON NEWLINE INDENT PRE COLON expr NEWLINE EFF COLON NEWLINE statementblock DEDENT;
@@ -175,8 +176,11 @@ stmt : assign NEWLINE
      | funccall NEWLINE
      | iostream NEWLINE
      | conditional
+     | forloop
      | STOP NEWLINE
      | ATOMIC COLON NEWLINE statementblock; //add later
+
+forloop : FOR LPAR expr COMMA expr COLON NEWLINE statementblock;
 
 conditional : IF expr COLON NEWLINE statementblock elseblock?;
 
@@ -227,11 +231,11 @@ allreadvars : ALLREAD COLON NEWLINE INDENT decl+ DEDENT;
 localvars : LOCAL COLON NEWLINE INDENT decl+ DEDENT;
 
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM) /* there might be more */ VARNAME (arraydec)? (ASGN expr)? NEWLINE;
+decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM ) (arraydec)*/* there might be more */ VARNAME  (ASGN expr)? NEWLINE;
 
 arraydec : LBRACE RBRACE;
 
-module : USING MODULENAME COLON NEWLINE INDENT (actuatordecls sensordecls | sensordecls actuatordecls) DEDENT;
+module : USING UPPER COLON NEWLINE INDENT (actuatordecls sensordecls | sensordecls actuatordecls) DEDENT;
 
 actuatordecls : ACTUATORS COLON NEWLINE INDENT decl+ DEDENT;
 

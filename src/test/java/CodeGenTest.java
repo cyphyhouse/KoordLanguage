@@ -88,6 +88,10 @@ public class CodeGenTest {
         verifySyntax("src/test/resources/leader.koord", "GeneratedPython/leader.py");
     }
 
+    @Test
+    void syntaxTasks() {
+        verifySyntax("src/test/resources/tasks.koord", "GeneratedPython/tasks.py");
+    }
 
     @Test
     void mockLineForm() {
