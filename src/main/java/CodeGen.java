@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class for code generation from Koord to Python.
  */
@@ -246,27 +249,7 @@ public class CodeGen {
 
     private void generateAExpression(KoordParser.AexprContext ctx) {
         if (ctx.VARNAME() != null) {
-            var entry = table.getTable().get(ctx.VARNAME().getText());
-            if (entry.scope == Scope.Local) {
-                builder.append("self.locals['")
-                        .append(entry.name)
-                        .append("']");
-            } else if (entry.scope == Scope.AllWrite || entry.scope == Scope.AllRead) {
-                builder.append("self.read_from_shared('")
-                        .append(entry.name)
-                        .append("', ");
-                if (ctx.aexpr(0) == null) {
-                    builder.append("None");
-                } else {
-                    generateAExpression(ctx.aexpr(0));
-                }
-                builder.append(")");
-            } else if (entry.scope == Scope.Sensor) {
-                builder.append("self.read_from_sensor('")
-                        .append(entry.name)
-                        .append("')");
-
-            }
+            generateReadFromVariable(ctx.VARNAME().getText(), ctx.aexpr());
         } else if (ctx.constant() != null) {
             if (ctx.constant().PID() != null) {
                 builder.append("self.pid()");
@@ -276,20 +259,7 @@ public class CodeGen {
                 builder.append(ctx.constant().getText());
             }
         } else if (ctx.funccall() != null) {
-            builder.append("self.")
-                    .append(ctx.funccall().VARNAME().getText())
-                    .append("(");
-            var func = ctx.funccall();
-            if (func.arglist() != null) {
-                var expressions = ctx.funccall().arglist().expr();
-                generateExpression(expressions.get(0));
-                for (int i = 1; i < expressions.size(); i++) {
-                    builder.append(", ");
-                    generateExpression(expressions.get(i));
-                }
-            }
-
-            builder.append(")");
+            generateFuncCall(ctx.funccall());
         } else if (ctx.TIMES() != null) {
             generateAExpression(ctx.aexpr(0));
             builder.append(" * ");
@@ -322,6 +292,52 @@ public class CodeGen {
 
     }
 
+    private void generateReadFromVariable(String var, List<KoordParser.AexprContext> indeces) {
+        var entry = table.getTable().get(var);
+        if (entry.scope == Scope.Local) {
+            builder.append("self.locals['")
+                    .append(entry.name)
+                    .append("']");
+        } else if (entry.scope == Scope.AllWrite || entry.scope == Scope.AllRead) {
+            builder.append("self.read_from_shared('")
+                    .append(entry.name)
+                    .append("', ");
+            if (indeces.size() == 0) {
+                builder.append("None");
+            } else {
+                generateAExpression(indeces.get(0));
+            }
+
+            builder.append(")");
+        } else if (entry.scope == Scope.Sensor) {
+            builder.append("self.read_from_sensor('")
+                    .append(entry.name)
+                    .append("')");
+        }
+        for (int i = 1; i < indeces.size(); i++) {
+            builder.append("[");
+            generateAExpression(indeces.get(i));
+            builder.append("]");
+        }
+    }
+
+    private void generateFuncCall(KoordParser.FunccallContext ctx) {
+        builder.append("self.")
+                .append(ctx.VARNAME().getText())
+                .append("(");
+        if (ctx.arglist() != null) {
+            var expressions = ctx.arglist().expr();
+            generateExpression(expressions.get(0));
+            for (int i = 1; i < expressions.size(); i++) {
+                builder.append(", ");
+                generateExpression(expressions.get(i));
+            }
+        }
+
+        builder.append(")");
+    }
+
+
     private void generateBExpression(KoordParser.BexprContext ctx) {
         if (ctx.relop() != null) {
             generateAExpression(ctx.aexpr(0));
@@ -349,14 +365,11 @@ public class CodeGen {
             builder.append(" not ");
             generateBExpression(ctx.bexpr(0));
         } else if (ctx.VARNAME() != null) {
-            var entry = table.getTable().get(ctx.VARNAME().getText());
-            if (entry.scope == Scope.Local) {
-                builder.append("self.locals['")
-                        .append(entry.name)
-                        .append("']");
-            } else {
-                //check for shared vialiton
-            }
+            generateReadFromVariable(ctx.VARNAME().getText(), new ArrayList<>());
+        } else if (ctx.funccall() != null) {
+            generateFuncCall(ctx.funccall());
+        } else if (ctx.aexpr() != null) {
+            generateAExpression(ctx.aexpr(0));
         }
     }
 

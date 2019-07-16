@@ -206,6 +206,7 @@ bexpr :
       | TRUE
       | funccall
       | VARNAME
+      | aexpr
       ;
       
 
