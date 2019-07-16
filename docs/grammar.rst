@@ -99,8 +99,8 @@ Example
       boolean b
         
     allread:
-      int c[]
-      int d[]
+      int[] c
+      int[] d
             
     local:
       int e
@@ -130,7 +130,26 @@ Types
 - stream
 - arrays
 
-Arrays are declared like in c, not in java, with the brackets going at the end of the variable.
+
+Control Flow
+============
+
+Conditional
+-----------
+
+Koord supports ``if`` and ``if else`` statements. To use ``elif``, do a nested ``if else``.
+
+Loops
+-----
+
+Koord supports constant iteration ``for`` loops. Koord does not support
+while loops.
+
+
+Example::
+
+    for i = 0, 5:
+        doSomething()
 
 Example Code
 ============
