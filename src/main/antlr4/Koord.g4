@@ -111,7 +111,7 @@ fragment LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
 
 fragment CID : [A-Z][a-zA-Z0-9]*;
 UPPER : CID;
-VARNAME : LID | (CID '.' LID);
+VARNAME : LID ('.' LID)*  | (CID '.' LID);
 INUM : [0-9]+;
 FNUM : [0-9]+[.][0-9]+;
 PLUS : '+';
@@ -180,7 +180,7 @@ stmt : assign NEWLINE
      | STOP NEWLINE
      | ATOMIC COLON NEWLINE statementblock; //add later
 
-forloop : FOR LPAR expr COMMA expr COLON NEWLINE statementblock;
+forloop : FOR VARNAME ASGN expr COMMA expr COLON NEWLINE statementblock;
 
 conditional : IF expr COLON NEWLINE statementblock elseblock?;
 
@@ -189,7 +189,7 @@ elseblock : ELSE COLON NEWLINE statementblock;
 iostream : VARNAME LSHIFT expr
     | iostream LSHIFT expr;
 
-funccall : VARNAME LPAR (arglist)? RPAR;
+funccall : (VARNAME | UPPER) LPAR (arglist)? RPAR;
 
 arglist : expr (COMMA expr)*;
 
@@ -204,7 +204,8 @@ bexpr :
       | bexpr OR bexpr
       | FALSE
       | TRUE
-      | VARNAME;
+      | VARNAME
+      | funccall;
       
 
 
@@ -231,7 +232,7 @@ allreadvars : ALLREAD COLON NEWLINE INDENT decl+ DEDENT;
 localvars : LOCAL COLON NEWLINE INDENT decl+ DEDENT;
 
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM ) (arraydec)*/* there might be more */ VARNAME  (ASGN expr)? NEWLINE;
+decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM | UPPER) (arraydec)*/* there might be more */ VARNAME  (ASGN expr)? NEWLINE;
 
 arraydec : LBRACE RBRACE;
 

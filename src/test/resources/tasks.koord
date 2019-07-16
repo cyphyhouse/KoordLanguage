@@ -10,15 +10,16 @@ using Motion:
         pos position
 
 allwrite:
-    list<task> taskList
+    Task[] taskList
 
 allread:
-    pos[] routes
+    pos[][] routes
 
 local:
     int i = 0
-    path p
-    task temp, new
+    pos[] p
+    Task temp
+    Task new
 
     int asgn = 0
     int rchd = 1
@@ -30,11 +31,11 @@ assign:
     pre: stage == asgn
     eff:
         atomic:
-            for (i = 0, i < length, i = i + 1):
+            for i = 0, length(taskList) - 1:
                 temp = get(taskList, i)
                 p = getPath(temp.loc)
                 if temp.assignId == 0 and notNull(p, routes):
-                    new = newTask(temp.loc, pid, temp.taskId)
+                    new = Task(temp.loc, pid, temp.taskId)
                     put(taskList,i, new)
                     routes[pid] = p
                     Motion.route = p
