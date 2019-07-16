@@ -136,11 +136,28 @@ public class SymbolTable {
         walker.walk(new TypeCheckerListener(), tree);
     }
 
+    private Type getFieldType(String type, String field) {
+        return Type.CustomType(type).getCustomType().getFields().get(field);
+    }
     private void checkIfDeclared(TerminalNode variable) {
         if (variable != null) {
             var entry = vars.get(variable.getText());
             if (entry == null) {
-                unresolvedSymbols.add(variable.getText());
+                var fields = variable.getText().split("\\.");
+                if (vars.get(fields[0]) == null) {
+                    unresolvedSymbols.add(variable.getText());
+                    return;
+                }
+                var currentType = vars.get(fields[0]).type;
+
+                for (int i = 1; i < fields.length; i++) {
+                    if (currentType == null || currentType.getCustomType() == null) {
+                        unresolvedSymbols.add(variable.getText());
+                        return;
+                    } else {
+                        currentType = getFieldType(currentType.getCustomType().getName(), fields[i]);
+                    }
+                }
                 return;
             }
         }
@@ -230,6 +247,7 @@ public class SymbolTable {
 
         private Scope currentScope;
         private String moduleName;
+        private Map<String, Type> fields;
 
         @Override
         public void enterModule(KoordParser.ModuleContext ctx) {
@@ -267,6 +285,18 @@ public class SymbolTable {
         }
 
         @Override
+        public void enterAdtdef(KoordParser.AdtdefContext ctx) {
+            fields = new HashMap<>();
+        }
+
+        @Override
+        public void exitAdtdef(KoordParser.AdtdefContext ctx) {
+            Type.createType(fields, ctx.UPPER().getText());
+            fields = null;
+        }
+
+
+        @Override
         public void enterDecl(KoordParser.DeclContext ctx) {
             Type t = null;
 
@@ -283,6 +313,8 @@ public class SymbolTable {
 
             } else if (ctx.STREAM() != null) {
                 t = Type.Stream;
+            } else if (ctx.UPPER() != null) {
+                t = Type.CustomType(ctx.UPPER().getText());
             } else {
                 System.err.println("Unable to determine type");
             }
@@ -294,16 +326,21 @@ public class SymbolTable {
             }
 
             String name = ctx.VARNAME().getText();
-            if (moduleName != null) {
-                name = moduleName + "." + name;
-            }
-            if (vars.get(name) != null) {
-                multipleDeclaration.add(name);
-                return;
-            }
 
-            var entry = new SymbolTableEntry(currentScope, t, name);
-            vars.put(name, entry);
+            if (fields == null) {
+                if (moduleName != null) {
+                    name = moduleName + "." + name;
+                }
+                if (vars.get(name) != null) {
+                    multipleDeclaration.add(name);
+                    return;
+                }
+
+                var entry = new SymbolTableEntry(currentScope, t, name);
+                vars.put(name, entry);
+            } else {
+                fields.put(name, t);
+            }
         }
 
     }
@@ -351,7 +388,8 @@ public class SymbolTable {
                 types.push(left);
 
             } else if (ctx.VARNAME() != null) {
-                var varType = vars.get(ctx.VARNAME().getText());
+                var text = ctx.VARNAME().getText();
+                var varType = vars.get(text);
                 if (ctx.LBRACE() != null) {
                     var index = types.pop();
                     if (!index.equals(Type.Int)) {
@@ -364,8 +402,23 @@ public class SymbolTable {
                         typeMismatch.add(ctx);
                     }
                 } else {
+                    if (varType == null) {
 
-                    types.push(varType.type);
+                        var fields = text.split("\\.");
+                        var currentType = vars.get(fields[0]).type;
+                        for (int i = 1; i < fields.length; i++) {
+                            if (currentType == null || currentType.getCustomType() == null) {
+                                unresolvedSymbols.add(text);
+                                return;
+                            } else {
+                                currentType = getFieldType(currentType.getCustomType().getName(), fields[i]);
+                            }
+                        }
+                        types.push(currentType);
+                    } else {
+                        types.push(varType.type);
+                    }
+
                 }
 
             } else if (ctx.funccall() != null) {
@@ -393,7 +446,8 @@ public class SymbolTable {
 
         @Override
         public void exitAssign(KoordParser.AssignContext ctx) {
-            Type t = vars.get(ctx.VARNAME().getText()).type;
+            var text = ctx.VARNAME().getText();
+            Type t = vars.get(text).type;
             Type actual = types.poll();
             if (actual == null) {
                 return; //null means the type is not yet determined
@@ -417,6 +471,11 @@ public class SymbolTable {
                 }
             }
 
+        }
+
+        @Override
+        public void exitStmt(KoordParser.StmtContext ctx) {
+            types.clear();
         }
 
         @Override
