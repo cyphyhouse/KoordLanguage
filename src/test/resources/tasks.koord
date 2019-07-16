@@ -6,8 +6,10 @@ def Task:
 using Motion:
     actuators:
         pos target
+        pos[] route
     sensors:
         pos position
+        boolean done
 
 allwrite:
     Task[] taskList
@@ -17,9 +19,8 @@ allread:
 
 local:
     int i = 0
-    pos[] p
-    Task temp
-    Task new
+    pos[] currentRoute
+    Task newTask
 
     int asgn = 0
     int rchd = 1
@@ -30,27 +31,20 @@ local:
 assign:
     pre: stage == asgn
     eff:
-        atomic:
-            for i = 0, length(taskList) - 1:
-                temp = get(taskList, i)
-                p = getPath(temp.loc)
-                if temp.assignId == 0 and notNull(p, routes):
-                    new = Task(temp.loc, pid, temp.taskId)
-                    put(taskList,i, new)
-                    routes[pid] = p
-                    Motion.route = p
-                    stage = rchd
+        newTask = getAvailableNextTask(taskList)
+        currentRoute = getPathFromTask(newTask)
+
+        if !willCollide(newTask):
+            routes[pid] = currentRoute
+            Motion.route = currentRoute
+            stage = rchd
+
 
 reached:
     pre: stage == rchd and Motion.done
     eff:
-        routes[pid] = temp.loc
-        stage = cmplt
-
-cmplt:
-    pre: stage == cmplt
-    eff:
         stage = asgn
+
 
 
 

@@ -67,4 +67,15 @@ class ValidationTest {
         assertTrue(map.isValid());
 
     }
+
+    @Test
+    void tasks() throws IOException {
+        var filename = "src/test/resources/tasks.koord";
+        assumeTrue(new Utils.SyntaxChecker().testFile(filename));
+
+        ParseTree p = Utils.treeFromFile(filename);
+        var map = new SymbolTable(p);
+        assertTrue(map.isValid());
+
+    }
 }

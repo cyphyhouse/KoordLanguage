@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Used the represent types in Kooord
  */
@@ -11,6 +14,7 @@ public class Type {
     private static final int ArrayVal = 5;
     private static final int StringVal = 6;
     private static final int StreamVal = 7;
+    private static final int CustomVal = 8;
 
     /**
      * Boolean type
@@ -39,8 +43,19 @@ public class Type {
 
     private final int code;
     private Type innerType = null;
+
     private Type(int code) {
         this.code = code;
+    }
+
+    private static Map<String, Type> customTypes = new HashMap<>();
+    private CustomType customType;
+
+    public static void createType(Map<String, Type> fields, String name) {
+        var ret = new Type(CustomVal);
+
+        ret.customType = new CustomType(fields, name);
+        customTypes.put(name, ret);
     }
 
     /**
@@ -54,6 +69,14 @@ public class Type {
         ret.innerType = inner;
         return ret;
 
+    }
+
+    public static Type CustomType(String name) {
+        return customTypes.get(name);
+    }
+
+    public CustomType getCustomType() {
+        return customType;
     }
 
     /**
@@ -75,6 +98,10 @@ public class Type {
      */
     @Override
     public boolean equals(Object other) {
+
+        if (customType != null && ((Type) other).customType != null) {
+            return ((Type) other).customType.equals(this.customType);
+        }
         if (innerType == null) {
             return this.code == ((Type) other).code;
         }
@@ -114,6 +141,8 @@ public class Type {
                 return "String";
             case StreamVal:
                 return "Stream";
+            case CustomVal:
+                return this.customType.toString() + customType.getFields().toString();
         }
         return "unknown";
     }
@@ -135,14 +164,16 @@ public class Type {
             case FloatVal:
                 return "float";
             case ArrayVal:
-                //for now assume that we mean the inner type
                 return "list";
             case StringVal:
                 return "str";
             case StreamVal:
                 return "IO";
+            case CustomVal:
+                return customType.getName();
         }
         return "unknown";
     }
+
 
 }

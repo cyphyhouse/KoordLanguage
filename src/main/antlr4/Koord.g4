@@ -204,8 +204,9 @@ bexpr :
       | bexpr OR bexpr
       | FALSE
       | TRUE
+      | funccall
       | VARNAME
-      | funccall;
+      ;
       
 
 
