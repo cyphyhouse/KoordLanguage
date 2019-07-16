@@ -2,16 +2,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParseFileTest {
 
-    @Test
-    public void badfile() throws IOException { //should fail
-        Utils.SyntaxChecker checker = new Utils.SyntaxChecker();
-        assertFalse(checker.testFile("src/test/resources/badfile.koord"));
-    }
 
     @Test
     public void file1() throws IOException {
