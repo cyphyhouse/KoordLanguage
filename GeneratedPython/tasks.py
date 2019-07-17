@@ -1,6 +1,15 @@
 from agentThread import AgentThread
 
 
+class Task:
+
+    def __init__(self):
+        self.loc = None
+        self.assignId = None
+        self.taskId = None
+
+
+
 class DefaultName(AgentThread):
 
     def __init__(self, config):

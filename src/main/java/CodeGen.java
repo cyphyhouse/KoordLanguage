@@ -56,6 +56,9 @@ public class CodeGen {
         builder = new StringBuilder();
         builder.append(imports);
         builder.append(generatedFunctions);
+        for (var adt : ctx.defs().adtdef()) {
+            generateClasses(adt);
+        }
         builder.append(String.format(classStart, name, name));
         currentIndent = INDENT_SPACES * 2;
 
@@ -82,6 +85,26 @@ public class CodeGen {
         for (var event : ctx.event()) {
             generateEvent(event);
         }
+    }
+
+    private void generateClasses(KoordParser.AdtdefContext adtdef) {
+        var name = adtdef.UPPER().getText();
+
+        builder.append("class ")
+                .append(name)
+                .append(":\n\n")
+                .append(INDENT + "def __init__(self):\n");
+        currentIndent = INDENT_SPACES * 2;
+
+        for (var dec : adtdef.decl()) {
+            builder.append(indent())
+                    .append("self.")
+                    .append(dec.VARNAME().getText())
+                    .append(" = None\n");
+        }
+        builder.append("\n\n\n");
+        currentIndent = 0;
+
     }
 
     private void generateInitial(KoordParser.InitContext ctx) {

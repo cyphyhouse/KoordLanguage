@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -48,7 +48,12 @@ public class Type {
         this.code = code;
     }
 
-    private static Map<String, Type> customTypes = new HashMap<>();
+    //linked to preserve order
+    private static Map<String, Type> customTypes = new LinkedHashMap<>();
+
+    public static Map<java.lang.String, Type> getCustomTypes() {
+        return customTypes;
+    }
     private CustomType customType;
 
     public static void createType(Map<String, Type> fields, String name) {
