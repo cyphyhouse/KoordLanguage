@@ -107,13 +107,12 @@ RANGLE : '>';
 AND : '&&' | 'and';
 OR : '||' | 'or';
 NOT : '!';
-fragment LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
+LID : [a-z][a-zA-Z0-9]*; //difference betwee lid and cid???
 
-fragment CID : [A-Z][a-zA-Z0-9]*;
-UPPER : CID;
-VARNAME : LID ('.' LID)*  | (CID '.' LID);
+CID : [A-Z][a-zA-Z0-9]*;
 INUM : [0-9]+;
 FNUM : [0-9]+[.][0-9]+;
+DOT : '.'; //this must be below fnum
 PLUS : '+';
 MINUS : '-';
 TIMES : '*';
@@ -165,11 +164,13 @@ fragment WS : [ \t]+ ; //should be parsed ?
 
 program :  NEWLINE? defs  module*   (allreadvars | allwritevars | localvars)*   init?  event+ EOF;
 defs : funcdef*  adtdef*;
-funcdef : DEF FUN VARNAME LPAR param* RPAR COLON NEWLINE statementblock;
-adtdef : DEF UPPER COLON NEWLINE INDENT decl+ DEDENT;
-param : TYPE VARNAME;
+funcdef : DEF FUN LID LPAR param* RPAR COLON NEWLINE statementblock;
+adtdef : DEF CID COLON NEWLINE INDENT decl+ DEDENT;
+param : TYPE LID;
 
-event : VARNAME COLON NEWLINE INDENT PRE COLON expr NEWLINE EFF COLON NEWLINE statementblock DEDENT;
+variable : (CID | LID) DOT variable | LID;
+
+event : LID COLON NEWLINE INDENT PRE COLON expr NEWLINE EFF COLON NEWLINE statementblock DEDENT;
 statementblock : INDENT stmt+ DEDENT;
 
 stmt : assign NEWLINE
@@ -180,20 +181,26 @@ stmt : assign NEWLINE
      | STOP NEWLINE
      | ATOMIC COLON NEWLINE statementblock; //add later
 
-forloop : FOR VARNAME ASGN expr COMMA expr COLON NEWLINE statementblock;
+forloop : FOR LID ASGN expr COMMA expr COLON NEWLINE statementblock;
 
 conditional : IF expr COLON NEWLINE statementblock elseblock?;
 
 elseblock : ELSE COLON NEWLINE statementblock;
 
-iostream : VARNAME LSHIFT expr
+iostream : variable LSHIFT expr
     | iostream LSHIFT expr;
 
-funccall : (VARNAME | UPPER) LPAR (arglist)? RPAR;
+funccall : (LID | CID) LPAR (arglist)? RPAR;
 
 arglist : expr (COMMA expr)*;
 
-assign : VARNAME (LBRACE aexpr RBRACE)? ASGN expr; //assume these can't be nested
+assign : lval ASGN expr; //assume these can't be nested
+
+lval : lval DOT LID
+       | LID
+       | CID
+       | lval LBRACE aexpr RBRACE
+       ;
 expr : aexpr | bexpr; //more
 
 bexpr : 
@@ -205,7 +212,7 @@ bexpr :
       | FALSE
       | TRUE
       | funccall
-      | VARNAME
+      | lval
       | aexpr
       ;
       
@@ -219,9 +226,9 @@ aexpr :
       | aexpr (PLUS | MINUS) aexpr
       | funccall
       | constant
-      | VARNAME LBRACE aexpr RBRACE
       | STRING
-      | VARNAME;
+      | lval
+      ;
 
 
 
@@ -234,11 +241,13 @@ allreadvars : ALLREAD COLON NEWLINE INDENT decl+ DEDENT;
 localvars : LOCAL COLON NEWLINE INDENT decl+ DEDENT;
 
 
-decl : (INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM | UPPER) (arraydec)*/* there might be more */ VARNAME  (ASGN expr)? NEWLINE;
+decl :  (primitive | CID) (arraydec)* LID  (ASGN expr)? NEWLINE;
+
+primitive : INT | BOOL | FLOAT | POS | QUEUE | STRINGTYPE | STREAM;
 
 arraydec : LBRACE RBRACE;
 
-module : USING UPPER COLON NEWLINE INDENT (actuatordecls sensordecls | sensordecls actuatordecls) DEDENT;
+module : USING CID COLON NEWLINE INDENT (actuatordecls sensordecls | sensordecls actuatordecls) DEDENT;
 
 actuatordecls : ACTUATORS COLON NEWLINE INDENT decl+ DEDENT;
 

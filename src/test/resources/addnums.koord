@@ -5,6 +5,13 @@ local:
   boolean added = false
   int finalsum
 
+
+using Log:
+  sensors:
+    stream stdin
+  actuators:
+    stream stdout
+
 adding:
   pre: !added
   eff :
@@ -16,3 +23,5 @@ finalsum:
   pre: numadded == numAgents
   eff :
       finalsum = sum
+      stdout << finalsum
+
