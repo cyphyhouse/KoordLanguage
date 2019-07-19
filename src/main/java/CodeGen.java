@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,7 +87,7 @@ public class CodeGen {
     }
 
     private void generateClasses(KoordParser.AdtdefContext adtdef) {
-        var name = adtdef.UPPER().getText();
+        var name = adtdef.CID().getText();
 
         builder.append("class ")
                 .append(name)
@@ -99,7 +98,7 @@ public class CodeGen {
         for (var dec : adtdef.decl()) {
             builder.append(indent())
                     .append("self.")
-                    .append(dec.VARNAME().getText())
+                    .append(dec.LID().getText())
                     .append(" = None\n");
         }
         builder.append("\n\n\n");
@@ -113,7 +112,7 @@ public class CodeGen {
 
     private void generateLocals(KoordParser.LocalvarsContext ctx) {
         for (var decls : ctx.decl()) {
-            builder.append(indent() + "self.locals['" + decls.VARNAME().getText() + "'] = ");
+            builder.append(indent() + "self.locals['" + decls.LID().getText() + "'] = ");
             if (decls.expr() != null) {
                 generateExpression(decls.expr());
             } else {
@@ -126,7 +125,7 @@ public class CodeGen {
     private void generateAllRead(KoordParser.AllreadvarsContext ctx) {
 
         for (var decls : ctx.decl()) {
-            var entry = table.getTable().get(decls.VARNAME().getText());
+            var entry = table.getTable().get(decls.LID().getText());
             builder.append(indent())
                     .append(String.format("self.create_ar_var('%s', %s, ", entry.name, entry.type.python()));
             if (decls.expr() != null) {
@@ -141,7 +140,7 @@ public class CodeGen {
     private void generateAllWrite(KoordParser.AllwritevarsContext ctx) {
 
         for (var decls : ctx.decl()) {
-            var entry = table.getTable().get(decls.VARNAME().getText());
+            var entry = table.getTable().get(decls.LID().getText());
             builder.append(indent())
                     .append(String.format("self.create_aw_var('%s', %s, ", entry.name, entry.type.python()));
             if (decls.expr() != null) {
@@ -157,37 +156,78 @@ public class CodeGen {
         return " ".repeat(currentIndent);
     }
 
+    private void generateLval(KoordParser.LvalContext ctx) {
+        if (ctx.DOT() != null) {
+            generateLval(ctx.lval());
+            builder.append(".")
+                    .append(ctx.LID().getText());
+
+        } else if (ctx.arrayderef() != null) {
+            generateLval(ctx.lval());
+            builder.append("[")
+                    .append(ctx.arrayderef().aexpr())
+                    .append("]");
+        } else if (ctx.CID() != null) {
+            builder.append("self.read_from_sensor(")
+                    .append(ctx.getText());
+        } else {
+            var entry = table.getTable().get(ctx.getText());
+            if (entry.scope == Scope.Local) {
+                builder.append("self.locals['")
+                        .append(entry.name)
+                        .append("']");
+            } else if (entry.scope == Scope.AllWrite || entry.scope == Scope.AllRead) {
+                builder.append("self.read_from_shared('")
+                        .append(entry.name)
+                        .append("', ")
+                        .append("None)");
+            } else {
+
+            }
+        }
+    }
+
+
     private void generateStatement(KoordParser.StmtContext ctx) {
         builder.append(indent());
         if (ctx.assign() != null) {
-            var str = ctx.assign().VARNAME().getText();
-
-            var entry = table.getTable().get(str);
-            if (entry.scope == Scope.Local) {
-                builder.append("self.locals['")
-                        .append(str)
-                        .append("'] = ");
-                generateExpression(ctx.assign().expr());
-            } else if (entry.scope == Scope.Actuator) {
+            var lval = ctx.assign().lval();
+            //the recursive function should only be used if
+            // the depth is above 1
+            // otherwise it should dirctely generate
+            //write to actuator and etc
+            if (lval.CID() != null) {
+                var name = lval.getText();
                 builder.append("self.write_to_actuator('")
-                        .append(entry.name)
+                        .append(name)
                         .append("', ");
-                generateExpression(ctx.assign().expr());
-                builder.append(")");
-            } else if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
-                builder.append("self.write_to_shared('")
-                        .append(str)
-                        .append("', ");
-                if (ctx.assign().aexpr() == null) {
-                    builder.append("None");
-                } else {
-                    generateAExpression(ctx.assign().aexpr());
-                }
-                builder.append(", ");
                 generateExpression(ctx.assign().expr());
                 builder.append(")");
 
+            } else if (lval.DOT() == null && lval.arrayderef() == null) {
+                //it is just the leaf node
+
+                var entry = table.getTable().get(lval.getText());
+
+                if (entry.scope == Scope.AllRead || entry.scope == Scope.AllWrite) {
+                    builder.append("self.write_to_shared('")
+                            .append(lval.getText())
+                            .append("', ")
+                            .append("None");
+                    generateExpression(ctx.assign().expr());
+                    builder.append(")");
+                } else {
+                    generateLval(lval);
+                    builder.append(" = ");
+                    generateExpression(ctx.assign().expr());
+                }
+
+            } else {
+                generateLval(lval);
+                builder.append(" = ");
+                generateExpression(ctx.assign().expr());
             }
+
 
         } else if (ctx.STOP() != null) {
             builder.append("self.stop()");
@@ -271,8 +311,8 @@ public class CodeGen {
     }
 
     private void generateAExpression(KoordParser.AexprContext ctx) {
-        if (ctx.VARNAME() != null) {
-            generateReadFromVariable(ctx.VARNAME().getText(), ctx.aexpr());
+        if (ctx.lval() != null) {
+            generateLval(ctx.lval());
         } else if (ctx.constant() != null) {
             if (ctx.constant().PID() != null) {
                 builder.append("self.pid()");
@@ -346,7 +386,7 @@ public class CodeGen {
 
     private void generateFuncCall(KoordParser.FunccallContext ctx) {
         builder.append("self.")
-                .append(ctx.VARNAME().getText())
+                .append(ctx.LID().getText())
                 .append("(");
         if (ctx.arglist() != null) {
             var expressions = ctx.arglist().expr();
@@ -387,8 +427,8 @@ public class CodeGen {
         } else if (ctx.NOT() != null) {
             builder.append(" not ");
             generateBExpression(ctx.bexpr(0));
-        } else if (ctx.VARNAME() != null) {
-            generateReadFromVariable(ctx.VARNAME().getText(), new ArrayList<>());
+        } else if (ctx.lval() != null) {
+            generateLval(ctx.lval());
         } else if (ctx.funccall() != null) {
             generateFuncCall(ctx.funccall());
         } else if (ctx.aexpr() != null) {

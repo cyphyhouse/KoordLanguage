@@ -196,10 +196,14 @@ arglist : expr (COMMA expr)*;
 
 assign : lval ASGN expr; //assume these can't be nested
 
+arrayderef : LBRACE aexpr RBRACE;
+
 lval : lval DOT LID
        | LID
-       | CID
-       | lval LBRACE aexpr RBRACE
+       | CID DOT LID
+       | lval arrayderef
+       | funccall DOT LID
+       | funccall arrayderef
        ;
 expr : aexpr | bexpr; //more
 
