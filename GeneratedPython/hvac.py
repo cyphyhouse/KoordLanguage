@@ -13,8 +13,8 @@ class DefaultName(AgentThread):
 
     def loop_body(self):
         if (True):
-            if (self.read_from_sensor('HVAC.temp') > 70):
-                if (self.read_from_sensor('HVAC.temp') < 75):
+            if (self.read_from_sensor('HVAC.temp') > 70.0):
+                if (self.read_from_sensor('HVAC.temp') < 75.0):
                     self.write_to_actuator('HVAC.switch', -1)
                 else:
                     self.write_to_actuator('HVAC.switch', -2)

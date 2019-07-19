@@ -33,7 +33,7 @@ class DefaultName(AgentThread):
             self.locals['newTask'] = self.getAvailableNextTask(self.read_from_shared('taskList', None))
             self.locals['currentRoute'] = self.getPathFromTask(self.locals['newTask'])
             if not self.willCollide(self.locals['newTask']):
-                self.write_to_shared('routes', self.pid(), self.locals['currentRoute'])
+                self.read_from_shared('routes', None)[self.pid()] = self.locals['currentRoute']
                 self.write_to_actuator('Motion.route', self.locals['currentRoute'])
                 self.locals['stage'] = self.locals['rchd']
 

@@ -157,19 +157,19 @@ public class CodeGen {
     }
 
     private void generateLval(KoordParser.LvalContext ctx) {
-        if (ctx.DOT() != null) {
+        if (ctx.CID() != null) {
+            builder.append("self.read_from_sensor('")
+                    .append(ctx.getText())
+                    .append("')");
+        } else if (ctx.DOT() != null) {
             generateLval(ctx.lval());
             builder.append(".")
                     .append(ctx.LID().getText());
-
         } else if (ctx.arrayderef() != null) {
             generateLval(ctx.lval());
-            builder.append("[")
-                    .append(ctx.arrayderef().aexpr())
-                    .append("]");
-        } else if (ctx.CID() != null) {
-            builder.append("self.read_from_sensor(")
-                    .append(ctx.getText());
+            builder.append("[");
+            generateAExpression(ctx.arrayderef().aexpr());
+            builder.append("]");
         } else {
             var entry = table.getTable().get(ctx.getText());
             if (entry.scope == Scope.Local) {
@@ -213,7 +213,7 @@ public class CodeGen {
                     builder.append("self.write_to_shared('")
                             .append(lval.getText())
                             .append("', ")
-                            .append("None");
+                            .append("None, ");
                     generateExpression(ctx.assign().expr());
                     builder.append(")");
                 } else {
@@ -425,7 +425,7 @@ public class CodeGen {
             builder.append(" and ");
             generateBExpression(ctx.bexpr(1));
         } else if (ctx.NOT() != null) {
-            builder.append(" not ");
+            builder.append("not ");
             generateBExpression(ctx.bexpr(0));
         } else if (ctx.lval() != null) {
             generateLval(ctx.lval());

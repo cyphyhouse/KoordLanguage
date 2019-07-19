@@ -10,7 +10,7 @@ class DefaultName(AgentThread):
     def initialize_vars(self):
         self.locals = {}
         self.create_ar_var('x', list, None)
-        self.write_to_shared('x', self.pid(), self.read_from_sensor('Motion.position'))
+        self.read_from_shared('x', None)[self.pid()] = self.read_from_sensor('Motion.position')
 
     def loop_body(self):
         if (True):

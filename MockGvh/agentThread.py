@@ -32,6 +32,8 @@ class AgentThread(ABC):
         self.shared_vars[var_name][index] = value
 
     def read_from_shared(self, var_name, index):
+        if index is None:
+            return self.shared_vars[var_name]
         return self.shared_vars[var_name][index]
 
     def read_from_sensor(self, var_name):
