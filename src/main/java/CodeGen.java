@@ -171,7 +171,8 @@ public class CodeGen {
             generateAExpression(ctx.arrayderef().aexpr());
             builder.append("]");
         } else {
-            var entry = table.getTable().get(ctx.getText());
+            var text = ctx.getText();
+            var entry = table.getTable().get(text);
             if (entry.scope == Scope.Local) {
                 builder.append("self.locals['")
                         .append(entry.name)

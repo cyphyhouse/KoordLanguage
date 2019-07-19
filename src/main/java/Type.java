@@ -16,6 +16,7 @@ public class Type {
     private static final int StreamVal = 7;
     private static final int CustomVal = 8;
 
+    private static Map<String, Type> customTypes = new LinkedHashMap<>();
     /**
      * Boolean type
      */
@@ -35,7 +36,14 @@ public class Type {
     /**
      * Position type
      */
-    public static final Type Pos = new Type(PosVal);
+    public static final Type Pos = createPos();
+
+    private static Type createPos() {
+        createType(Map.of("x", Type.Float, "y", Type.Float, "z", Type.Float), "pos");
+        return getCustomTypes().get("pos");
+    }
+
+
     /**
      * Stream type
      */
@@ -49,7 +57,6 @@ public class Type {
     }
 
     //linked to preserve order
-    private static Map<String, Type> customTypes = new LinkedHashMap<>();
 
     public static Map<java.lang.String, Type> getCustomTypes() {
         return customTypes;

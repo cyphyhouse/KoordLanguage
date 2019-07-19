@@ -1,0 +1,9 @@
+
+local:
+    pos i
+    pos j
+
+event1:
+    pre: i.x == j.y
+    eff:
+        j.z = 12.5
