@@ -18,7 +18,7 @@ class DefaultName(AgentThread):
             if not self.lock():
                 return
             if self.read_from_shared('candidate', None) < self.pid():
-                self.write_to_shared('candidate', None, self.pid())
+                self.write_to_shared('candidate', Noneself.pid())
             else:
                 self.locals['leader'] = self.read_from_shared('candidate', None)
 

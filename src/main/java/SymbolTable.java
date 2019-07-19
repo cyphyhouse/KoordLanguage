@@ -1,7 +1,6 @@
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.*;
 
@@ -79,7 +78,11 @@ public class SymbolTable {
         walker.walk(new KoordBaseListener() {
             @Override
             public void enterLval(KoordParser.LvalContext ctx) {
-                checkIfDeclared(ctx.LID());
+                if (ctx.CID() != null) {
+                    checkIfDeclared(ctx.getText());
+                } else if (ctx.LID() != null && ctx.DOT() == null) {
+                    checkIfDeclared(ctx.LID().getText());
+                }
             }
         }, tree);
     }
@@ -91,21 +94,27 @@ public class SymbolTable {
             @Override
             public void enterAssign(KoordParser.AssignContext ctx) {
                 var lval = ctx.lval();
+
+                while (lval.lval() != null) {
+                    lval = lval.lval();
+                }
                 SymbolTableEntry entry = null;
                 if (lval.CID() != null) {
                     //means that it has to be a module definition
                     var moduleName = lval.CID().getText();
                     //the first one should be the actual name
-                    var field = lval.lval();
-                    if (field == null) {
-                        System.err.println("Cannot assign to module");
-                    } else {
-                        var fieldName = field.getText();
-                        var varName = moduleName + "." + fieldName;
-                        entry = vars.get(varName);
-                    }
-                } else {
+                    var fieldName = lval.LID();
+                    var varName = moduleName + "." + fieldName;
+                    entry = vars.get(varName);
+                } else if (lval.lval() == null) {
                     entry = vars.get(lval.LID().getText());
+                } else {
+                    return;
+                }
+
+
+                if (entry == null) {
+                    System.err.println("could not find variable");
                 }
 
                 if (entry.scope == Scope.Sensor) {
@@ -116,12 +125,18 @@ public class SymbolTable {
                 }
                 if (entry.scope.equals(Scope.AllRead)) {
                     //needs to check if it is an
-                    if (lval.arrayderef() == null) {
+                    if (!(lval.parent instanceof KoordParser.LvalContext)) {
 
                         assignToReadOnly.add(entry.name);
                         return;
                     }
-                    var num = lval.arrayderef().aexpr().constant();
+                    KoordParser.LvalContext parentLval = (KoordParser.LvalContext) lval.parent;
+                    if (parentLval.arrayderef() == null) {
+
+                        assignToReadOnly.add(entry.name);
+                        return;
+                    }
+                    var num = parentLval.arrayderef().aexpr().constant();
                     if (num == null) {
                         assignToReadOnly.add(entry.name);
                         return;
@@ -148,12 +163,10 @@ public class SymbolTable {
 
     //only check the variable
     //does not check array or dot syntax
-    private void checkIfDeclared(TerminalNode variable) {
-        if (variable != null) {
-            var entry = vars.get(variable.getText());
-            if (entry == null) {
-                unresolvedSymbols.add(variable.getText());
-            }
+    private void checkIfDeclared(String text) {
+        var entry = vars.get(text);
+        if (entry == null) {
+            unresolvedSymbols.add(text);
         }
     }
 
@@ -416,6 +429,7 @@ public class SymbolTable {
                     types.push(type.getInnerType());
                 } else {
                     typeMismatch.add(ctx);
+                    types.push(null);
                 }
             }
         }

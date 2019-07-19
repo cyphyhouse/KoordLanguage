@@ -168,7 +168,6 @@ funcdef : DEF FUN LID LPAR param* RPAR COLON NEWLINE statementblock;
 adtdef : DEF CID COLON NEWLINE INDENT decl+ DEDENT;
 param : TYPE LID;
 
-variable : (CID | LID) DOT variable | LID;
 
 event : LID COLON NEWLINE INDENT PRE COLON expr NEWLINE EFF COLON NEWLINE statementblock DEDENT;
 statementblock : INDENT stmt+ DEDENT;
@@ -187,7 +186,7 @@ conditional : IF expr COLON NEWLINE statementblock elseblock?;
 
 elseblock : ELSE COLON NEWLINE statementblock;
 
-iostream : variable LSHIFT expr
+iostream : lval LSHIFT expr
     | iostream LSHIFT expr;
 
 funccall : (LID | CID) LPAR (arglist)? RPAR;
