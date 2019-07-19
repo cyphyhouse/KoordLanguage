@@ -11,8 +11,8 @@ init :
 update:
   pre: (true)
   eff :
-      if (HVAC.temp > 70):
-         if (HVAC.temp < 75):
+      if (HVAC.temp > 70.0):
+         if (HVAC.temp < 75.0):
            HVAC.switch = -1
          else:
            HVAC.switch = -2

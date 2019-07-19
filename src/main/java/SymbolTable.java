@@ -509,6 +509,9 @@ public class SymbolTable {
 
         @Override
         public void exitIostream(KoordParser.IostreamContext ctx) {
+            if (ctx.expr() != null) {
+                types.pop();
+            }
             if (!types.peek().equals(Type.Stream)) {
                 typeMismatch.add(ctx);
             }
