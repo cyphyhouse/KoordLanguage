@@ -2,9 +2,11 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) {
@@ -43,9 +45,8 @@ public class Main {
         var symbolTable = new SymbolTable(tree);
 
         if (symbolTable.isValid()) {
-            var name = inputFile.split("\\.")[0];
-            var path = name.split("/");
-            name = path[path.length - 1];
+            var filename = Paths.get(inputFile).getFileName().toString();
+            var name = filename.split("\\.")[0];
             name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
             var codegen = new CodeGen(symbolTable, tree, name);
 
