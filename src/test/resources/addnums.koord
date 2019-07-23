@@ -16,3 +16,4 @@ finalsum:
   pre: numadded == numAgents
   eff :
       finalsum = sum
+      stop
