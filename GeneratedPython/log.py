@@ -4,7 +4,7 @@ from agentThread import AgentThread
 class DefaultName(AgentThread):
 
     def __init__(self, config):
-        super(DefaultName, self).__init__(config)
+        super(DefaultName, self).__init__(config, None)
         self.start()
 
     def initialize_vars(self):

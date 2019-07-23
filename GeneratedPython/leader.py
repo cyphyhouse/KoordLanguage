@@ -4,7 +4,7 @@ from agentThread import AgentThread
 class DefaultName(AgentThread):
 
     def __init__(self, config):
-        super(DefaultName, self).__init__(config)
+        super(DefaultName, self).__init__(config, None)
         self.start()
 
     def initialize_vars(self):
@@ -15,7 +15,7 @@ class DefaultName(AgentThread):
 
     def loop_body(self):
         if not self.locals['voted']:
-            if not self.lock():
+            if not self.lock('voted'):
                 return
             if self.read_from_shared('candidate', None) < self.pid():
                 self.write_to_shared('candidate', None, self.pid())
@@ -23,7 +23,7 @@ class DefaultName(AgentThread):
                 self.locals['leader'] = self.read_from_shared('candidate', None)
 
             self.locals['voted'] = True
-            self.unlock()
+            self.unlock('voted')
             return
         if self.locals['voted']:
             self.locals['leader'] = self.read_from_shared('candidate', None)
