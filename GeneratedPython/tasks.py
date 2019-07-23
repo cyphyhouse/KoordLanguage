@@ -1,4 +1,4 @@
-from agentThread import AgentThread
+from src.harness.agentThread import AgentThread
 
 
 class Task:

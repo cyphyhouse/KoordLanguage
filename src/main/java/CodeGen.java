@@ -12,7 +12,7 @@ public class CodeGen {
      */
     public static final int INDENT_SPACES = 4;
     private static final String INDENT = " ".repeat(INDENT_SPACES);
-    private static final String imports = "from agentThread import AgentThread, Pos\n\n\n";
+    private static final String imports = "from src.harness.agentThread import AgentThread, Pos\n\n\n";
     private static final String generatedFunctions = "";
 
     private static final String generateMethods = "";
