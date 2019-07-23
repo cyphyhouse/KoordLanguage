@@ -1,3 +1,5 @@
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +34,7 @@ public class CodeGen {
     private int currentIndent;
     private SymbolTable table;
     private String currentEvent;
-
-
-    /**
-     * Creates a tree with a default name.
-     *
-     * @param table
-     * @param ctx
-     */
-    public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
-        this(table, ctx, "DefaultName");
-    }
+    private List<String> eventsWithAtomic = new ArrayList<>();
 
     /**
      * Constructor that traverses the tree and generates
@@ -75,6 +67,15 @@ public class CodeGen {
             generateAllRead(ctx.allreadvars(0));
         }
 
+        findEventsWithAtomic(ctx);
+
+        for (var event : eventsWithAtomic) {
+            builder.append(indent())
+                    .append("self.initialize_lock('")
+                    .append(event)
+                    .append("')\n");
+        }
+
         currentIndent = INDENT_SPACES * 1;
         if (ctx.init() != null) {
             generateInitial(ctx.init());
@@ -86,6 +87,35 @@ public class CodeGen {
         for (var event : ctx.event()) {
             generateEvent(event);
         }
+    }
+
+
+    /**
+     * Creates a tree with a default name.
+     *
+     * @param table
+     * @param ctx
+     */
+    public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
+        this(table, ctx, "DefaultName");
+    }
+
+    private void findEventsWithAtomic(KoordParser.ProgramContext ctx) {
+        new ParseTreeWalker().walk(new KoordBaseListener() {
+            String eventName;
+
+            @Override
+            public void enterEvent(KoordParser.EventContext eventCtx) {
+                eventName = eventCtx.VARNAME().getText();
+            }
+
+            @Override
+            public void enterStmt(KoordParser.StmtContext stmtCtx) {
+                if (stmtCtx.ATOMIC() != null) {
+                    eventsWithAtomic.add(eventName);
+                }
+            }
+        }, ctx);
     }
 
     private void generateClasses(KoordParser.AdtdefContext adtdef) {

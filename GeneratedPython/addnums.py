@@ -13,6 +13,7 @@ class DefaultName(AgentThread):
         self.locals['finalsum'] = None
         self.create_aw_var('sum', int, 0)
         self.create_aw_var('numadded', int, 0)
+        self.initialize_lock('adding')
 
     def loop_body(self):
         if not self.locals['added']:

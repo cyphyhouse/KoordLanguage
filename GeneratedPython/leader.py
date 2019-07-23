@@ -12,6 +12,7 @@ class DefaultName(AgentThread):
         self.locals['voted'] = False
         self.locals['leader'] = None
         self.create_aw_var('candidate', int, -1)
+        self.initialize_lock('voted')
 
     def loop_body(self):
         if not self.locals['voted']:
