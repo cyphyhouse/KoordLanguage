@@ -26,4 +26,6 @@ class DefaultName(AgentThread):
             return
         if self.read_from_shared('numadded', None) == self.num_agents():
             self.locals['finalsum'] = self.read_from_shared('sum', None)
+            self.log(self.locals['finalsum'])
+
             return
