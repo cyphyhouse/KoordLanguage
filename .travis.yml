@@ -1,3 +1,14 @@
+sudo: false
+
+dist: xenial
+
 language: java
 
 jdk: openjdk12
+
+deploy:
+    provider: releases
+    api_key: "$GITHUB_OAUTH_TOKEN"
+    skip_cleanup: true
+    draft: true
+    overwrite: true
