@@ -19,3 +19,4 @@ deploy:
     on:
         repo: cyphyhouse/KoordLanguage
         branch: travis-ci
+        tags: true  # Only build when the commit is tagged 
