@@ -16,6 +16,6 @@ Koord Compiler
    :maxdepth: 1
 
    docs/parser.rst
-         docs/codegeneration.rst
+   docs/codegeneration.rst
    docs/analysis.rst
 
