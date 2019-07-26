@@ -9,7 +9,7 @@ jdk: openjdk12
 deploy:
     provider: releases
     api_key:
-      secure: XMq5dfiFMUx9NIPO6zMfeD0xzcodqiBSngz0rLW/XIj94FLC9VR4ivb5kcznPTtXOBmIWZ1/lFfJ8MO+jjedJTrgQac+CiZVqyBNaTdyMZLcPEtUo1O0O09G0HlrnqFPQRL+fBpr2umvLnIPiD/oOgQheG2JCKOKxr4+pfvAZgkoDtgXpiDTapxYA9xjO/ojCb4qSOzmMRIAG359Lx8FmJH6g+mwVjWH5X7UNs99fZbTjoKHykKKab12qWVzqEJw+JwJTEMd1M9CCXk9UDBDvNV5F6lNxHcHPxCb8NVr2kO1xHM7RikSjwF+asVFpZ0sMIZMxaAAlecfdUpzU6RcvZHhA+YLgbfKwTaZ6ds87Qmqx6H7o0BVSiXHyR3fE5Y8FTsWLoEcKQQt95UqtjOY4sBLMAjFuGBMG5Jt+AJICJoVJrHz3RSXrSxkAXs9doN6jpuIrsBIKIsu6UrjGWBetnnJzqVMciPC9XF3wJZdkPoc0W5lXM9hluY9SiMv6Xl42Ydph9R9XwR0xegcEOcz7/ei3fLSvyKmGiv/jbkiVzvay2tE/qlsRJyf4ImEepbqAypCcMtKwmrRGUBqaVyaHfp2l6denB0iDQdTIKUunbYmwgJvvPS+bAj0JZgBSYBMTHXh5t4qzD3eup/RPh+Z8N7pLMHB1gdTiYPDh4PMsZE=
+      secure: "$GITHUB_OAUTH_TOKEN"
     skip_cleanup: true
     file_glob: true
     file: target/koord-*-jar-with-dependencies.jar
@@ -19,4 +19,4 @@ deploy:
     on:
         repo: cyphyhouse/KoordLanguage
         branch: travis-ci
-        tags: true  # Only build when the commit is tagged 
+        tags: true  # Only delpoy when the commit is tagged
