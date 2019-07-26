@@ -13,6 +13,7 @@ deploy:
     skip_cleanup: true
     file_glob: true
     file: target/koord-*-jar-with-dependencies.jar
+    tag_name: $TRAVIS_TAG  # Add tag name to overwrite properly
     draft: true
     overwrite: true
     on:
