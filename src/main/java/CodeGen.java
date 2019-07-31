@@ -1,3 +1,5 @@
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ public class CodeGen {
      */
     public static final int INDENT_SPACES = 4;
     private static final String INDENT = " ".repeat(INDENT_SPACES);
-    private static final String imports = "from agentThread import AgentThread, Pos\n\n\n";
+    private static final String imports = "from src.harness.agentThread import AgentThread, Pos\n\n\n";
     private static final String generatedFunctions = "";
 
     private static final String generateMethods = "";
@@ -18,7 +20,7 @@ public class CodeGen {
             "class %s(AgentThread):\n" +
                     "\n" +
                     INDENT + "def __init__(self, config):\n" +
-                    INDENT + INDENT + "super(%s, self).__init__(config)\n" +
+                    INDENT + INDENT + "super(%s, self).__init__(config, None)\n" +
                     INDENT + INDENT + "self.start()\n" +
                     "\n" + generateMethods;
     private static final String loopBody = "\n" +
@@ -31,17 +33,8 @@ public class CodeGen {
     private StringBuilder builder;
     private int currentIndent;
     private SymbolTable table;
-
-
-    /**
-     * Creates a tree with a default name.
-     *
-     * @param table
-     * @param ctx
-     */
-    public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
-        this(table, ctx, "DefaultName");
-    }
+    private String currentEvent;
+    private List<String> eventsWithAtomic = new ArrayList<>();
 
     /**
      * Constructor that traverses the tree and generates
@@ -74,6 +67,15 @@ public class CodeGen {
             generateAllRead(ctx.allreadvars(0));
         }
 
+        findEventsWithAtomic(ctx);
+
+        for (var event : eventsWithAtomic) {
+            builder.append(indent())
+                    .append("self.initialize_lock('")
+                    .append(event)
+                    .append("')\n");
+        }
+
         currentIndent = INDENT_SPACES * 1;
         if (ctx.init() != null) {
             generateInitial(ctx.init());
@@ -85,6 +87,35 @@ public class CodeGen {
         for (var event : ctx.event()) {
             generateEvent(event);
         }
+    }
+
+
+    /**
+     * Creates a tree with a default name.
+     *
+     * @param table
+     * @param ctx
+     */
+    public CodeGen(SymbolTable table, KoordParser.ProgramContext ctx) {
+        this(table, ctx, "DefaultName");
+    }
+
+    private void findEventsWithAtomic(KoordParser.ProgramContext ctx) {
+        new ParseTreeWalker().walk(new KoordBaseListener() {
+            String eventName;
+
+            @Override
+            public void enterEvent(KoordParser.EventContext eventCtx) {
+                eventName = eventCtx.VARNAME().getText();
+            }
+
+            @Override
+            public void enterStmt(KoordParser.StmtContext stmtCtx) {
+                if (stmtCtx.ATOMIC() != null) {
+                    eventsWithAtomic.add(eventName);
+                }
+            }
+        }, ctx);
     }
 
     private void generateClasses(KoordParser.AdtdefContext adtdef) {
@@ -205,15 +236,20 @@ public class CodeGen {
         } else if (ctx.iostream() != null) {
             generateStream(ctx.iostream());
         } else if (ctx.ATOMIC() != null) {
-            //add atomic stuff later
-            builder.append("if not self.lock():\n" +
-                    indent() + " ".repeat(INDENT_SPACES) + "return\n");
+            builder.append("if not self.lock('")
+                    .append(currentEvent)
+                    .append("'):\n")
+                    .append(indent())
+                    .append(" ".repeat(INDENT_SPACES))
+                    .append("return\n");
 
             for (var s : ctx.statementblock().stmt()) {
                 generateStatement(s);
             }
             builder.append(indent())
-                    .append("self.unlock()\n");
+                    .append("self.unlock('")
+                    .append(currentEvent)
+                    .append("')\n");
             return;
         }
         newline();
@@ -245,6 +281,7 @@ public class CodeGen {
     }
 
     private void generateEvent(KoordParser.EventContext ctx) {
+        currentEvent = ctx.VARNAME().getText();
         builder.append(indent());
         builder.append("if ");
 

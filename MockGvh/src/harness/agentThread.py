@@ -8,7 +8,7 @@ class Pos():
 
 class AgentThread(ABC):
 
-    def __init__(self, config):
+    def __init__(self, config, motion_config=None):
         self._pid = config.pid
         self._num_agents = config.num_agents
         self._pos = (random.randrange(1, 10), random.randrange(1, 10))
