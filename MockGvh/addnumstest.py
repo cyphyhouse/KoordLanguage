@@ -10,8 +10,8 @@ class Config:
 
 
 shared_vars = {}
-a = DefaultName(Config(0, 5, shared_vars))
-b = DefaultName(Config(1, 5, shared_vars))
-c = DefaultName(Config(2, 5, shared_vars))
-d = DefaultName(Config(3, 5, shared_vars))
-e = DefaultName(Config(4, 5, shared_vars))
+a = DefaultName(Config(0, 5, shared_vars), None)
+b = DefaultName(Config(1, 5, shared_vars), None)
+c = DefaultName(Config(2, 5, shared_vars), None)
+d = DefaultName(Config(3, 5, shared_vars), None)
+e = DefaultName(Config(4, 5, shared_vars), None)

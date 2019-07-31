@@ -3,8 +3,8 @@ from src.harness.agentThread import AgentThread
 
 class DefaultName(AgentThread):
 
-    def __init__(self, config):
-        super(DefaultName, self).__init__(config, None)
+    def __init__(self, config, motion_config):
+        super(DefaultName, self).__init__(config, motion_config)
         self.start()
 
     def initialize_vars(self):
@@ -28,4 +28,5 @@ class DefaultName(AgentThread):
             self.locals['finalsum'] = self.read_from_shared('sum', None)
             self.log(self.locals['finalsum'])
 
+            self.stop()
             return
