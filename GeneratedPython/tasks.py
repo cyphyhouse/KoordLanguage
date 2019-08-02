@@ -1,4 +1,4 @@
-from agentThread import AgentThread
+from src.harness.agentThread import AgentThread
 
 
 class Task:
@@ -12,8 +12,8 @@ class Task:
 
 class DefaultName(AgentThread):
 
-    def __init__(self, config):
-        super(DefaultName, self).__init__(config)
+    def __init__(self, config, motion_config):
+        super(DefaultName, self).__init__(config, motion_config)
         self.start()
 
     def initialize_vars(self):
