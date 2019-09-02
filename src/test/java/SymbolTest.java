@@ -39,15 +39,14 @@ public class SymbolTest {
         KoordParser p = Utils.parserFromFile("src/test/resources/scopes.koord");
         ParseTree tree = p.program();
         var map = new SymbolTable(tree).getTable();
-        var a = map.get("a");
-        assertEquals(a.scope, Scope.AllWrite);
-        assertEquals(map.get("b").scope, Scope.AllWrite);
-        assertEquals(map.get("c").scope, Scope.AllRead);
-        assertEquals(map.get("d").scope, Scope.AllRead);
-        assertEquals(map.get("e").scope, Scope.Local);
-        assertEquals(map.get("f").scope, Scope.Local);
-        assertEquals(map.get("Motion.foo").scope, Scope.Actuator);
-        assertEquals(map.get("Motion.bar").scope, Scope.Sensor);
+        assertEquals(Scope.AllWrite, map.get("a").scope);
+        assertEquals(Scope.AllWrite, map.get("b").scope);
+        assertEquals(Scope.AllRead, map.get("c").scope);
+        assertEquals(Scope.AllRead, map.get("d").scope);
+        assertEquals(Scope.Local, map.get("e").scope);
+        assertEquals(Scope.Local, map.get("f").scope);
+        assertEquals(Scope.Actuator, map.get("Motion.foo").scope);
+        assertEquals(Scope.Sensor, map.get("Motion.bar").scope);
 
     }
 

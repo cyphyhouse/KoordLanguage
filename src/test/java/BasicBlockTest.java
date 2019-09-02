@@ -208,7 +208,7 @@ f()  <-------+-------> <blank>       |                   |
         var tree = Utils.treeFromFile("src/test/resources/time.koord");
         BasicBlock root = BasicBlock.createFromTree(tree);
         Timer t = new Timer(root);
-        assertEquals(t.getWorstCost(), 16);
+        assertEquals(16, t.getWorstCost());
         //assuming we have 1, 5, 10
     }
     @Test
@@ -217,7 +217,7 @@ f()  <-------+-------> <blank>       |                   |
         var tree = Utils.treeFromFile("src/test/resources/timeexpr.koord");
         BasicBlock root = BasicBlock.createFromTree(tree);
         Timer t = new Timer(root);
-        assertEquals(t.getWorstCost(), 19);
+        assertEquals(19, t.getWorstCost());
         //assuming we have 1, 5, 10, 2 and 1 for multiplecatio, addition
     }
 

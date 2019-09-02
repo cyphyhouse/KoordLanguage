@@ -20,7 +20,7 @@ public class CodeGenTest {
             //verifies syntax
             var process = Runtime.getRuntime().exec(new String[]{"python3", "-m", "py_compile", outputFile});
             process.waitFor();
-            assertEquals(process.exitValue(), 0);
+            assertEquals(0, process.exitValue());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             fail("bad file");
@@ -45,7 +45,7 @@ public class CodeGenTest {
             writer.flush();
             var process = Runtime.getRuntime().exec(new String[]{"python3", testFile});
             process.waitFor();
-            assertEquals(process.exitValue(), 0);
+            assertEquals(0, process.exitValue());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
