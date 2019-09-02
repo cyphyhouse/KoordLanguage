@@ -5,7 +5,6 @@ class DefaultName(AgentThread):
 
     def __init__(self, config, motion_config):
         super(DefaultName, self).__init__(config, motion_config)
-        self.start()
 
     def initialize_vars(self):
         self.locals = {}

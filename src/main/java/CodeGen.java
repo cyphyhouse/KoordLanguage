@@ -21,7 +21,6 @@ public class CodeGen {
                     "\n" +
                     INDENT + "def __init__(self, config, motion_config):\n" +
                     INDENT + INDENT + "super(%s, self).__init__(config, motion_config)\n" +
-                    INDENT + INDENT + "self.start()\n" +
                     "\n" + generateMethods;
     private static final String loopBody = "\n" +
             INDENT + "def loop_body(self):\n";
