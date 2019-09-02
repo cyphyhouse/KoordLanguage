@@ -5,14 +5,15 @@ using Motion:
     pos target
 
 allread:
-  pos[] x
+  pos[] mypos
 
 init:
-   x[pid] = Motion.position
+   mypos[pid] = Motion.position
 
 update:
    pre:(true)
    eff:
+      mypos[pid] = Motion.position
       if (pid != 0 and pid != numAgents - 1):
-        x[pid] = midpoint(x[pid+1], x[pid-1])
-        Motion.target = x[pid]
+        Motion.target = midpoint(mypos[pid+1], mypos[pid-1])
+
