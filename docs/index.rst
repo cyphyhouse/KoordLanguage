@@ -1,6 +1,13 @@
-==========================
-Koord Programming Language
-==========================
+###########################
+Koord Programming Framework
+###########################
+
+TODO briefly introduce and show example Koord code
+
+
+**************
+Koord Language
+**************
 
 .. toctree::
    :maxdepth: 1
@@ -8,9 +15,9 @@ Koord Programming Language
    semantics.rst
    grammar.rst
 
-==============
+**************
 Koord Compiler
-==============
+**************
 
 .. toctree::
    :maxdepth: 1
