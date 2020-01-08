@@ -5,8 +5,8 @@ Koord Programming Language
 .. toctree::
    :maxdepth: 1
 
-   docs/semantics.rst
-   docs/grammar.rst
+   semantics.rst
+   grammar.rst
 
 ==============
 Koord Compiler
@@ -15,7 +15,7 @@ Koord Compiler
 .. toctree::
    :maxdepth: 1
 
-   docs/parser.rst
-   docs/codegeneration.rst
-   docs/analysis.rst
+   parser.rst
+   codegeneration.rst
+   analysis.rst
 
