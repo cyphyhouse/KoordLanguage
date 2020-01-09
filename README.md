@@ -1,17 +1,35 @@
-# Overview 
+KoordLanguage
+=============
 
-The Koord language is a new language for coordination in bots.
+[![License](https://img.shields.io/github/license/cyphyhouse/KoordLanguage)](LICENSE)
 
-Read more about its grammar [here](docs/grammar.rst).
+KoordLanguage is the front-end for the [CyPhyHouse][url-cph] project.
+KoordLanguage consists of our Koord programming language for distributed
+robotic applications as well as the tools for compilation, analysis, and
+optimizations.
 
-Read code samples [here](src/test/resources/).
+[url-cph]: https://cyphyhouse.github.io/
 
-The parser is written in Java and uses Antlr.
 
-# Installation
+Website and Documentation
+-------------------------
 
-This project uses Maven.
+KoordLanguage is part of the CyPhyHouse project, and Koord programs require
+other components to be deployed to hardware devices or tested in simulation.
+Please visit following websites for detail usages.
 
-Do a `git clone` somewhere, then run `mvn install` to build.
+Broad overview of CyPhyHouse project is available at:
 
-Documentation should be generated at `target/apidocs/`.
+  https://cyphyhouse.github.io/
+
+Or you can find the documentation at:
+
+  https://cyphyhouse.rtfd.io/
+
+
+License
+-------
+
+KoordLanguage is licensed under the terms of the NCSA License (see the file
+[LICENSE](LICENSE)).
+
