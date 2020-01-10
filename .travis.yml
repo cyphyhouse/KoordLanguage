@@ -18,5 +18,5 @@ deploy:
     overwrite: true
     on:
         repo: cyphyhouse/KoordLanguage
-        branch: travis-ci
+        branch: master
         tags: true  # Only delpoy when the commit is tagged
