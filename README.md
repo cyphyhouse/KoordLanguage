@@ -3,6 +3,9 @@ KoordLanguage
 
 [![License](https://img.shields.io/github/license/cyphyhouse/KoordLanguage)](LICENSE)
 
+[![Build Status](https://travis-ci.org/cyphyhouse/KoordLanguage.svg?branch=master)](https://travis-ci.org/cyphyhouse/KoordLanguage)
+
+
 KoordLanguage is the front-end for the [CyPhyHouse][url-cph] project.
 KoordLanguage consists of our Koord programming language for distributed
 robotic applications as well as the tools for compilation, analysis, and
