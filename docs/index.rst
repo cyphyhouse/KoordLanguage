@@ -10,23 +10,17 @@ TODO briefly introduce and show example Koord code
     :start-after: include-start-after
 
 
-**************
-Koord Language
-**************
-
 .. toctree::
    :maxdepth: 1
+   :caption: Koord Language
 
-   semantics.rst
    grammar.rst
+   semantics.rst
 
-
-**************
-Koord Compiler
-**************
 
 .. toctree::
    :maxdepth: 1
+   :caption: Koord Compiler
 
    parser.rst
    codegeneration.rst
