@@ -1,9 +1,11 @@
 KoordLanguage
 =============
 
-.. image:: https://img.shields.io/github/license/cyphyhouse/KoordLanguage
+|license| |build|
+
+.. |license| image:: https://img.shields.io/github/license/cyphyhouse/KoordLanguage
     :alt: License
-.. image:: https://img.shields.io/travis/cyphyhouse/KoordLanguage
+.. |build| image:: https://img.shields.io/travis/cyphyhouse/KoordLanguage
     :alt: Build Status
     :target: https://travis-ci.org/cyphyhouse/KoordLanguage
 
