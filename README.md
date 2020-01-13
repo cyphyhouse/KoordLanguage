@@ -2,8 +2,7 @@ KoordLanguage
 =============
 
 [![License](https://img.shields.io/github/license/cyphyhouse/KoordLanguage)](LICENSE)
-
-[![Build Status](https://travis-ci.org/cyphyhouse/KoordLanguage.svg?branch=master)](https://travis-ci.org/cyphyhouse/KoordLanguage)
+[![Build Status](https://img.shields.io/travis/cyphyhouse/KoordLanguage)](https://travis-ci.org/cyphyhouse/KoordLanguage)
 
 
 KoordLanguage is the front-end for the [CyPhyHouse][url-cph] project.
