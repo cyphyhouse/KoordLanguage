@@ -1,5 +1,6 @@
+#############
 KoordLanguage
-=============
+#############
 
 |license| |build|
 
@@ -17,8 +18,9 @@ optimizations.
 .. _CyPhyHouse: https://cyphyhouse.github.io/
 
 
+*************************
 Website and Documentation
--------------------------
+*************************
 
 KoordLanguage is part of the CyPhyHouse project, and Koord programs require
 other components to be deployed to hardware devices or tested in simulation.
@@ -33,8 +35,9 @@ Or you can find the documentation at:
   https://cyphyhouse.rtfd.io/
 
 
+*******
 License
--------
+*******
 
 KoordLanguage is licensed under the terms of the NCSA License (see the file
 `LICENSE <LICENSE>`_).
@@ -42,26 +45,36 @@ KoordLanguage is licensed under the terms of the NCSA License (see the file
 
 .. include-start-after
 
+*****************************
 Quick start using JAR package
-=============================
+*****************************
 
-
-This 
-
-Requirement
------------
+Requirements
+============
 
 + Java Runtime Environment 11 (JRE 11) or above
++ JAR file ``koord-*-jar-with-dependencies.jar`` downloaded from here (or
+  compiled from source code)
 
 .. todo::
     Link to JAR file on GitHub repo release
 
 
-Compile JAR package from Source Code
-====================================
+Usage
+=====
+
+Given a Koord program ``app.krd``, run the following command to generate Python code
+``app.py``::
+
+    $ java -jar /path/to/koord-*-jar-with-dependencies.jar app.krd app.py
+
+
+************************************
+Compile JAR package from source code
+************************************
 
 Requirements
-------------
+============
 
 + Java Development Kit 12 (JDK 12)
 + Maven
@@ -69,17 +82,17 @@ Requirements
 
 
 Compilation
------------
+===========
 
 The parser is written in Java and uses Antlr.
 This project uses Maven.
 
-Run following command to compile and create the JAR flie::
+Run following command to build and test the JAR package file::
 
     $ mvn package
 
 The created JAR file should be under ``target`` folder following the name
 pattern ``koord-*-jar-with-dependencies.jar``.
-With the JAR file, please follow the instructions with pre-compiled JAR file to
-run Koord compiler.
+With the JAR file, please follow the instructions in the previous section to run
+Koord compiler.
 
