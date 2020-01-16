@@ -218,7 +218,8 @@ public class CodeGen {
                 builder.append(")");
 
             }
-
+        } else if (ctx.funccall() != null) {
+            generateFuncCall(ctx.funccall());
         } else if (ctx.STOP() != null) {
             builder.append("self.stop()");
         } else if (ctx.conditional() != null) {
