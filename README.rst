@@ -2,12 +2,17 @@
 KoordLanguage
 #############
 
-|license| |build|
+|license|
+
+**Build Status** master: |master| latest commit: |latest|
 
 .. |license| image:: https://img.shields.io/github/license/cyphyhouse/KoordLanguage
     :alt: License
-.. |build| image:: https://img.shields.io/travis/cyphyhouse/KoordLanguage
-    :alt: Build Status
+.. |master| image:: https://img.shields.io/travis/cyphyhouse/KoordLanguage/master
+    :alt: Build status for master branch
+    :target: https://travis-ci.org/cyphyhouse/KoordLanguage/branches
+.. |latest| image:: https://img.shields.io/travis/cyphyhouse/KoordLanguage
+    :alt: Build status for latest commit
     :target: https://travis-ci.org/cyphyhouse/KoordLanguage
 
 KoordLanguage is the front-end for the CyPhyHouse_ project.
