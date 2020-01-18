@@ -58,11 +58,10 @@ Requirements
 ============
 
 + Java Runtime Environment 11 (JRE 11) or above
-+ JAR file ``koord-*-jar-with-dependencies.jar`` downloaded from here (or
-  compiled from source code)
++ Download the JAR file ``koord-*-jar-with-dependencies.jar`` from one of our
+  releases_ (or compile from source code)
 
-.. todo::
-    Link to JAR file on GitHub repo release
+.. _releases: https://github.com/cyphyhouse/KoordLanguage/releases
 
 
 Usage
