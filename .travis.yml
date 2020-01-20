@@ -1,4 +1,8 @@
 language: java
+notifications:
+  email:
+    on_success: change  # When failure -> success
+    on_failure: change  # When success -> failure
 jobs:
   include:
   - os: linux
